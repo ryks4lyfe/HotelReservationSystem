@@ -5,7 +5,10 @@
  */
 package ejb.session.stateless;
 
+import entity.Guest;
 import javax.ejb.Local;
+import util.exception.FailedLoginException;
+import util.exception.GuestNotFoundException;
 
 /**
  *
@@ -13,6 +16,14 @@ import javax.ejb.Local;
  */
 @Local
 public interface GuestSessionBeanLocal {
+
+    public Guest doLogin(String email, String password) throws FailedLoginException, GuestNotFoundException;
+
+    public Guest findGuestByEmail(String email) throws GuestNotFoundException;
+
+    public Guest findGuestById(Long guestId) throws GuestNotFoundException;
+
+    public Long createGuest(Guest g);
 
     
 }

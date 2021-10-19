@@ -30,6 +30,7 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
     }
     
     //Create and persist Guest, no need to add Online Reservation
+    @Override
     public Long createGuest(Guest g) {
         em.persist(g);
         em.flush();
@@ -38,6 +39,7 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
     }
     
     //Search via Id
+    @Override
     public Guest findGuestById(Long guestId) throws GuestNotFoundException {
         Guest g = em.find(Guest.class, guestId);
         
@@ -49,6 +51,7 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
     }
     
     //Search vie email
+    @Override
     public Guest findGuestByEmail(String email) throws GuestNotFoundException {
         Query query = em.createQuery("SELECT g FROM Guest g WHERE g.email = :inEmail");
         query.setParameter("inEmail", email);
@@ -63,6 +66,7 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
     
     //Tries to find g with email, if doesnt exists throw an error. Continue to check if password same,
     //if wrong throw an error, else, return the g.
+    @Override
     public Guest doLogin(String email, String password) throws FailedLoginException, GuestNotFoundException {
         try {
             Guest g = findGuestByEmail(email);
