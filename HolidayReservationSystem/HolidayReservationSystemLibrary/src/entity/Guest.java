@@ -38,11 +38,11 @@ public class Guest implements Serializable {
     @Column(nullable = false, length = 32)
     private String passportNum;
     
-    //@OneToMany(mappedBy = "guest")
-    //private List<OnlineReservation> onlineReservations;
+    @OneToMany(mappedBy = "guest")
+    private List<OnlineReservation> onlineReservations;
     
     public Guest() {
-        //onlineReservations = new ArrayList<>();
+        onlineReservations = new ArrayList<>();
     }
 
     public Guest(String name, String email, String password, String phoneNum, String passportNum) {
@@ -93,13 +93,13 @@ public class Guest implements Serializable {
         this.passportNum = passportNum;
     }
 
-    //public List<OnlineReservation> getOnlineReservations() {
-        //return onlineReservations;
-    //}
+    public List<OnlineReservation> getOnlineReservations() {
+        return onlineReservations;
+    }
 
-    //public void setOnlineReservations(List<OnlineReservation> onlineReservations) {
-       // this.onlineReservations = onlineReservations;
-    //}
+    public void setOnlineReservations(List<OnlineReservation> onlineReservations) {
+        this.onlineReservations = onlineReservations;
+    }
     
     
     

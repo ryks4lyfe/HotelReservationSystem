@@ -13,33 +13,36 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import util.enumeration.EmployeeAccessRight;
 
 /**
  *
  * @author 65912
  */
 @Entity
-public class Partner implements Serializable {
+public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long partnerId;
+    private Long employeeId;
     private String username;
     private String password;
-    private String partnerName;
+    private EmployeeAccessRight Enum;
     
-    @OneToMany(mappedBy = "partner")
-    private List<PartnerReservation> partnerReservations;
+    @OneToMany(mappedBy = "employee")
+    private List<WalkInReservation> walkInReservations;
     
-    public Partner() {
-        partnerReservations = new ArrayList<>();
+    public Employee() {
+        walkInReservations = new ArrayList<>();
     }
 
-    public Partner(String username, String password, String partnerName) {
+    public Employee(String username, String password, EmployeeAccessRight Enum) {
+        this();
         this.username = username;
         this.password = password;
-        this.partnerName = partnerName;
+        this.Enum = Enum;
+        
     }
 
     public String getUsername() {
@@ -58,49 +61,49 @@ public class Partner implements Serializable {
         this.password = password;
     }
 
-    public String getPartnerName() {
-        return partnerName;
+    public EmployeeAccessRight getEnum() {
+        return Enum;
     }
 
-    public void setPartnerName(String partnerName) {
-        this.partnerName = partnerName;
+    public void setEnum(EmployeeAccessRight Enum) {
+        this.Enum = Enum;
     }
 
-    public List<PartnerReservation> getPartnerReservations() {
-        return partnerReservations;
+    public List<WalkInReservation> getWalkInReservations() {
+        return walkInReservations;
     }
 
-    public void setPartnerReservations(List<PartnerReservation> partnerReservations) {
-        this.partnerReservations = partnerReservations;
+    public void setWalkInReservations(List<WalkInReservation> walkInReservations) {
+        this.walkInReservations = walkInReservations;
     }
     
     
     
     
 
-    public Long getPartnerId() {
-        return partnerId;
+    public Long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setPartnerId(Long partnerId) {
-        this.partnerId = partnerId;
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (partnerId != null ? partnerId.hashCode() : 0);
+        hash += (employeeId != null ? employeeId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the partnerId fields are not set
-        if (!(object instanceof Partner)) {
+        // TODO: Warning - this method won't work in the case the employeeId fields are not set
+        if (!(object instanceof Employee)) {
             return false;
         }
-        Partner other = (Partner) object;
-        if ((this.partnerId == null && other.partnerId != null) || (this.partnerId != null && !this.partnerId.equals(other.partnerId))) {
+        Employee other = (Employee) object;
+        if ((this.employeeId == null && other.employeeId != null) || (this.employeeId != null && !this.employeeId.equals(other.employeeId))) {
             return false;
         }
         return true;
@@ -108,7 +111,7 @@ public class Partner implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Partner[ id=" + partnerId + " ]";
+        return "entity.Employee[ id=" + employeeId + " ]";
     }
     
 }
