@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Partner;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.FailedLoginException;
 import util.exception.PartnerNotFoundException;
@@ -24,5 +25,7 @@ public interface PartnerSessionBeanLocal {
     public Partner findPartnerById(Long guestId) throws PartnerNotFoundException;
 
     public Long createPartner(Partner p);
+
+    public List<Partner> retrieveListOfPartners();
     
 }

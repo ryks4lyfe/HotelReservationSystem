@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.Guest;
+import entity.OnlineReservation;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -83,9 +85,18 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
 
     
     //Retrieve reservations
+    public List<OnlineReservation> retrieveOnlineReservationListOfGuest(Long guestId) throws GuestNotFoundException {
+        Guest g = em.find(Guest.class, guestId);
+        
+        if(g!= null) {
+            return g.getOnlineReservations();
+        } else {
+            throw new GuestNotFoundException("Error, Guest " + guestId + " does not exist.");
+        }
+    }
     
-    //checkOut
+    //Check In 
     
-    //checkIn
-    
+    //Check out
+        
 }

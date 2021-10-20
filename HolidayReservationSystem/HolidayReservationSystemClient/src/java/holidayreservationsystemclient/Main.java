@@ -5,17 +5,33 @@
  */
 package holidayreservationsystemclient;
 
+import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.GuestSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
+import javax.ejb.EJB;
+
 /**
  *
  * @author 65912
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
+    @EJB
+    private static PartnerSessionBeanRemote partnerSessionBeanRemote;
+
+    @EJB
+    private static GuestSessionBeanRemote guestSessionBeanRemote;
+
+    @EJB
+    private static EmployeeSessionBeanRemote employeeSessionBeanRemote;
+    
+
+    
     public static void main(String[] args) {
-        System.out.println();
+        MainApp mainApp = new MainApp(partnerSessionBeanRemote, employeeSessionBeanRemote,guestSessionBeanRemote);
+        mainApp.runApp();
+        
+        //Instantiate Timer
     }
     
 }

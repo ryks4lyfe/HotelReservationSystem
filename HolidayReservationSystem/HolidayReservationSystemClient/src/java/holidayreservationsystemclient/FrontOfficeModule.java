@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.enumeration;
+package holidayreservationsystemclient;
 
 /**
  *
  * @author 65912
  */
-public enum EmployeeAccessRight {
-    SYSTEM_ADMINISTRATOR,
-    OPERATION_MANAGER,
-    SALES_MANAGER,
-    GUEST_RELATION_OFFICER
+public class FrontOfficeModule {
+    
 }
-

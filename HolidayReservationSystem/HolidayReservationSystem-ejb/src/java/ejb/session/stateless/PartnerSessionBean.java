@@ -82,6 +82,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         }
     }
     
+    @Override
     public List<Partner> retrieveListOfPartners() {
         Query query = em.createQuery("SELECT p FROM Partner p");
         return query.getResultList();
