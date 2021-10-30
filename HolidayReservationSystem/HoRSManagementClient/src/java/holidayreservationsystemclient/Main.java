@@ -25,6 +25,10 @@ public class Main {
     @EJB
     private static EmployeeSessionBeanRemote employeeSessionBeanRemote;
     
+    
+    
+    
+    
 
     
     public static void main(String[] args) {
