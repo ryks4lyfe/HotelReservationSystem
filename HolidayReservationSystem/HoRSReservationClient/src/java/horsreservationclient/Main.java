@@ -18,6 +18,8 @@ public class Main {
 
     @EJB
     private static GuestSessionBeanRemote guestSessionBeanRemote;
+    
+    
 
     
 

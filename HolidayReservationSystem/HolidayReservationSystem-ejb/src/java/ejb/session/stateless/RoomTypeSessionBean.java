@@ -165,6 +165,3 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal {
         
         
 }
-
-    
-   

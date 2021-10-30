@@ -7,7 +7,7 @@ package ejb.session.stateless;
 
 import entity.RoomRecord;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Remote;
 import util.exception.DeleteRoomRecordException;
 import util.exception.RoomNameExistsException;
 import util.exception.RoomRecordNotFoundException;
@@ -18,9 +18,8 @@ import util.exception.UnknownPersistenceException;
  *
  * @author ajayan
  */
-@Local
-public interface RoomRecordSessionBeanLocal {
-
+@Remote
+public interface RoomRecordSessionBeanRemote {
     public RoomRecord createRoomRecord(RoomRecord newRoomRecord, Long roomTypeId) throws RoomNameExistsException, UnknownPersistenceException, RoomTypeNotFoundException;
 
     public List<RoomRecord> findAllRoomRecords();
@@ -40,5 +39,5 @@ public interface RoomRecordSessionBeanLocal {
     public void updateRoomRecord(RoomRecord roomRecord) throws RoomRecordNotFoundException, RoomTypeNotFoundException;
 
     public void deleteRoomRecord(Long roomRecordId) throws RoomRecordNotFoundException, DeleteRoomRecordException;
-    
+
 }
