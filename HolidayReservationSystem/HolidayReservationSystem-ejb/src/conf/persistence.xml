@@ -9,6 +9,14 @@
     <class>entity.PartnerReservation</class>
     <class>entity.ReservationRecord</class>
     <class>entity.WalkInReservation</class>
+    <class>entity.NormalRate</class>
+    <class>entity.PeakRate</class>
+    <class>entity.PromotionRate</class>
+    <class>entity.PublishedRate</class>
+    <class>entity.ReservationLineItem</class>
+    <class>entity.RoomRate</class>
+    <class>entity.RoomRecord</class>
+    <class>entity.RoomType</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
