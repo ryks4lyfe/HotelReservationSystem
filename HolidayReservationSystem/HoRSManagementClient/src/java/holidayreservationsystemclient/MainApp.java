@@ -60,7 +60,7 @@ public class MainApp {
 
     
 
-    public void runApp() throws DeleteRoomRateException, ParseException, RoomNameExistsException, RoomRateExistsException, DeleteRoomTypeException, RoomRateNotFoundException, RoomRecordNotFoundException, RoomTypeNameExistsException, RoomTypeNotFoundException, UnknownPersistenceException, UpdateRoomTypeException {
+    public void runApp() {
 
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
@@ -87,9 +87,7 @@ public class MainApp {
                         //hotelOpModule = new HotelOperationModule(employeeSessionBeanRemote, partnerSessionBeanRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, reservationControllerRemote, employee);
                         //frontOfficeModule = new FrontOfficeModule(employeeSessionBeanRemote, guestSessionBeanRemote, partnerSessionBeanRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, walkInReservationSessionBeanRemote, reservationControllerRemote, employee);
                         menuMain();
-                    } catch (FailedLoginException ex) {
-                        System.out.println(ex.getMessage());
-                    } catch (EmployeeNotFoundException ex) {
+                    } catch (FailedLoginException | EmployeeNotFoundException ex) {
                         System.out.println(ex.getMessage());
                     }
 
@@ -134,7 +132,7 @@ public class MainApp {
         }
     }
 
-    private void menuMain() throws DeleteRoomRateException, ParseException, RoomNameExistsException, RoomRateExistsException, DeleteRoomTypeException, RoomRateNotFoundException, RoomRecordNotFoundException, RoomTypeNameExistsException, RoomTypeNotFoundException, UnknownPersistenceException, UpdateRoomTypeException {
+    private void menuMain() {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 

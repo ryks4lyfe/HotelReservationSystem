@@ -59,10 +59,10 @@ public class Main {
     
 
     
-    public static void main(String[] args) throws DeleteRoomRateException, ParseException, RoomNameExistsException, RoomRateExistsException, DeleteRoomTypeException, RoomRateNotFoundException, RoomRecordNotFoundException, RoomTypeNameExistsException, RoomTypeNotFoundException, UnknownPersistenceException, UpdateRoomTypeException {
+    public static void main(String[] args)  {
         MainApp mainApp = new MainApp(partnerSessionBeanRemote, employeeSessionBeanRemote, guestSessionBeanRemote, reservationSessionBean, roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean);
         mainApp.runApp();
-        
+  
          try {
              //allocate room to guests reservations at 2am daily
             Date currentDate = new Date();

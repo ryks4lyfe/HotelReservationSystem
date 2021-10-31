@@ -72,7 +72,7 @@ private Employee employee;
         this.employee= employee; 
     }
 
-    public void menuHotelOperation() throws RoomNameExistsException, UnknownPersistenceException, DeleteRoomTypeException, RoomTypeNotFoundException, RoomRecordNotFoundException, ParseException, RoomRateExistsException, RoomRateNotFoundException, DeleteRoomRateException, UpdateRoomTypeException, RoomTypeNameExistsException {
+    public void menuHotelOperation() {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
@@ -101,109 +101,95 @@ private Employee employee;
             System.out.println("17: Back\n");
             response = 0;
             
-            while(response < 1 || response > 16)
-            {
+            OUTER:
+            while (response < 1 || response > 16) {
                 System.out.print("> ");
-
                 response = scanner.nextInt();
                 scanner.nextLine();
-
-                if(response == 1)
-                {
-                    try
-                    {
-                    createRoomType();
-                    }
-                    catch (RoomTypeNameExistsException | UnknownPersistenceException ex) {
-                    }
-                }
-                else if(response == 2)
-                {
-                    viewRoomTypeDetails();
-                }
-                else if(response == 3)
-                {
-                    System.out.print("Enter Room Type Name> ");
-                    String name = scanner.nextLine().trim();
-                    updateRoomType(roomTypeSessionBeanRemote.findRoomTypeByName(name));
-                }
-                else if(response == 4)
-                {
-                    System.out.print("Enter Room Type Name> ");
-                    String name = scanner.nextLine().trim();
-                    try {
-                        deleteRoomType(roomTypeSessionBeanRemote.findRoomTypeByName(name));
-                    } catch (RoomTypeNotFoundException ex) {
-                        System.out.println("An error has occurred while retrieving Room Type details: " + ex.getMessage() + "\n");
-                    }
-                }
-                else if(response == 5)
-                {
-                    viewAllRoomTypes();
-                }
-                else if(response == 6)
-                {
-                    createRoom();
-                }
-                else if(response == 7)
-                {
-                    updateRoom();
-                }
-                else if(response == 8)
-                {
-                    deleteRoom();
-                }
-                else if(response == 9)
-                {
-                    viewAllRooms();
-                }
-                else if(response == 10)
-                {
-                    viewRoomAllocationExceptionReport();
-                }
-                else if(response == 11)
-                {
-                    createRoomRate();
-                }
-                else if(response == 12)
-                {
-                    viewRoomRateDetails();
-                }
-                else if(response == 13)
-                {
-                    System.out.print("Enter Room Rate Id> ");
-                    Long rateId = scanner.nextLong();
-                    try {
-                        updateRoomRate(roomRateSessionBeanRemote.findRoomRateById(rateId));
-                    } catch (RoomRateNotFoundException ex) {
-                        System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
-                    }
-                }
-                else if(response == 14)
-                {
-                    System.out.print("Enter Room Rate Id> ");
-                    Long rateId = scanner.nextLong();
-                    scanner.nextLine();
-                    try {
-                        deleteRoomRate(roomRateSessionBeanRemote.findRoomRateById(rateId));
-                    } catch (RoomRateNotFoundException ex) {
-                        System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
-                    }
-                }
-                else if(response == 15)
-                {
-                    viewAllRoomRates();
-                }
-                else if (response == 16)
-                {
-                    allocateRoom();
-                }
-                else if (response == 17){
-                    break;
-                }
-                else
-                {
-                    System.out.println("Invalid option, please try again!\n");                
+                switch (response) {
+                    case 1:
+                        createRoomType();
+                        break;
+                    case 2:
+                        viewRoomTypeDetails();
+                        break;
+                    case 3:
+                        {
+                            System.out.print("Enter Room Type Name> ");
+                            String name = scanner.nextLine().trim();
+                            try{
+                            updateRoomType(roomTypeSessionBeanRemote.findRoomTypeByName(name));
+                            } catch (RoomTypeNotFoundException ex) {       
+                            }
+                            
+                            break;
+                        }
+                    case 4:
+                        {
+                            System.out.print("Enter Room Type Name> ");
+                            String name = scanner.nextLine().trim();
+                            try {
+                                deleteRoomType(roomTypeSessionBeanRemote.findRoomTypeByName(name));
+                            } catch (RoomTypeNotFoundException ex) {
+                                System.out.println("An error has occurred while retrieving Room Type details: " + ex.getMessage() + "\n");
+                            }       break;
+                        }
+                    case 5:
+                        viewAllRoomTypes();
+                        break;
+                    case 6:
+                        createRoom();
+                        break;
+                    case 7:
+                        updateRoom();
+                        break;
+                    case 8:
+                        deleteRoom();
+                        break;
+                    case 9:
+                        viewAllRooms();
+                        break;
+                    case 10:
+                        viewRoomAllocationExceptionReport();
+                        break;
+                    case 11:
+                        createRoomRate();
+                        break;
+                    case 12:
+                        viewRoomRateDetails();
+                        break;
+                    case 13:
+                        {
+                            System.out.print("Enter Room Rate Id> ");
+                            Long rateId = scanner.nextLong();
+                            try {
+                                updateRoomRate(roomRateSessionBeanRemote.findRoomRateById(rateId));
+                            } catch (RoomRateNotFoundException ex) {
+                                System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
+                            }       break;
+                        }
+                    case 14:
+                        {
+                            System.out.print("Enter Room Rate Id> ");
+                            Long rateId = scanner.nextLong();
+                            scanner.nextLine();
+                            try {
+                                deleteRoomRate(roomRateSessionBeanRemote.findRoomRateById(rateId));
+                            } catch (RoomRateNotFoundException ex) {
+                                System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
+                            }       break;
+                        }
+                    case 15:
+                        viewAllRoomRates();
+                        break;
+                    case 16:
+                        allocateRoom();
+                        break;
+                    case 17:
+                        break OUTER;
+                    default:
+                        System.out.println("Invalid option, please try again!\n");
+                        break;                
                 }
             }
             
@@ -214,7 +200,7 @@ private Employee employee;
         }
     }
 
-    public void createRoomType() throws RoomTypeNameExistsException, UnknownPersistenceException 
+    public void createRoomType()  
     {
         
         Scanner scanner = new Scanner(System.in);
@@ -237,19 +223,18 @@ private Employee employee;
         
         System.out.println(newRoomType.getSize()); 
         
-        /*try
-        {*/
+        try {
         newRoomType = roomTypeSessionBeanRemote.createRoomType(newRoomType);
-        /*}
-        catch(RoomTypeNameExistsException | UnknownPersistenceException ex){
-            System.out.println("error incurred"); 
-        } */
+        }
+        catch (RoomTypeNameExistsException | UnknownPersistenceException ex){
+            
+        }
         System.out.println("New room type created successfully!: " + newRoomType.getTypeName()+ "\n");
         System.out.print("Press any key to continue...> ");
 
     }
 
-    public void viewRoomTypeDetails() throws UpdateRoomTypeException, DeleteRoomTypeException 
+    public void viewRoomTypeDetails() 
     {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
@@ -279,11 +264,11 @@ private Employee employee;
 
             if(response == 1)
             {
-                roomTypeSessionBeanRemote.updateRoomType(roomType);
+                updateRoomType(roomType);
             }
             else if(response == 2)
             {
-                roomTypeSessionBeanRemote.deleteRoomType(roomType.getRoomTypeId());
+                deleteRoomType(roomType);
             }
         } 
         catch (RoomTypeNotFoundException ex) 
@@ -293,7 +278,7 @@ private Employee employee;
         }
     }
     
-    public void updateRoomType(RoomType roomType) throws UpdateRoomTypeException 
+    public void updateRoomType(RoomType roomType)  
     {
         Scanner scanner = new Scanner(System.in);        
         String input;
@@ -355,25 +340,19 @@ private Employee employee;
         {
             roomType.setAmenities(input);
         }
-        /*System.out.print("Enter Room Rank (blank if no change)> ");
-        Integer roomRank = scanner.nextInt();
-        if(roomRank != null)
-        {
-            roomType.setRoomRank(roomRank);
-        }*/
         
         try 
         {
             roomTypeSessionBeanRemote.updateRoomType(roomType);
             System.out.println("Room Type updated successfully!\n");
         } 
-        catch (RoomTypeNotFoundException ex) 
+        catch (RoomTypeNotFoundException | UpdateRoomTypeException ex) 
         {
             System.out.println("An error has occurred while updating room type: " + ex.getMessage() + "\n");
         }
     }
 
-    public void deleteRoomType(RoomType roomType) throws DeleteRoomTypeException 
+    public void deleteRoomType(RoomType roomType) 
     {
         Scanner scanner = new Scanner(System.in);        
         String input;
@@ -418,7 +397,7 @@ private Employee employee;
         scanner.nextLine();
     }
 
-    public void createRoom() throws RoomNameExistsException, UnknownPersistenceException  
+    public void createRoom()   
     {
         try 
         {
@@ -434,20 +413,21 @@ private Employee employee;
             RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeById(roomTypeId);
             System.out.println("Open room for room type: " + roomType.getTypeName()+ "\n");
             newRoom.setRoomStatus("not in use");
+            try {
             newRoom = roomRecordSessionBeanRemote.createRoomRecord(newRoom, roomTypeId);
+            }
+            catch(RoomNameExistsException | UnknownPersistenceException ex)
+            {
+            }
             System.out.println("New room created successfully!: " + newRoom.getRoomNum()+ "\n");
         } 
         catch (RoomTypeNotFoundException ex) 
         {
             System.out.println(ex.getMessage() + "!\n");
         } 
-        catch (RoomNameExistsException ex)
-        {
-            System.out.println("An error has occurred while creating the new room: " + ex.getMessage() + "!\n");
-        }
     }
 
-    public void updateRoom() throws RoomTypeNotFoundException 
+    public void updateRoom() 
     {
         try {
             Scanner scanner = new Scanner(System.in);
@@ -476,9 +456,13 @@ private Employee employee;
                     {
                         room.setRoomStatus("available");
                         Long resLineItemId = null;
+                        try {
                         roomRecordSessionBeanRemote.updateRoomRecord(room);
                         RoomRecord roomUpdated = roomRecordSessionBeanRemote.findRoomRecordById(room.getRoomRecordId()); 
                         roomRecordSessionBeanRemote.updateRoomRecordListInRoomType(roomUpdated.getRoomRecordId());
+                        }
+                        catch (RoomTypeNotFoundException | RoomRecordNotFoundException ex){
+                        }
                         System.out.println("Room Type updated successfully!\n");
                         break;
                     }
@@ -491,14 +475,13 @@ private Employee employee;
                         {
                             room.setRoomStatus("in use");
                             try {
-                            roomRecordSessionBeanRemote.updateRoomRecord(room);
-                            } 
-                            catch (RoomRecordNotFoundException ex){
-                                System.out.println("RoomNumber is Invalid");
-                            }
-                               
+                            roomRecordSessionBeanRemote.updateRoomRecord(room); 
                             RoomRecord roomUpdated = roomRecordSessionBeanRemote.findRoomRecordById(room.getRoomRecordId());
                             roomRecordSessionBeanRemote.updateRoomRecordListInRoomType(roomUpdated.getRoomRecordId());
+                            } 
+                            catch (RoomRecordNotFoundException | RoomTypeNotFoundException ex){
+                                System.out.println("RoomNumber is Invalid");
+                            }
                             System.out.println("Room Type updated successfully!\n");
                         }
                         else
@@ -518,10 +501,8 @@ private Employee employee;
         }
     }
 
-    public void deleteRoom() throws RoomRecordNotFoundException 
+    public void deleteRoom() 
     {
-        try 
-        {
             Scanner scanner = new Scanner(System.in);
             String input;
             
@@ -529,22 +510,30 @@ private Employee employee;
             System.out.print("Enter Room Number> ");
             Long roomRecordId = scanner.nextLong();
             scanner.nextLine(); 
+            try {
             RoomRecord room = roomRecordSessionBeanRemote.findRoomRecordById(roomRecordId);
             System.out.printf("Confirm Delete Room Number %d (Enter 'Y' to Delete)> ", room.getRoomNum());
             input = scanner.nextLine().trim();
             
             if(input.equals("Y")) 
             {
+                try {
                 roomRecordSessionBeanRemote.deleteRoomRecord(room.getRoomRecordId());
+                } 
+                catch(DeleteRoomRecordException| RoomRecordNotFoundException ex) {
+                    
+                }
                 System.out.println("Room deleted successfully!\n");
             }
             else 
             {
                 System.out.println("Room NOT deleted!\n");
             }
-        } catch (DeleteRoomRecordException ex) {
-            //System.out.println("An error has occurred while deleting Room : " + ex.getMessage() + "\n");
-        }
+            }
+            
+            catch(RoomRecordNotFoundException ex){
+            }
+            
     }
 
     public void viewAllRooms() 
@@ -581,10 +570,8 @@ private Employee employee;
       
     }
 
-    public void createRoomRate() throws ParseException, RoomNameExistsException, UnknownPersistenceException, RoomRateExistsException 
+    public void createRoomRate() 
     {
-        try 
-        {
             Scanner scanner = new Scanner(System.in);
             RoomRate newRoomRate;
             
@@ -632,11 +619,13 @@ private Employee employee;
             
             System.out.print("Enter Room Type Id> ");
             Long roomTypeId = scanner.nextLong();
+            try {
             RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeById(roomTypeId);
             scanner.nextLine();
             
             Date date;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
             if(newRoomRate.getRoomRateType().equals(PROMOTION)){
                 System.out.print("Enter Promotion Rate start date (yyyy-MM-dd)> ");
                 date = sdf.parse(scanner.nextLine());
@@ -666,24 +655,23 @@ private Employee employee;
                 date = sdf.parse(scanner.nextLine());
                 newRoomRate.setStartRateDate(date);
             }
+            }
+            catch (ParseException ex) {
+            }
             System.out.println("Open room rate for room type: " + roomType.getTypeName()+ "\n");
             newRoomRate.setRoomRateStatus("enabled");
+            } catch (RoomTypeNotFoundException ex) {
+            }
+            try{
             newRoomRate = roomRateSessionBeanRemote.createRoomRate(newRoomRate, roomTypeId);
             System.out.println("New room rate created successfully!: " + newRoomRate.getRoomRateId()+ "\n");
         } 
-        catch (RoomTypeNotFoundException ex) 
-        {
-            System.out.println(ex.getMessage() + "!\n");
-        } 
-        catch (RoomRateExistsException ex) 
-        {
-            //System.out.println("An error has occurred while creating the new room rate: " + ex.getMessage() + "!\n");
-        } catch (PersistenceException ex) {
-            System.out.println("Invalid Date Format entered!" + "\n");
+        catch (RoomTypeNotFoundException | RoomNameExistsException | UnknownPersistenceException | RoomRateExistsException ex) {
+            
         }
     }
 
-    public void viewRoomRateDetails() throws RoomRateNotFoundException, RoomTypeNotFoundException, DeleteRoomRateException 
+    public void viewRoomRateDetails()
     {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
@@ -694,8 +682,8 @@ private Employee employee;
         Long roomRateId = scanner.nextLong();
         scanner.nextLine();
         
-        /*try 
-        {*/
+        try 
+        {
             RoomRate roomRate = roomRateSessionBeanRemote.findRoomRateById(roomRateId); 
             
             System.out.println("\n" + "Room rate name: " + roomRate.getRateName());
@@ -728,22 +716,27 @@ private Employee employee;
 
             if(response == 1)
             {
-                roomRateSessionBeanRemote.updateRoomRate(roomRate);
+                try{
+                    roomRateSessionBeanRemote.updateRoomRate(roomRate);
+                } 
+                catch(RoomRateNotFoundException| RoomTypeNotFoundException ex) {
+                }
             }
             else if(response == 2)
             {
-                roomRateSessionBeanRemote.deleteRoomRate(roomRate.getRoomRateId());
-            } 
-        /*catch (Exception ex) 
-        {
-            System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
-            System.out.print("Press any key to continue...> ");
-        }*/
- 
-        }
+                try{
+                     roomRateSessionBeanRemote.deleteRoomRate(roomRate.getRoomRateId());
+                }
+                catch(DeleteRoomRateException|RoomRateNotFoundException ex) {
+                }
+               
+                } 
             }
+          }
+        }
+        catch (RoomRateNotFoundException ex) { 
+        }
     }
-    
     public void updateRoomRate(RoomRate roomRate) 
     {
         try {
@@ -851,7 +844,7 @@ private Employee employee;
         }
     }
 
-    public void deleteRoomRate(RoomRate roomRate) throws DeleteRoomRateException 
+    public void deleteRoomRate(RoomRate roomRate) 
     {
         Scanner scanner = new Scanner(System.in);        
         String input;
