@@ -26,7 +26,7 @@ import util.exception.UpdateRoomTypeException;
  * @author ajayan
  */
 @Stateless
-public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal {
+public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSessionBeanRemote {
 
     @PersistenceContext(unitName = "HolidayReservationSystem-ejbPU")
     private EntityManager em;
@@ -34,14 +34,17 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal {
     @EJB
     private RoomRecordSessionBeanLocal roomRecordSessionBeanLocal; 
     
+    @EJB
     private RoomRateSessionBeanLocal roomRateSessionBeanLocal; 
     
+    @EJB
     private ReservationSessionBeanLocal reservationSessionBeanLocal; 
 
     public RoomTypeSessionBean() {
     }
     
 
+    @Override
     public RoomType createRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException 
     {
         
@@ -74,6 +77,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal {
         }
     }
 
+    @Override
     public List<RoomType> retrieveAllRoomTypes() 
     {
         
@@ -83,6 +87,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal {
 
     }
     
+    @Override
     public RoomType findRoomTypeById (Long roomTypeId) throws RoomTypeNotFoundException
     {
         RoomType roomType = em.find(RoomType.class, roomTypeId); 
@@ -97,6 +102,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal {
         }
     }
     
+    @Override
     public RoomType findRoomTypeByName (String roomTypeName) throws RoomTypeNotFoundException
     {
         Query query = em.createQuery("SELECT r FROM RoomType r WHERE r.typeName = :inTypeName");
@@ -112,6 +118,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal {
         }
     }
     
+    @Override
     public void updateRoomType (RoomType roomType) throws RoomTypeNotFoundException, UpdateRoomTypeException
     {
         if (roomType != null && roomType.getRoomTypeId()!= null)
@@ -139,6 +146,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal {
         
     }
     
+    @Override
     public void deleteRoomType (Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException 
     {
          RoomType roomTypeToRemove = findRoomTypeById(roomTypeId);

@@ -59,6 +59,7 @@ public class RoomType implements Serializable {
     }
 
     public RoomType(Long roomTypeId, String typeName, String description, String size, String bed, String amenities, String capacity, String typeStatus, List<ReservationLineItem> reservationLineItems, List<RoomRecord> roomRecords, List<RoomRate> roomRates) {
+        this(); 
         this.roomTypeId = roomTypeId;
         this.typeName = typeName;
         this.description = description;

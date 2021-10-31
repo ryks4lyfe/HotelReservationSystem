@@ -5,7 +5,13 @@
  */
 package horsreservationclient;
 
+import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.GuestSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
+import ejb.session.stateless.ReservationSessionBeanRemote;
+import ejb.session.stateless.RoomRateSessionBeanRemote;
+import ejb.session.stateless.RoomRecordSessionBeanRemote;
+import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Guest;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -15,6 +21,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import util.exception.FailedLoginException;
 import util.exception.GuestNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -22,7 +29,11 @@ import util.exception.GuestNotFoundException;
  */
 public class MainApp {
 
-    private GuestSessionBeanRemote guestSessionBeanRemote;
+    private GuestSessionBeanRemote guestSessionBeanRemote; 
+    private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote; 
+    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote; 
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote; 
+    private ReservationSessionBeanRemote reservationSessionBeanRemote; 
 
     Guest currentGuest;
     Scanner scanner=new Scanner(System.in);
@@ -31,11 +42,23 @@ public class MainApp {
 
     }
 
-    public MainApp(GuestSessionBeanRemote guestSessionBeanRemote) {
-        this.guestSessionBeanRemote = guestSessionBeanRemote;
+   
+    public MainApp(Guest currentGuest) {
+        this.currentGuest = currentGuest;
     }
 
-    public void runApp() throws FailedLoginException, GuestNotFoundException {
+    MainApp(GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomRecordSessionBeanRemote roomRecordSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean) 
+    {
+       this.guestSessionBeanRemote = guestSessionBeanRemote; 
+       this.reservationSessionBeanRemote = reservationSessionBeanRemote; 
+       this.roomRateSessionBeanRemote = roomRateSessionBeanRemote; 
+       this.roomRecordSessionBeanRemote = roomRecordSessionBeanRemote; 
+       this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote; 
+    }
+    
+    
+    
+    public void runApp() throws FailedLoginException, GuestNotFoundException,  RoomTypeNotFoundException {
         
         Integer response = 0;
 

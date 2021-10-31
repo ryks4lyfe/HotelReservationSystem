@@ -23,7 +23,7 @@ import util.exception.UnknownPersistenceException;
  * @author ajayan
  */
 @Stateless
-public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal {
+public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRecordSessionBeanRemote {
 
     @PersistenceContext(unitName = "HolidayReservationSystem-ejbPU")
     private EntityManager em;
@@ -31,11 +31,13 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal {
     @EJB
     private RoomTypeSessionBeanLocal roomTypeSessionBeanLocal; 
     
+    @EJB
     private ReservationSessionBeanLocal reservationSessionBeanLocal; 
 
     public RoomRecordSessionBean() {
     }
 
+    @Override
     public RoomRecord createRoomRecord (RoomRecord newRoomRecord, Long roomTypeId) throws RoomNameExistsException, UnknownPersistenceException, RoomTypeNotFoundException 
     {
        
@@ -79,6 +81,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal {
         }    
     }  
     
+    @Override
     public List<RoomRecord> findAllRoomRecords() 
              
     {
@@ -86,6 +89,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal {
         return query.getResultList(); 
     }
     
+    @Override
     public RoomRecord findRoomRecordById (Long roomRecordId) throws RoomRecordNotFoundException
     {
         RoomRecord roomRecord = em.find(RoomRecord.class, roomRecordId); 
@@ -116,12 +120,14 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal {
         }
     }
     
+    @Override
     public List<RoomRecord> findAllAvailableRoomRecords() {
         Query query = em.createNamedQuery("SELECT rr FROM RoomRecord rr WHERE rr.roomStatus  :inRoomStatus"); 
         query.setParameter("inRoomStatus", "in use"); 
         return query.getResultList(); 
     }
     
+    @Override
     public List<RoomRecord> findAllAvailableRoomRecordsForRoomType (String roomTypeName) throws RoomTypeNotFoundException {
         
         Query query = em.createQuery("SELECT r FROM RoomRecod r WHERE r.roomType = :inRoomType AND r.roomStatus = :inRoomStatus"); 
@@ -132,6 +138,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal {
         
     }
     
+    @Override
     public List<RoomRecord> findAllRoomRecordsForRoomType (String roomTypeName) throws RoomTypeNotFoundException {
         Query query = em.createQuery("SELECT r FROM RoomRecord r WHERE r.roomType = :inRoomType"); 
         query.setParameter("inRoomType", roomTypeSessionBeanLocal.findRoomTypeByName(roomTypeName));
@@ -139,12 +146,14 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal {
         return query.getResultList();
     }
     
+    @Override
      public void updateRoomRecordListInRoomType(Long roomRecordId) throws RoomRecordNotFoundException
     {
         RoomRecord roomRecord = findRoomRecordById(roomRecordId);
         roomRecord.getRoomType().getRoomRecords().add(roomRecord);
     }
     
+    @Override
     public void updateRoomRecord(RoomRecord roomRecord) throws RoomRecordNotFoundException, RoomTypeNotFoundException 
     { 
         if (roomRecord != null && roomRecord.getRoomRecordId()!= null) 
@@ -178,6 +187,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal {
         }
     }
     
+    @Override
     public void deleteRoomRecord(Long roomRecordId) throws RoomRecordNotFoundException, DeleteRoomRecordException
     {
         RoomRecord roomToRemove = findRoomRecordById(roomRecordId);

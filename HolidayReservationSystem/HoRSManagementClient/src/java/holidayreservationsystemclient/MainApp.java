@@ -8,10 +8,25 @@ package holidayreservationsystemclient;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.GuestSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
+import ejb.session.stateless.ReservationSessionBeanRemote;
+import ejb.session.stateless.RoomRateSessionBeanRemote;
+import ejb.session.stateless.RoomRecordSessionBeanRemote;
+import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
+import java.text.ParseException;
 import java.util.Scanner;
+import util.exception.DeleteRoomRateException;
+import util.exception.DeleteRoomTypeException;
 import util.exception.EmployeeNotFoundException;
 import util.exception.FailedLoginException;
+import util.exception.RoomNameExistsException;
+import util.exception.RoomRateExistsException;
+import util.exception.RoomRateNotFoundException;
+import util.exception.RoomRecordNotFoundException;
+import util.exception.RoomTypeNameExistsException;
+import util.exception.RoomTypeNotFoundException;
+import util.exception.UnknownPersistenceException;
+import util.exception.UpdateRoomTypeException;
 
 /**
  *
@@ -20,24 +35,32 @@ import util.exception.FailedLoginException;
 public class MainApp {
 
     private PartnerSessionBeanRemote partnerSessionBeanRemote;
-
     private EmployeeSessionBeanRemote employeeSessionBeanRemote;
-
     private GuestSessionBeanRemote guestSessionBeanRemote;
-
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote; 
+    private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote; 
+    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote; 
+    private ReservationSessionBeanRemote reservationSessionBeanRemote;
+    
+    private SystemAdministrationModule systemAdminModule;
+    private HotelOperationModule hotelOpModule;
+    private FrontOfficeModule frontOfficeModule;
+    
     private Employee employee;
 
-    public MainApp() {
-
+    public MainApp(PartnerSessionBeanRemote partnerSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomRecordSessionBeanRemote roomRecordSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean) {
+        this.partnerSessionBeanRemote = partnerSessionBeanRemote; 
+        this.employeeSessionBeanRemote = employeeSessionBeanRemote; 
+        this.guestSessionBeanRemote = guestSessionBeanRemote; 
+        this.reservationSessionBeanRemote = reservationSessionBeanRemote; 
+        this.roomRateSessionBeanRemote = roomRateSessionBeanRemote; 
+        this.roomRecordSessionBeanRemote = roomRecordSessionBeanRemote; 
+        this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote; 
     }
 
-    public MainApp(PartnerSessionBeanRemote partnerSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, GuestSessionBeanRemote guestSessionBeanRemote) {
-        this.partnerSessionBeanRemote = partnerSessionBeanRemote;
-        this.employeeSessionBeanRemote = employeeSessionBeanRemote;
-        this.guestSessionBeanRemote = guestSessionBeanRemote;
-    }
+    
 
-    public void runApp() {
+    public void runApp() throws DeleteRoomRateException, ParseException, RoomNameExistsException, RoomRateExistsException, DeleteRoomTypeException, RoomRateNotFoundException, RoomRecordNotFoundException, RoomTypeNameExistsException, RoomTypeNotFoundException, UnknownPersistenceException, UpdateRoomTypeException {
 
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
@@ -45,10 +68,12 @@ public class MainApp {
         while (true) {
             System.out.println("*** Welcome to HoRS :: Hotel Management System ***\n");
             System.out.println("1: Login");
-            System.out.println("2: Exit\n");
+            System.out.println("2: Create Employee");
+            System.out.println("3: Exit\n");
+            
             response = 0;
 
-            while (response < 1 || response > 2) {
+            while (response < 1 || response > 3) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -69,13 +94,19 @@ public class MainApp {
                     }
 
                 } else if (response == 2) {
+                     SystemAdministrationModule systemAdminModule = new SystemAdministrationModule(partnerSessionBeanRemote, employeeSessionBeanRemote, employee);
+                     systemAdminModule.menuSystemAdministration();
+       
+                }
+                
+                else if (response == 3) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
 
-            if (response == 2) {
+            if (response == 3) {
                 break;
             }
         }
@@ -103,7 +134,7 @@ public class MainApp {
         }
     }
 
-    private void menuMain() {
+    private void menuMain() throws DeleteRoomRateException, ParseException, RoomNameExistsException, RoomRateExistsException, DeleteRoomTypeException, RoomRateNotFoundException, RoomRecordNotFoundException, RoomTypeNameExistsException, RoomTypeNotFoundException, UnknownPersistenceException, UpdateRoomTypeException {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -126,8 +157,8 @@ public class MainApp {
                         systemAdminModule.menuSystemAdministration();
 
                     } else if (employee.getEnum().toString().equals("OPERATION_MANAGER") || employee.getEnum().toString().equals("SALES_MANAGER")) {
-                        //hotelOpModule = new HotelOperationModule(employeeSessionBeanRemote, partnerSessionBeanRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, reservationControllerRemote, employee);
-                        //hotelOpModule.menuHotelOperation();
+                        HotelOperationModule hotelOpModule = new HotelOperationModule(employeeSessionBeanRemote, partnerSessionBeanRemote, roomRecordSessionBeanRemote, roomTypeSessionBeanRemote, roomRateSessionBeanRemote, reservationSessionBeanRemote, employee);
+                        hotelOpModule.menuHotelOperation();
 
                     } else if (employee.getEnum().toString().equals("GUEST_RELATION_OFFICER")) {
                         //frontOfficeModule = new FrontOfficeModule(employeeSessionBeanRemote, guestSessionBeanRemote, partnerSessionBeanRemote,

@@ -23,7 +23,7 @@ import util.exception.UnknownPersistenceException;
  * @author ajayan
  */
 @Stateless
-public class RoomRateSessionBean implements RoomRateSessionBeanLocal {
+public class RoomRateSessionBean implements RoomRateSessionBeanLocal, RoomRateSessionBeanRemote {
 
     @PersistenceContext(unitName = "HolidayReservationSystem-ejbPU")
     private EntityManager em;
@@ -35,6 +35,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal {
     public RoomRateSessionBean() {
     }
     
+    @Override
     public RoomRate createRoomRate(RoomRate newRoomRate, Long roomTypeId) throws RoomTypeNotFoundException, RoomNameExistsException, UnknownPersistenceException, RoomRateExistsException 
     {
          try 
@@ -75,12 +76,14 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal {
         }    
     }  
     
+    @Override
     public List<RoomRate> findAllRoomRates() 
     {
         Query query = em.createNamedQuery("SELECT rr FROM RoomRate rr"); 
         return query.getResultList(); 
     }
     
+    @Override
     public RoomRate findRoomRateById (Long roomRateId) throws RoomRateNotFoundException
     {
         RoomRate roomRecord = em.find(RoomRate.class, roomRateId); 
@@ -95,6 +98,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal {
         }
     }
     
+    @Override
     public RoomType findRoomRateByName (String roomRateName) throws RoomTypeNotFoundException, RoomRateNotFoundException
     {
         Query query = em.createQuery("SELECT r FROM RoomRate r WHERE r.rateName = :inRateName");
@@ -111,6 +115,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal {
     }
     
     
+    @Override
     public List<RoomRate> findRoomRateForRoomType (String roomTypeName) throws RoomTypeNotFoundException {
         Query query = em.createQuery("SELECT r FROM RoomRate r WHERE r.roomType = :inRoomType"); 
         query.setParameter("inRoomType", roomTypeSessionBeanLocal.findRoomTypeByName(roomTypeName));
@@ -118,12 +123,14 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal {
         return query.getResultList();
     }
     
+    @Override
      public void updateRoomRateListInRoomType(Long roomRateId) throws RoomRateNotFoundException
     {
         RoomRate roomRate = findRoomRateById(roomRateId);
         roomRate.getRoomType().getRoomRates().add(roomRate);
     }
     
+    @Override
     public void updateRoomRate(RoomRate roomRate) throws RoomRateNotFoundException, RoomTypeNotFoundException 
     {
         if (roomRate != null && roomRate.getRoomRateId()!= null) 
@@ -156,6 +163,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal {
         }
     }
     
+    @Override
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException
     {
         RoomRate roomRateToRemove = findRoomRateById(roomRateId);
