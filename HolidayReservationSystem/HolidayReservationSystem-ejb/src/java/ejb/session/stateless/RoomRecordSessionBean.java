@@ -38,12 +38,12 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     }
 
     @Override
-    public RoomRecord createRoomRecord (RoomRecord newRoomRecord, Long roomTypeId) throws RoomNameExistsException, UnknownPersistenceException, RoomTypeNotFoundException 
+    public RoomRecord createRoomRecord (RoomRecord newRoomRecord, String roomTypeName) throws RoomNameExistsException, UnknownPersistenceException, RoomTypeNotFoundException 
     {
        
         try 
         {
-            RoomType roomType = roomTypeSessionBeanLocal.findRoomTypeById(roomTypeId);
+            RoomType roomType = roomTypeSessionBeanLocal.findRoomTypeByName(roomTypeName);
             
             if (!roomType.getTypeStatus().equals("disabled")) {
             em.persist(newRoomRecord); 
@@ -51,12 +51,12 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
             roomType.getRoomRecords().add(newRoomRecord);
             
             em.flush();
-            
+                      
             return newRoomRecord;
             } 
             else 
             { 
-                throw new RoomTypeNotFoundException("Room type for Room Type ID " + roomTypeId + " does not exist!"); 
+                throw new RoomTypeNotFoundException("Room type for Room Name " + roomTypeName + " does not exist!"); 
             }
             
         }
@@ -130,7 +130,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     @Override
     public List<RoomRecord> findAllAvailableRoomRecordsForRoomType (String roomTypeName) throws RoomTypeNotFoundException {
         
-        Query query = em.createQuery("SELECT r FROM RoomRecod r WHERE r.roomType = :inRoomType AND r.roomStatus = :inRoomStatus"); 
+        Query query = em.createQuery("SELECT r FROM RoomRecord r WHERE r.roomType = :inRoomType AND r.roomStatus = :inRoomStatus"); 
         query.setParameter("inRoomType", roomTypeSessionBeanLocal.findRoomTypeByName(roomTypeName)); 
         query.setParameter("inRoomStatus", "in use");
          

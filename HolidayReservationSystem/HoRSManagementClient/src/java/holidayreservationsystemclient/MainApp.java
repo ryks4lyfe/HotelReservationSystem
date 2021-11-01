@@ -48,7 +48,7 @@ public class MainApp {
     
     private Employee employee;
 
-    public MainApp(PartnerSessionBeanRemote partnerSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomRecordSessionBeanRemote roomRecordSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean) {
+    public MainApp(PartnerSessionBeanRemote partnerSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean, RoomRateSessionBeanRemote roomRateSessionBeanRemote, RoomRecordSessionBeanRemote roomRecordSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote) {
         this.partnerSessionBeanRemote = partnerSessionBeanRemote; 
         this.employeeSessionBeanRemote = employeeSessionBeanRemote; 
         this.guestSessionBeanRemote = guestSessionBeanRemote; 

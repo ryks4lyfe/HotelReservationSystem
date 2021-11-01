@@ -341,6 +341,8 @@ private Employee employee;
             roomType.setAmenities(input);
         }
         
+        System.out.println(roomType.getBed()); 
+        
         try 
         {
             roomTypeSessionBeanRemote.updateRoomType(roomType);
@@ -358,7 +360,7 @@ private Employee employee;
         String input;
         
         System.out.println("*** HoRS :: Hotel Management System :: Delete Room Type ***\n");
-        System.out.printf("Confirm Delete Room Type %s (Room Type ID: %d) (Enter 'Y' to Delete)> ", roomType.getTypeName(), roomType.getRoomTypeId());
+        System.out.println("Confirm Delete Room Type %s (Room Type ID: %d) (Enter 'Y' to Delete)> ");
         input = scanner.nextLine().trim();
         
         if(input.equals("Y"))
@@ -408,13 +410,13 @@ private Employee employee;
             System.out.print("Enter Room Number (room floor + room number)> ");
             newRoom.setRoomNum(scanner.nextInt());
             scanner.nextLine();
-            System.out.print("Enter Room Type Id> ");
-            Long roomTypeId = scanner.nextLong();
-            RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeById(roomTypeId);
+            System.out.print("Enter Room Type Name> ");
+            String roomTypeName = scanner.nextLine().trim();
+            RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName);
             System.out.println("Open room for room type: " + roomType.getTypeName()+ "\n");
             newRoom.setRoomStatus("not in use");
             try {
-            newRoom = roomRecordSessionBeanRemote.createRoomRecord(newRoom, roomTypeId);
+            newRoom = roomRecordSessionBeanRemote.createRoomRecord(newRoom, roomTypeName);
             }
             catch(RoomNameExistsException | UnknownPersistenceException ex)
             {

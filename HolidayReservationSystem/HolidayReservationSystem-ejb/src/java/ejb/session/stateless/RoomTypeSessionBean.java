@@ -114,7 +114,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
         }
         catch(NoResultException | NonUniqueResultException ex)
         {
-            throw new RoomTypeNotFoundException("Room Type Name " + roomTypeName + "does not exist!"); 
+            throw new RoomTypeNotFoundException("Room Type Name " + roomTypeName + " does not exist!"); 
         }
     }
     
