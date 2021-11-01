@@ -13,14 +13,17 @@ import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
+import entity.RoomRecord;
 import entity.WalkInReservation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 import util.exception.EmployeeNotFoundException;
 import util.exception.GuestNotFoundException;
 import util.exception.RoomTypeNotFoundException;
+import util.exception.UnallowedCheckInException;
 
 /**
  *
@@ -76,11 +79,11 @@ public class FrontOfficeModule {
                 if (response == 1) {
                     walkInSearchRoom();
                 } else if (response == 2) {
-                    walkInreserveRoom();
+                    //walkInreserveRoom();
                 } else if (response == 3) {
                     checkInGuest();
                 } else if (response == 4) {
-                    checkOutGuest();
+                    //checkOutGuest();
                 } else if (response == 5) {
                     break;
                 } else {
@@ -148,35 +151,24 @@ public class FrontOfficeModule {
             System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
             System.out.print("Enter Guest id>");
             guestId = scanner.nextLong();
-          
-            scanner.nextLine();
-        } catch (GuestNotFoundException | TimeException ex) {
+            
+            List<RoomRecord> roomsCheckedIn = guestSessionBeanRemote.checkInGuest(guestId);
+            System.out.println("Guest " + guestId.toString() + " checked in successfully to the following rooms: ");
+            for(RoomRecord room:roomsCheckedIn)
+            {
+                System.out.println("Room Number: " + room.getRoomNum());
+            }
+            
+            System.out.println("");
+            
+            
+        } catch (GuestNotFoundException | UnallowedCheckInException ex) {
             System.out.println("An error has occurred while checking in guest: " + guestId.toString() + ex.getMessage() + "\n");
         }
     }
-
-    public void checkOutGuest() {
-        try {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("*** HoRS :: Hotel Management System :: Check-out Guest ***\n");
-            System.out.print("Enter Guest id>");
-            Long guestId = scanner.nextLong();
-            List<Room> roomsCheckedOut = guestControllerRemote.checkOutGuest(guestId);
-            System.out.println("Guest " + guestId.toString() + " checked out successfully from the following rooms: ");
-            for (Room room : roomsCheckedOut) {
-                System.out.println("Room Number: " + room.getRoomNumber());
-            }
-            scanner.nextLine();
-        } catch (GuestNotFoundException | TimeException ex) {
-            System.out.println("An error has occurred while checking out guest: " + ex.getMessage() + "\n");
-        }
-    }
-
-    public boolean isWithinRange(Date startDate, Date endDate, Date checkInDate, Date checkOutDate) {
-        return !(startDate.after(checkInDate) || endDate.before(checkOutDate));
-    }
-
 }
 
-}
-}
+    
+
+
+

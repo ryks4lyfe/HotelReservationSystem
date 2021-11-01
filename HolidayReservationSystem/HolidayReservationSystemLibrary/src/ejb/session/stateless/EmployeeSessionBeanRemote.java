@@ -6,10 +6,13 @@
 package ejb.session.stateless;
 
 import entity.Employee;
+import entity.RoomRecord;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.EmployeeNotFoundException;
 import util.exception.FailedLoginException;
+import util.exception.GuestNotFoundException;
+import util.exception.UnallowedCheckInException;
 
 /**
  *
@@ -26,4 +29,6 @@ public interface EmployeeSessionBeanRemote {
     public Employee findEmployeeById(Long employeeId) throws EmployeeNotFoundException;
 
     public Long createEmployee(Employee e);
+    
+   
 }

@@ -26,6 +26,34 @@ import javax.persistence.Temporal;
 @Entity
 public class ReservationLineItem implements Serializable {
 
+    /**
+     * @return the roomType
+     */
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    /**
+     * @param roomType the roomType to set
+     */
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
+    }
+
+    /**
+     * @return the roomRecords
+     */
+    public List<RoomRecord> getRoomRecords() {
+        return roomRecords;
+    }
+
+    /**
+     * @param roomRecords the roomRecords to set
+     */
+    public void setRoomRecords(List<RoomRecord> roomRecords) {
+        this.roomRecords = roomRecords;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +88,7 @@ public class ReservationLineItem implements Serializable {
         this.roomRates = roomRates;
     }
 
+    
     
 
     public Long getReservationLineItemId() {
@@ -112,10 +141,10 @@ public class ReservationLineItem implements Serializable {
     }    
     
     public List<RoomRecord> getRoomRates() {
-        return roomRecords;
+        return getRoomRecords();
     }
 
     public void setRoomRates(List<RoomRecord> roomRates) {
-        this.roomRecords = roomRecords;
+        this.setRoomRecords(getRoomRecords());
     }
 }
