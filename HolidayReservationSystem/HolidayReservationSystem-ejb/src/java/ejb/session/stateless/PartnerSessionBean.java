@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.Partner;
+import entity.PartnerReservation;
+import entity.ReservationLineItem;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -88,5 +90,9 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         return query.getResultList();
     }
 
+    public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId) {
+        Partner p = em.find(Partner.class, partnerId);
+        return p.getPartnerReservations();
+    }
     
 }

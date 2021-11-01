@@ -31,7 +31,7 @@ public abstract class ReservationRecord implements Serializable {
     protected Date reservationDate;
     
     
-    //protected List<ReservationLineItem> reservationLineItems;
+    protected List<ReservationLineItem> reservationLineItems;
     
     public ReservationRecord() {
         //reservationLineItems = new ArrayList<>();
@@ -50,13 +50,13 @@ public abstract class ReservationRecord implements Serializable {
         this.reservationDate = reservationDate;
     }
 
-   // public List<ReservationLineItem> getReservationLineItems() {
-      //  return reservationLineItems;
-   // }
+    public List<ReservationLineItem> getReservationLineItems() {
+        return reservationLineItems;
+    }
 
-   // public void setReservationLineItems(List<ReservationLineItem> reservationLineItems) {
-    //    this.reservationLineItems = reservationLineItems;
-   // }
+    public void setReservationLineItems(List<ReservationLineItem> reservationLineItems) {
+        this.reservationLineItems = reservationLineItems;
+    }
     
     
 

@@ -23,7 +23,7 @@ public interface RoomTypeSessionBeanLocal {
 
     public List<RoomType> retrieveAllRoomTypes();
 
-    public RoomType createRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException;
+    public RoomType createRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException ;
 
     public RoomType findRoomTypeById(Long roomTypeId) throws RoomTypeNotFoundException;
 

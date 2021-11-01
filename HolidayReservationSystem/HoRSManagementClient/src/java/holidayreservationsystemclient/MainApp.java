@@ -159,10 +159,10 @@ public class MainApp {
                         hotelOpModule.menuHotelOperation();
 
                     } else if (employee.getEnum().toString().equals("GUEST_RELATION_OFFICER")) {
-                        //frontOfficeModule = new FrontOfficeModule(employeeSessionBeanRemote, guestSessionBeanRemote, partnerSessionBeanRemote,
-                        //roomControllerRemote, roomTypeControllerRemote,
-                        //roomRateControllerRemote, walkInReservationSessionBeanRemote, reservationControllerRemote, employee);
-                        //frontOfficeModule.menuFrontOffice();   
+                        frontOfficeModule = new FrontOfficeModule(employeeSessionBeanRemote, guestSessionBeanRemote, partnerSessionBeanRemote,
+                        roomRecordSessionBeanRemote, roomTypeSessionBeanRemote,
+                        roomRateSessionBeanRemote, reservationSessionBeanRemote, employee);
+                        frontOfficeModule.menuFrontOffice();   
                     }
 
                 } else if (response == 2) {
