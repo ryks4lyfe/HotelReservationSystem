@@ -30,7 +30,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal, RoomRateSe
     
     @EJB
     
-    private RoomTypeSessionBeanLocal roomTypeSessionBeanLocal; 
+    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote; 
 
     public RoomRateSessionBean() {
     }
@@ -40,7 +40,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal, RoomRateSe
     {
          try 
         {
-            RoomType roomType = roomTypeSessionBeanLocal.findRoomTypeById(roomTypeId);
+            RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeById(roomTypeId);
             
             if (!roomType.getTypeStatus().equals("disabled")) {
                 em.persist(newRoomRate); 
@@ -118,7 +118,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal, RoomRateSe
     @Override
     public List<RoomRate> findRoomRateForRoomType (String roomTypeName) throws RoomTypeNotFoundException {
         Query query = em.createQuery("SELECT r FROM RoomRate r WHERE r.roomType = :inRoomType"); 
-        query.setParameter("inRoomType", roomTypeSessionBeanLocal.findRoomTypeByName(roomTypeName));
+        query.setParameter("inRoomType", roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName));
         
         return query.getResultList();
     }
@@ -140,7 +140,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal, RoomRateSe
             if(roomRateToUpdate.getRoomRateId().equals(roomRate.getRoomRateId()))
             {
                 if (roomRate.getRoomType().getRoomTypeId() != null) {
-                    RoomType roomType = roomTypeSessionBeanLocal.findRoomTypeById(roomRate.getRoomType().getRoomTypeId());
+                    RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeById(roomRate.getRoomType().getRoomTypeId());
                     List<RoomRate> outdatedRoomTypeRoomRateList = roomRateToUpdate.getRoomType().getRoomRates(); 
                     outdatedRoomTypeRoomRateList.remove(roomRateToUpdate); //a.getBs().remove(b)
                     roomRateToUpdate.setRoomType(roomType);

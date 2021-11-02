@@ -6,8 +6,12 @@
 package ejb.session.stateless;
 
 import entity.ReservationLineItem;
+import entity.RoomRecord;
+import entity.RoomType;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.ReservationLineItemNotFoundException;
 
 /**
  *
@@ -18,6 +22,8 @@ public interface ReservationSessionBeanLocal {
 
     public List<ReservationLineItem> findReservationLineItemByRoomType(Long roomTypeId);
 
-    public ReservationLineItem findReservationLineItemById(Long reservationLineItemId);
+    public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException;
+    
+    public RoomRecord walkInSearch(RoomType roomType, Date checkIn, Date checkOut);
     
 }

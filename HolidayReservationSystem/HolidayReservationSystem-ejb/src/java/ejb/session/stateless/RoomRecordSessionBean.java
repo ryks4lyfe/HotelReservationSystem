@@ -4,6 +4,8 @@ import entity.ReservationLineItem;
 import entity.RoomRecord;
 import entity.RoomType;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -13,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.DeleteRoomRecordException;
+import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomNameExistsException;
 import util.exception.RoomRecordNotFoundException;
 import util.exception.RoomTypeNotFoundException;
@@ -29,10 +32,10 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     private EntityManager em;
     
     @EJB
-    private RoomTypeSessionBeanLocal roomTypeSessionBeanLocal; 
+    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote; 
     
     @EJB
-    private ReservationSessionBeanLocal reservationSessionBeanLocal; 
+    private ReservationSessionBeanRemote reservationSessionBeanRemote; 
 
     public RoomRecordSessionBean() {
     }
@@ -43,7 +46,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
        
         try 
         {
-            RoomType roomType = roomTypeSessionBeanLocal.findRoomTypeByName(roomTypeName);
+            RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName);
             
             if (!roomType.getTypeStatus().equals("disabled")) {
             em.persist(newRoomRecord); 
@@ -131,7 +134,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     public List<RoomRecord> findAllAvailableRoomRecordsForRoomType (String roomTypeName) throws RoomTypeNotFoundException {
         
         Query query = em.createQuery("SELECT r FROM RoomRecord r WHERE r.roomType = :inRoomType AND r.roomStatus = :inRoomStatus"); 
-        query.setParameter("inRoomType", roomTypeSessionBeanLocal.findRoomTypeByName(roomTypeName)); 
+        query.setParameter("inRoomType", roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName)); 
         query.setParameter("inRoomStatus", "in use");
          
         return query.getResultList(); 
@@ -141,7 +144,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     @Override
     public List<RoomRecord> findAllRoomRecordsForRoomType (String roomTypeName) throws RoomTypeNotFoundException {
         Query query = em.createQuery("SELECT r FROM RoomRecord r WHERE r.roomType = :inRoomType"); 
-        query.setParameter("inRoomType", roomTypeSessionBeanLocal.findRoomTypeByName(roomTypeName));
+        query.setParameter("inRoomType", roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName));
         
         return query.getResultList();
     }
@@ -165,14 +168,18 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
                 roomRecordToUpdate.setRoomStatus(roomRecord.getRoomStatus());
                 roomRecordToUpdate.setRoomNum(roomRecord.getRoomNum());
                 if (roomRecord.getRoomType().getRoomTypeId() != null) {
-                    RoomType roomType = roomTypeSessionBeanLocal.findRoomTypeById(roomRecord.getRoomType().getRoomTypeId());
+                    RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeById(roomRecord.getRoomType().getRoomTypeId());
                     List<RoomRecord> outdatedRoomTypeRoomRecordList = roomRecordToUpdate.getRoomType().getRoomRecords(); 
                     outdatedRoomTypeRoomRecordList.remove(roomRecordToUpdate); //a.getBs().remove(b)
                     roomRecordToUpdate.setRoomType(roomType);
                 }
                 if(roomRecord.getReservationLineItem() != null) {
-                    ReservationLineItem reservationLineItem = reservationSessionBeanLocal.findReservationLineItemById (roomRecord.getReservationLineItem().getReservationLineItemId()); 
-                    roomRecordToUpdate.setReservationLineItem(reservationLineItem);
+                    try {
+                        ReservationLineItem reservationLineItem = reservationSessionBeanRemote.findReservationLineItemById(roomRecord.getReservationLineItem().getReservationLineItemId());
+                        roomRecordToUpdate.setReservationLineItem(reservationLineItem);
+                    } catch (ReservationLineItemNotFoundException ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 }
             }
                 else

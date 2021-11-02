@@ -6,12 +6,16 @@
 package ejb.session.stateless;
 
 import entity.ReservationLineItem;
+import entity.RoomRecord;
+import entity.RoomType;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.exception.ReservationLineItemNotFoundException;
 
 /**
  *
@@ -22,28 +26,46 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     @PersistenceContext(unitName = "HolidayReservationSystem-ejbPU")
     private EntityManager em;
-    
+
     @EJB
-    private RoomTypeSessionBeanLocal roomTypeSessionBeanLocal; 
-    
-    private RoomRecordSessionBeanLocal roomRecordSessionBeanLocal; 
-    
-    private RoomRateSessionBeanLocal roomRateSessionBeanLocal; 
-    
-    
+    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
+
+    private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote;
+
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
 
     public ReservationSessionBean() {
     }
-    
-    public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) {
-        return new ReservationLineItem(); 
+
+    @Override
+    public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException {
+        ReservationLineItem r = em.find(ReservationLineItem.class, reservationLineItemId);
+        if (r != null) {
+            return r;
+        } else {
+            throw new ReservationLineItemNotFoundException("Error, Guest " + reservationLineItemId + " does not exist.");
+        }
     }
-    
 
     public List<ReservationLineItem> findReservationLineItemByRoomType(Long roomTypeId) {
-        return new ArrayList<ReservationLineItem>(); 
+        return new ArrayList<ReservationLineItem>();
     }
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    
+    public RoomRecord walkInSearch(RoomType roomType, Date checkIn, Date checkOut) {
+        for(RoomRecord r : roomType.getRoomRecords()) {
+            if(r.getRoomStatus().equals("available")) {
+                if(availableForBooking(r.getReservationLineItem().getCheckInDate(), r.getReservationLineItem().getCheckOutDate(), 
+                        checkIn, checkOut)) {
+                    return r;
+                }
+            }
+        }
+        return null;
+    } 
+    
+    
+    public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut) {
+        return !(startDate.after(checkIn) || endDate.before(checkOut));
+    }
 }

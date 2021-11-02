@@ -14,9 +14,12 @@ import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
 import entity.RoomRecord;
+import entity.RoomType;
 import entity.WalkInReservation;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -103,12 +106,31 @@ public class FrontOfficeModule {
             Date checkInDate;
             Date checkOutDate;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            
+            List<RoomRecord> availableRooms = new ArrayList<>();
+            List<BigDecimal> avialableRates = new ArrayList<>();
 
             System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
             System.out.print("Enter check in date (yyyy-MM-dd)> ");
             checkInDate = sdf.parse(scanner.nextLine());
             System.out.print("Enter check out Date (yyyy-MM-dd)> ");
             checkOutDate = sdf.parse(scanner.nextLine());
+            
+            List<RoomType> enabledRooms = roomTypeSessionBeanRemote.retrieveAllRoomTypes();
+            
+            for(RoomType r : enabledRooms) {
+                RoomRecord room = reservationSessionBeanRemote.walkInSearch(r, checkInDate, checkOutDate);
+                if(room != null) {
+                    availableRooms.add(room);
+                    //availableRates.add()
+                }
+            }
+            
+            //For loop print out details of room and amount
+            //Then ask for choice
+            //Then input the room data and amount to reserve
+            
+            
 
           
         } catch (ParseException ex) {

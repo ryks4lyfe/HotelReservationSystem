@@ -32,13 +32,13 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
     private EntityManager em;
     
     @EJB
-    private RoomRecordSessionBeanLocal roomRecordSessionBeanLocal; 
+    private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote; 
     
     @EJB
-    private RoomRateSessionBeanLocal roomRateSessionBeanLocal; 
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote; 
     
     @EJB
-    private ReservationSessionBeanLocal reservationSessionBeanLocal; 
+    private ReservationSessionBeanRemote reservationSessionBeanRemote; 
 
     public RoomTypeSessionBean() {
     }
@@ -153,15 +153,15 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
          
          String roomTypeName = roomTypeToRemove.getTypeName(); 
         
-        if(roomRecordSessionBeanLocal.findAllAvailableRoomRecordsForRoomType(roomTypeName).isEmpty() && roomTypeToRemove.getTypeStatus().equals("enabled") 
-                && roomRateSessionBeanLocal.findRoomRateForRoomType(roomTypeName).isEmpty() 
-                && reservationSessionBeanLocal.findReservationLineItemByRoomType(roomTypeId).isEmpty())
+        if(roomRecordSessionBeanRemote.findAllAvailableRoomRecordsForRoomType(roomTypeName).isEmpty() && roomTypeToRemove.getTypeStatus().equals("enabled") 
+                && roomRateSessionBeanRemote.findRoomRateForRoomType(roomTypeName).isEmpty() 
+                && reservationSessionBeanRemote.findReservationLineItemByRoomType(roomTypeId).isEmpty())
         {
             em.remove(roomTypeToRemove); //enabled and not in use = delete
         }
-        else if(roomTypeToRemove.getTypeStatus().equals("enabled") && !roomRecordSessionBeanLocal.findAllRoomRecordsForRoomType(roomTypeName).isEmpty()
-                && !roomRateSessionBeanLocal.findRoomRateForRoomType(roomTypeName).isEmpty()
-                && !reservationSessionBeanLocal.findReservationLineItemByRoomType(roomTypeId).isEmpty()) //enabled and in use = disabled
+        else if(roomTypeToRemove.getTypeStatus().equals("enabled") && !roomRecordSessionBeanRemote.findAllRoomRecordsForRoomType(roomTypeName).isEmpty()
+                && !roomRateSessionBeanRemote.findRoomRateForRoomType(roomTypeName).isEmpty()
+                && !reservationSessionBeanRemote.findReservationLineItemByRoomType(roomTypeId).isEmpty()) //enabled and in use = disabled
         {
             roomTypeToRemove.setTypeStatus("disabled");
         }
