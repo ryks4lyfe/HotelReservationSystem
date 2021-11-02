@@ -108,7 +108,7 @@ public class FrontOfficeModule {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             
             List<RoomRecord> availableRooms = new ArrayList<>();
-            List<BigDecimal> avialableRates = new ArrayList<>();
+            List<BigDecimal> availableRates = new ArrayList<>();
 
             System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
             System.out.print("Enter check in date (yyyy-MM-dd)> ");
@@ -122,11 +122,27 @@ public class FrontOfficeModule {
                 RoomRecord room = reservationSessionBeanRemote.walkInSearch(r, checkInDate, checkOutDate);
                 if(room != null) {
                     availableRooms.add(room);
-                    //availableRates.add()
+                    availableRates.add(reservationSessionBeanRemote.walkInPrice(r, checkInDate, checkOutDate));
                 }
             }
             
-            //For loop print out details of room and amount
+            for(int i = 0; i < availableRooms.size()-1; i++) {
+                RoomType rt = availableRooms.get(i).getRoomType();
+                BigDecimal price = availableRates.get(i);
+   
+                System.out.println("Room Type: " + rt.getTypeName());
+                System.out.println("Room Size: " + rt.getSize());
+                System.out.println("Bed Number: " + rt.getBed());
+                System.out.println("Amenities: " + rt.getAmenities());
+                System.out.println("Capacity: " +rt.getCapacity());
+                System.out.println("");
+                System.out.println("Room Cost: " + price);
+                System.out.println("-------------------------------------------");
+                System.out.println("");
+                
+            }
+            
+            
             //Then ask for choice
             //Then input the room data and amount to reserve
             

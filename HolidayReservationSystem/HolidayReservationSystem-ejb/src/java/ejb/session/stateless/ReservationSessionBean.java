@@ -6,8 +6,11 @@
 package ejb.session.stateless;
 
 import entity.ReservationLineItem;
+import entity.RoomRate;
 import entity.RoomRecord;
 import entity.RoomType;
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +18,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import util.exception.ReservationLineItemNotFoundException;
 
 /**
@@ -47,11 +51,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
+    @Override
     public List<ReservationLineItem> findReservationLineItemByRoomType(Long roomTypeId) {
         return new ArrayList<ReservationLineItem>();
     }
 
     
+    @Override
     public RoomRecord walkInSearch(RoomType roomType, Date checkIn, Date checkOut) {
         for(RoomRecord r : roomType.getRoomRecords()) {
             if(r.getRoomStatus().equals("available")) {
@@ -62,9 +68,28 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             }
         }
         return null;
-    } 
+    }
+    
+    @Override
+    public BigDecimal walkInPrice(RoomType roomType, Date checkInDate,Date checkOutDate) {
+        Long amount = new Long(0);
+        RoomType rt = em.find(RoomType.class, roomType);
+        for(RoomRate rr : rt.getRoomRates()) {
+            if(rr.getRateName().equals("PublishedRate")) {
+                BigDecimal price = rr.getRatePerNight();
+                if(checkOutDate.getTime()!= checkInDate.getTime()) {
+                Long daysBetween = checkOutDate.getTime() - checkInDate.getTime();
+                amount = price.longValue() * daysBetween;
+                } else {
+                    amount = price.longValue();
+                }
+            }
+        }
+        return BigDecimal.valueOf(amount.longValue());
+    }
     
     
+    @Override
     public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut) {
         return !(startDate.after(checkIn) || endDate.before(checkOut));
     }
