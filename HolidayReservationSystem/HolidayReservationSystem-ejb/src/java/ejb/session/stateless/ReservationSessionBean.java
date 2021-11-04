@@ -5,10 +5,12 @@
  */
 package ejb.session.stateless;
 
+import entity.Employee;
 import entity.ReservationLineItem;
 import entity.RoomRate;
 import entity.RoomRecord;
 import entity.RoomType;
+import entity.WalkInReservation;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -93,4 +95,15 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut) {
         return !(startDate.after(checkIn) || endDate.before(checkOut));
     }
+    
+    @Override
+    public WalkInReservation createWalkInReservation(WalkInReservation w, Long eId) {
+        Employee e = em.find(Employee.class, eId);
+        w.setEmployee(e);
+        w.setReservationDate(new Date());
+        e.getWalkInReservations().add(w);
+        em.persist(w);
+        em.flush();
+        return w;
+    } 
 }

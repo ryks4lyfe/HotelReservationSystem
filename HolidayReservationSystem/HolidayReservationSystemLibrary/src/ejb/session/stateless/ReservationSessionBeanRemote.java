@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.ReservationLineItem;
 import entity.RoomRecord;
 import entity.RoomType;
+import entity.WalkInReservation;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -29,4 +30,6 @@ public interface ReservationSessionBeanRemote {
     public BigDecimal walkInPrice(RoomType roomType, Date checkInDate, Date checkOutDate);
 
     public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut);
+
+    public WalkInReservation createWalkInReservation(WalkInReservation w, Long eId);
 }

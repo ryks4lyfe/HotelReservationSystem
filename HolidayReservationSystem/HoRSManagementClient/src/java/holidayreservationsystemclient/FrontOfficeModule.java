@@ -81,7 +81,7 @@ public class FrontOfficeModule {
 
                 if (response == 1) {
                     walkInSearchRoom();
-                } else if (response == 2) {
+                    //} else if (response == 2) {
                     //walkInreserveRoom();
                 } else if (response == 3) {
                     checkInGuest();
@@ -106,81 +106,77 @@ public class FrontOfficeModule {
             Date checkInDate;
             Date checkOutDate;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            
-            List<RoomRecord> availableRooms = new ArrayList<>();
-            List<BigDecimal> availableRates = new ArrayList<>();
+            boolean continueReservation = true;
 
             System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
             System.out.print("Enter check in date (yyyy-MM-dd)> ");
             checkInDate = sdf.parse(scanner.nextLine());
             System.out.print("Enter check out Date (yyyy-MM-dd)> ");
             checkOutDate = sdf.parse(scanner.nextLine());
-            
-            List<RoomType> enabledRooms = roomTypeSessionBeanRemote.retrieveAllRoomTypes();
-            
-            for(RoomType r : enabledRooms) {
-                RoomRecord room = reservationSessionBeanRemote.walkInSearch(r, checkInDate, checkOutDate);
-                if(room != null) {
-                    availableRooms.add(room);
-                    availableRates.add(reservationSessionBeanRemote.walkInPrice(r, checkInDate, checkOutDate));
-                }
-            }
-            
-            for(int i = 0; i < availableRooms.size()-1; i++) {
-                RoomType rt = availableRooms.get(i).getRoomType();
-                BigDecimal price = availableRates.get(i);
-   
-                System.out.println("Room Type: " + rt.getTypeName());
-                System.out.println("Room Size: " + rt.getSize());
-                System.out.println("Bed Number: " + rt.getBed());
-                System.out.println("Amenities: " + rt.getAmenities());
-                System.out.println("Capacity: " +rt.getCapacity());
-                System.out.println("");
-                System.out.println("Room Cost: " + price);
-                System.out.println("-------------------------------------------");
-                System.out.println("");
-                
-            }
-            
-            
-            //Then ask for choice
-            //Then input the room data and amount to reserve
-            
-            
 
-          
+            while (continueReservation == true) {
+                List<RoomRecord> availableRooms = new ArrayList<>();
+                List<BigDecimal> availableRates = new ArrayList<>();
+                List<RoomType> enabledRooms = roomTypeSessionBeanRemote.retrieveAllRoomTypes();
+
+                for (RoomType r : enabledRooms) {
+                    RoomRecord room = reservationSessionBeanRemote.walkInSearch(r, checkInDate, checkOutDate);
+                    if (room != null) {
+                        availableRooms.add(room);
+                        availableRates.add(reservationSessionBeanRemote.walkInPrice(r, checkInDate, checkOutDate));
+                    }
+                }
+
+                if (availableRooms.size() != 0) {
+
+                    for (int i = 0; i < availableRooms.size() - 1; i++) {
+                        RoomType rt = availableRooms.get(i).getRoomType();
+                        BigDecimal price = availableRates.get(i);
+                        System.out.println("Option " + i + 1);
+                        System.out.println("Room Type: " + rt.getTypeName());
+                        System.out.println("Room Size: " + rt.getSize());
+                        System.out.println("Bed Number: " + rt.getBed());
+                        System.out.println("Amenities: " + rt.getAmenities());
+                        System.out.println("Capacity: " + rt.getCapacity());
+                        System.out.println("");
+                        System.out.println("Room Cost: " + price);
+                        System.out.println("-------------------------------------------");
+                        System.out.println("");
+
+                    }
+
+                    System.out.println("Enter option for reservation : ");
+                    Integer option = scanner.nextInt();
+                    while (option < 1 || option > availableRooms.size()) {
+                        if (option < 1 || option > availableRooms.size()) {
+                            System.out.println("Please input a proper option");
+                        } else {
+
+                        }
+                    }
+
+                } else {
+                    continueReservation = false;
+                    System.out.println("No more rooms left on the given dates.");
+                }
+
+            }
         } catch (ParseException ex) {
             System.out.println("Invalid date input!\n");
         }
     }
 
-    public void reserveRoom() {
+    public void reserveRoom(Date checkInDate, Date checkOutDate, RoomRecord room, BigDecimal amount) {
 
         WalkInReservation walkInReservation = new WalkInReservation();
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date checkInDate;
-        Date checkOutDate;
-
-        System.out.println("*** HoRS :: Hotel Management System :: Walk-in Reserve Room ***\n");
-        try {
-            System.out.print("Enter check in date (yyyy-MM-dd)> ");
-            checkInDate = sdf.parse(scanner.nextLine());
-            System.out.print("Enter check out date (yyyy-MM-dd)> ");
-            checkOutDate = sdf.parse(scanner.nextLine());
-            System.out.print("Enter Room Type> ");
-            String roomType = scanner.nextLine().trim();
-            System.out.print("Enter Number of Room> ");
-            Integer numberOfRooms = scanner.nextInt();
-
-            
-        } catch (ParseException ex) {
-            System.out.println("Invalid Date Format entered!" + "\n");
-        //} catch (RoomTypeNotFoundException | EmployeeNotFoundException ex) {
-            System.out.println("An error ocurred when reserving room: " + ex.getMessage() + "\n");
-        }
+        
+        walkInReservation = reservationSessionBeanRemote.createWalkInReservation(walkInReservation, employee.getEmployeeId());
+        //ReservationLineItem reservation = 
     }
+        
 
     public void checkInGuest() {
         Long guestId = null;
@@ -189,24 +185,17 @@ public class FrontOfficeModule {
             System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
             System.out.print("Enter Guest id>");
             guestId = scanner.nextLong();
-            
+
             List<RoomRecord> roomsCheckedIn = guestSessionBeanRemote.checkInGuest(guestId);
             System.out.println("Guest " + guestId.toString() + " checked in successfully to the following rooms: ");
-            for(RoomRecord room:roomsCheckedIn)
-            {
+            for (RoomRecord room : roomsCheckedIn) {
                 System.out.println("Room Number: " + room.getRoomNum());
             }
-            
+
             System.out.println("");
-            
-            
+
         } catch (GuestNotFoundException | UnallowedCheckInException ex) {
             System.out.println("An error has occurred while checking in guest: " + guestId.toString() + ex.getMessage() + "\n");
         }
     }
 }
-
-    
-
-
-
