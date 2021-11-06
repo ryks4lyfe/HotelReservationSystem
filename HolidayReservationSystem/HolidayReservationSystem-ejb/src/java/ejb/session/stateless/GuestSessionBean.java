@@ -124,23 +124,21 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
 
                             //Nothing to worry if after 2pm
                             if (dateFormat.parse(dateFormat.format(currentDate)).equals(dateFormat.parse("14:00"))) {
-                                for (RoomRecord roomToCheckIn : r.getRoomRecords()) {
-                                    roomToCheckIn.setRoomStatus("occupied");
-                                    roomToCheckIn.setReservationLineItem(r);
-                                    roomsCheckedIn.add(roomToCheckIn);
-                                }
-                            } else {
-                                //If before 2pm, check if reserved
-                                for (RoomRecord roomToCheckIn : r.getRoomRecords()) {
-                                    if (roomToCheckIn.getRoomStatus().equals("reserved")) {
-                                        roomToCheckIn.setRoomStatus("occupied");
-                                        roomToCheckIn.setReservationLineItem(r);
-                                        roomsCheckedIn.add(roomToCheckIn);
-                                    }
-                                }
+                                RoomRecord roomToCheckIn = r.getRoom();
+                                roomToCheckIn.setRoomStatus("occupied");
+                                //roomToCheckIn.setReservationLineItem(r);
+                                roomsCheckedIn.add(roomToCheckIn);
                             }
                         } else {
-                            throw new UnallowedCheckInException("Guest Check in at 2pm on the day of arrival only allowed if a room is available before then.");
+                            //If before 2pm, check if reserved
+                            RoomRecord roomToCheckIn = r.getRoom();
+                            if (roomToCheckIn.getRoomStatus().equals("reserved")) {
+                                roomToCheckIn.setRoomStatus("occupied");
+                                //roomToCheckIn.setReservationLineItem(r);
+                                roomsCheckedIn.add(roomToCheckIn);
+                            } else {
+                                throw new UnallowedCheckInException("Guest Check in at 2pm on the day of arrival only allowed if a room is available before then.");
+                            }
                         }
                     } catch (ParseException ex) {
                         System.out.println("Invalid Date Format entered!" + "\n");
@@ -154,5 +152,4 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
         }
     }
 
-    
 }

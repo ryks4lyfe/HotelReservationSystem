@@ -59,30 +59,31 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return new ArrayList<ReservationLineItem>();
     }
 
-    
     @Override
     public RoomRecord walkInSearch(RoomType roomType, Date checkIn, Date checkOut) {
-        for(RoomRecord r : roomType.getRoomRecords()) {
-            if(r.getRoomStatus().equals("available")) {
-                if(availableForBooking(r.getReservationLineItem().getCheckInDate(), r.getReservationLineItem().getCheckOutDate(), 
-                        checkIn, checkOut)) {
-                    return r;
+        for (RoomRecord r : roomType.getRoomRecords()) {
+            if (r.getRoomStatus().equals("available")) {
+                for (ReservationLineItem lineItem : r.getReservationLineItem()) {
+                    if (availableForBooking(lineItem.getCheckInDate(), lineItem.getCheckOutDate(),
+                            checkIn, checkOut)) {
+                        return r;
+                    }
                 }
             }
         }
         return null;
     }
-    
+
     @Override
-    public BigDecimal walkInPrice(RoomType roomType, Date checkInDate,Date checkOutDate) {
+    public BigDecimal walkInPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
         Long amount = new Long(0);
         RoomType rt = em.find(RoomType.class, roomType);
-        for(RoomRate rr : rt.getRoomRates()) {
-            if(rr.getRoomRateType().equals(PUBLISHED)) {
+        for (RoomRate rr : rt.getRoomRates()) {
+            if (rr.getRoomRateType().equals(PUBLISHED)) {
                 BigDecimal price = rr.getRatePerNight();
-                if(checkOutDate.getTime()!= checkInDate.getTime()) {
-                Long daysBetween = checkOutDate.getTime() - checkInDate.getTime();
-                amount = price.longValue() * daysBetween;
+                if (checkOutDate.getTime() != checkInDate.getTime()) {
+                    Long daysBetween = checkOutDate.getTime() - checkInDate.getTime();
+                    amount = price.longValue() * daysBetween;
                 } else {
                     amount = price.longValue();
                 }
@@ -90,15 +91,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
         return BigDecimal.valueOf(amount.longValue());
     }
-    
-    
+
     @Override
     public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut) {
         return !(startDate.after(checkIn) || endDate.before(checkOut));
     }
-    
+
     @Override
     public WalkInReservation createWalkInReservation(WalkInReservation w, Long eId) {
-        
-    } 
+        return null;
+    }
 }
