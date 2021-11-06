@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,8 +31,8 @@ public class PartnerReservation extends ReservationRecord implements Serializabl
         
     }
 
-    public PartnerReservation(Partner partner, Date reservationDate) {
-        super(reservationDate);
+    public PartnerReservation(Partner partner, Date reservationDate,Integer totalLineItem, BigDecimal totalAmount) {
+        super(reservationDate, totalLineItem, totalAmount);
         this.partner = partner;
     }
     

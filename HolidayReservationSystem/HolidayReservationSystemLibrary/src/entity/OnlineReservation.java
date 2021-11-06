@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,8 +31,8 @@ public class OnlineReservation extends ReservationRecord implements Serializable
         super();
     }
 
-    public OnlineReservation(Guest guest, Date reservationDate) {
-        super(reservationDate);
+    public OnlineReservation(Guest guest, Date reservationDate,Integer totalLineItem, BigDecimal totalAmount) {
+        super(reservationDate, totalLineItem, totalAmount);
         this.guest = guest;
     }
 

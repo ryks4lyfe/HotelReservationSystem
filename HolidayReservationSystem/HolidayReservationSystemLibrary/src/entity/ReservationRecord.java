@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,21 +26,39 @@ public abstract class ReservationRecord implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable=false)
+    @Column(nullable = false)
     protected Long reservationId;
-    @Column(nullable=false)
+    @Column(nullable = false)
     protected Date reservationDate;
-    
-    
+    protected Integer totalLineItem;
+    protected BigDecimal totalAmount;
+
     protected List<ReservationLineItem> reservationLineItems;
-    
+
     public ReservationRecord() {
-        //reservationLineItems = new ArrayList<>();
+        reservationLineItems = new ArrayList<>();
     }
-    
-    public ReservationRecord(Date reservationDate) {
-        //this();
+
+    public ReservationRecord(Date reservationDate, Integer totalLineItem, BigDecimal totalAmount) {
         this.reservationDate = reservationDate;
+        this.totalLineItem = totalLineItem;
+        this.totalAmount = totalAmount;
+    }
+
+    public Integer getTotalLineItem() {
+        return totalLineItem;
+    }
+
+    public void setTotalLineItem(Integer totalLineItem) {
+        this.totalLineItem = totalLineItem;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public Date getReservationDate() {
@@ -57,8 +76,6 @@ public abstract class ReservationRecord implements Serializable {
     public void setReservationLineItems(List<ReservationLineItem> reservationLineItems) {
         this.reservationLineItems = reservationLineItems;
     }
-    
-    
 
     public Long getReservationId() {
         return reservationId;
@@ -92,5 +109,5 @@ public abstract class ReservationRecord implements Serializable {
     public String toString() {
         return "entity.ReservationRecord[ id=" + reservationId + " ]";
     }
-    
+
 }

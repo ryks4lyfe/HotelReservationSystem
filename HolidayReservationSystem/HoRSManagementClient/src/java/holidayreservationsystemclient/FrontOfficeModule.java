@@ -5,6 +5,7 @@
  */
 package holidayreservationsystemclient;
 
+import ejb.session.statefull.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.GuestSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
@@ -41,6 +42,8 @@ public class FrontOfficeModule {
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
+    
+    private WalkInReservationSessionBeanRemote walkInReservationBeanRemote;
 
     private Employee employee;
 
@@ -48,7 +51,10 @@ public class FrontOfficeModule {
 
     }
 
-    public FrontOfficeModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, GuestSessionBeanRemote guestSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomRecordSessionBeanRemote roomRecordSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, Employee employee) {
+    public FrontOfficeModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, GuestSessionBeanRemote guestSessionBeanRemote,
+            PartnerSessionBeanRemote partnerSessionBeanRemote, RoomRecordSessionBeanRemote roomRecordSessionBeanRemote,
+            RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote,
+            ReservationSessionBeanRemote reservationSessionBeanRemote, WalkInReservationSessionBeanRemote walkInReservationBeanRemote, Employee employee) {
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.guestSessionBeanRemote = guestSessionBeanRemote;
         this.partnerSessionBeanRemote = partnerSessionBeanRemote;
@@ -56,6 +62,7 @@ public class FrontOfficeModule {
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
+        this.walkInReservationBeanRemote = walkInReservationBeanRemote;
         this.employee = employee;
     }
 
@@ -151,7 +158,7 @@ public class FrontOfficeModule {
                         if (option < 1 || option > availableRooms.size()) {
                             System.out.println("Please input a proper option");
                         } else {
-
+                            
                         }
                     }
 

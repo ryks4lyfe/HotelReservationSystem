@@ -44,8 +44,7 @@ public class RoomType implements Serializable {
     @Column(nullable = false)
     private String typeStatus; 
     
-    @OneToMany (mappedBy="roomType")
-    private List<ReservationLineItem> reservationLineItems;
+    
     @OneToMany (mappedBy = "roomType")
     private List<RoomRecord> roomRecords; 
     @OneToMany (mappedBy = "roomType")
@@ -53,12 +52,12 @@ public class RoomType implements Serializable {
     
     
     public RoomType() {
-        reservationLineItems = new ArrayList<>();
+        
         roomRecords = new ArrayList<>();
         roomRates = new ArrayList<>();        
     }
 
-    public RoomType(String typeName, String description, String size, String bed, String amenities, String capacity, String typeStatus, List<ReservationLineItem> reservationLineItems, List<RoomRecord> roomRecords, List<RoomRate> roomRates) {
+    public RoomType(String typeName, String description, String size, String bed, String amenities, String capacity, String typeStatus, List<RoomRecord> roomRecords, List<RoomRate> roomRates) {
         this(); 
         this.typeName = typeName;
         this.description = description;
@@ -67,7 +66,7 @@ public class RoomType implements Serializable {
         this.amenities = amenities;
         this.capacity = capacity;
         this.typeStatus = typeStatus;
-        this.reservationLineItems = reservationLineItems;
+        
         this.roomRecords = roomRecords;
         this.roomRates = roomRates;
     }
@@ -139,14 +138,6 @@ public class RoomType implements Serializable {
 
     public void setTypeStatus(String typeStatus) {
         this.typeStatus = typeStatus;
-    }
-    
-    public List<ReservationLineItem> getReservationLineItems() {
-        return reservationLineItems;
-    }
-
-    public void setReservationLineItems(List<ReservationLineItem> reservationLineItems) {
-        this.reservationLineItems = reservationLineItems;
     }
 
     public List<RoomRecord> getRoomRecords() {

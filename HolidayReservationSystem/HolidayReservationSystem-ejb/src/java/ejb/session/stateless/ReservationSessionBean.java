@@ -21,6 +21,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import static util.enumeration.RoomRateTypeEnum.PUBLISHED;
 import util.exception.ReservationLineItemNotFoundException;
 
 /**
@@ -77,7 +78,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         Long amount = new Long(0);
         RoomType rt = em.find(RoomType.class, roomType);
         for(RoomRate rr : rt.getRoomRates()) {
-            if(rr.getRateName().equals("PublishedRate")) {
+            if(rr.getRoomRateType().equals(PUBLISHED)) {
                 BigDecimal price = rr.getRatePerNight();
                 if(checkOutDate.getTime()!= checkInDate.getTime()) {
                 Long daysBetween = checkOutDate.getTime() - checkInDate.getTime();
@@ -98,12 +99,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     
     @Override
     public WalkInReservation createWalkInReservation(WalkInReservation w, Long eId) {
-        Employee e = em.find(Employee.class, eId);
-        w.setEmployee(e);
-        w.setReservationDate(new Date());
-        e.getWalkInReservations().add(w);
-        em.persist(w);
-        em.flush();
-        return w;
+        
     } 
 }

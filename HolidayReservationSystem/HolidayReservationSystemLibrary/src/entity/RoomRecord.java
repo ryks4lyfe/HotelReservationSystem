@@ -6,6 +6,8 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -28,24 +31,28 @@ public class RoomRecord implements Serializable {
     private Integer roomNum; 
     private String roomStatus; 
     
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private ReservationLineItem reservationLineItem;
+    
+    @OneToMany(mappedBy = "room")
+    private List<ReservationLineItem> reservationLineItem;
+    
     @ManyToOne
     @JoinColumn(nullable = false)
     private RoomType roomType; 
     
 
     public RoomRecord() {
+        reservationLineItem = new ArrayList<>();
     }
 
-    public RoomRecord(Long roomRecordId, Integer roomNum, String roomStatus, ReservationLineItem reservationLineItem, RoomType roomType) {
+    public RoomRecord(Long roomRecordId, Integer roomNum, String roomStatus, RoomType roomType) {
+        this();
         this.roomRecordId = roomRecordId;
         this.roomNum = roomNum;
         this.roomStatus = roomStatus;
-        this.reservationLineItem = reservationLineItem;
         this.roomType = roomType;
     }
+
+    
     
 
     public Long getRoomRecordId() {
@@ -97,13 +104,14 @@ public class RoomRecord implements Serializable {
         this.roomStatus = roomStatus;
     }
 
-    public ReservationLineItem getReservationLineItem() {
+    public List<ReservationLineItem> getReservationLineItem() {
         return reservationLineItem;
     }
 
-    public void setReservationLineItem(ReservationLineItem reservationLineItem) {
+    public void setReservationLineItem(List<ReservationLineItem> reservationLineItem) {
         this.reservationLineItem = reservationLineItem;
     }
+
 
     public RoomType getRoomType() {
         return roomType;

@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,60 +37,45 @@ public class ReservationLineItem implements Serializable {
     private Date checkInDate; 
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date checkOutDate; 
+    private BigDecimal amount;
     
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private RoomType roomType;
-    @OneToMany(mappedBy = "reservationLineItem")
-    @JoinColumn(nullable = false)
-    private List<RoomRecord> roomRecords; 
-    @OneToMany
-    @JoinColumn(nullable = false)
-    private List<RoomRate> roomRates; 
-
+    private RoomRecord room;
+    
 
     public ReservationLineItem() {
-        roomRecords = new ArrayList<>(); 
-        roomRates = new ArrayList<>(); 
+        
     }
 
-    public ReservationLineItem(Long reservationLineItemId, Date checkInDate, Date checkOutDate, RoomType roomType, List<RoomRecord> roomRecords, List<RoomRate> roomRates) {
+    public ReservationLineItem(Long reservationLineItemId, Date checkInDate, Date checkOutDate, BigDecimal amount, RoomRecord room) {
         this.reservationLineItemId = reservationLineItemId;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
-        this.roomType = roomType;
-        this.roomRecords = roomRecords;
-        this.roomRates = roomRates;
+        this.amount = amount;
+        this.room = room;
     }
 
+    public RoomRecord getRoom() {
+        return room;
+    }
+
+    public void setRoom(RoomRecord room) {
+        this.room = room;
+    }
+
+
     
+
+     public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
      /**
      * @return the roomType
      */
-    public RoomType getRoomType() {
-        return roomType;
-    }
-
-    /**
-     * @param roomType the roomType to set
-     */
-    public void setRoomType(RoomType roomType) {
-        this.roomType = roomType;
-    }
-
-    /**
-     * @return the roomRecords
-     */
-    public List<RoomRecord> getRoomRecords() {
-        return roomRecords;
-    }
-
-    /**
-     * @param roomRecords the roomRecords to set
-     */
-    public void setRoomRecords(List<RoomRecord> roomRecords) {
-        this.roomRecords = roomRecords;
-    }
 
     public Long getReservationLineItemId() {
         return reservationLineItemId;
@@ -140,11 +126,5 @@ public class ReservationLineItem implements Serializable {
         this.checkOutDate = checkOutDate;
     }    
     
-    public List<RoomRecord> getRoomRates() {
-        return getRoomRecords();
-    }
-
-    public void setRoomRates(List<RoomRecord> roomRates) {
-        this.setRoomRecords(getRoomRecords());
-    }
+    
 }

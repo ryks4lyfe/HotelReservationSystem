@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,8 +32,8 @@ public class WalkInReservation extends ReservationRecord implements Serializable
         super();
     }
 
-    public WalkInReservation(Employee employee, Date reservationDate) {
-        super(reservationDate);
+    public WalkInReservation(Employee employee, Date reservationDate, Integer totalLineItem, BigDecimal totalAmount) {
+        super(reservationDate, totalLineItem, totalAmount);
         this.employee = employee;
     }
 

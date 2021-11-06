@@ -5,6 +5,7 @@
  */
 package holidayreservationsystemclient;
 
+import ejb.session.statefull.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.GuestSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
@@ -36,6 +37,9 @@ import util.exception.UpdateRoomTypeException;
 public class Main {
 
     @EJB
+    private static WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
+
+    @EJB
     private static RoomTypeSessionBeanRemote roomTypeSessionBean;
 
     @EJB
@@ -57,10 +61,16 @@ public class Main {
     private static EmployeeSessionBeanRemote employeeSessionBeanRemote;
     
     
+    
+    
+    
+    
 
     
     public static void main(String[] args)  {
-        MainApp mainApp = new MainApp(partnerSessionBeanRemote, employeeSessionBeanRemote, guestSessionBeanRemote, reservationSessionBean, roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean);
+        MainApp mainApp = new MainApp(partnerSessionBeanRemote, employeeSessionBeanRemote,
+                guestSessionBeanRemote, reservationSessionBean, roomRateSessionBean,
+                roomRecordSessionBean, roomTypeSessionBean, walkInReservationSessionBeanRemote);
         mainApp.runApp();
   
          try {
