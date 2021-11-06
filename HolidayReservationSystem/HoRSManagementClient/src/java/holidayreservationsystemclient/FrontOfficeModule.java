@@ -43,7 +43,7 @@ public class FrontOfficeModule {
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
-    
+
     private WalkInReservationSessionBeanRemote walkInReservationBeanRemote;
 
     private Employee employee;
@@ -115,9 +115,6 @@ public class FrontOfficeModule {
             Date checkOutDate;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             boolean continueReservation = true;
-            
-            List<ReservationLineItem> chosenReservation = new ArrayList<>();
-            
 
             System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
             System.out.print("Enter check in date (yyyy-MM-dd)> ");
@@ -131,8 +128,10 @@ public class FrontOfficeModule {
                 List<RoomType> enabledRooms = roomTypeSessionBeanRemote.retrieveAllRoomTypes();
 
                 for (RoomType r : enabledRooms) {
+                    //Check each room type for an available room 
                     RoomRecord room = reservationSessionBeanRemote.walkInSearch(r, checkInDate, checkOutDate);
                     if (room != null) {
+                        //if room is available for a room type, add the RoomRecord and the rates
                         availableRooms.add(room);
                         availableRates.add(reservationSessionBeanRemote.walkInPrice(r, checkInDate, checkOutDate));
                     }
@@ -140,9 +139,11 @@ public class FrontOfficeModule {
 
                 if (availableRooms.size() != 0) {
 
+                    //For each avaialble roomType, display the room record and rate details
                     for (int i = 0; i < availableRooms.size() - 1; i++) {
                         RoomType rt = availableRooms.get(i).getRoomType();
                         BigDecimal price = availableRates.get(i);
+                        System.out.println("-------------------------------------------");
                         System.out.println("Option " + i + 1);
                         System.out.println("Room Type: " + rt.getTypeName());
                         System.out.println("Room Size: " + rt.getSize());
@@ -156,38 +157,53 @@ public class FrontOfficeModule {
 
                     }
 
+                    //The chosen room will be instantiated as a line item and added into the list
                     System.out.println("Enter option for reservation : ");
                     Integer option = scanner.nextInt();
-                    while (option < 1 || option > availableRooms.size()) {
-                        if (option < 1 || option > availableRooms.size()) {
-                            System.out.println("Please input a proper option");
-                        } else {
-                            chosenReservation.add(new ReservationLineItem())
-                        }
-                    }
 
+                    if (option < 1 || option > availableRooms.size()) {
+                        System.out.println("Please input a proper option");
+                    } else {
+                        walkInReservationBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate, availableRates.get(option),
+                                availableRooms.get(option)));
+                    }
                 } else {
-                    continueReservation = false;
+
                     System.out.println("No more rooms left on the given dates.");
+                }
+                System.out.println("--------------------------------------------");
+                System.out.println("1: Add more items");
+                System.out.println("2: Checkout");
+                System.out.println("3: Quit");
+                Integer response = scanner.nextInt();
+
+                if (response == 1) {
+                    //Continue while loop to add more item
+                    continueReservation = true;
+                } else if (response == 2) {
+                    //If cart not empty, proceed to checkout and end loop
+                    if (!walkInReservationBeanRemote.getLineItems().isEmpty()) {
+                        walkInReservationBeanRemote.doCheckout(employee);
+                        continueReservation = false;
+                        walkInReservationBeanRemote.resetCart();
+                        System.out.println("CheckOut Completed");
+                    } else {
+                        //Cart empty, continue while loop to add more items
+                        System.out.println("Cart is Empty, please add items");
+                        continueReservation = true;
+                    }
+                } else if (response == 3) {
+                    //Quit, remove all item from cart and disassociate
+                    continueReservation = false;
+                    walkInReservationBeanRemote.removeAllItemsFromCart();
                 }
 
             }
+
         } catch (ParseException ex) {
             System.out.println("Invalid date input!\n");
         }
     }
-
-    public void reserveRoom(Date checkInDate, Date checkOutDate, RoomRecord room, BigDecimal amount) {
-
-        WalkInReservation walkInReservation = new WalkInReservation();
-        Scanner scanner = new Scanner(System.in);
-        Integer response = 0;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        
-        walkInReservation = reservationSessionBeanRemote.createWalkInReservation(walkInReservation, employee.getEmployeeId());
-        //ReservationLineItem reservation = 
-    }
-        
 
     public void checkInGuest() {
         Long guestId = null;

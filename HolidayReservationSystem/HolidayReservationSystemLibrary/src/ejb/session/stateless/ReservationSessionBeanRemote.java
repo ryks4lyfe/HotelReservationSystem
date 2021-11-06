@@ -21,7 +21,6 @@ import util.exception.ReservationLineItemNotFoundException;
  */
 @Remote
 public interface ReservationSessionBeanRemote {
-   public List<ReservationLineItem> findReservationLineItemByRoomType(Long roomTypeId);
 
     public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException;
     
@@ -31,5 +30,4 @@ public interface ReservationSessionBeanRemote {
 
     public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut);
 
-    public WalkInReservation createWalkInReservation(WalkInReservation w, Long eId);
 }

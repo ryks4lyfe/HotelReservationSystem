@@ -13,6 +13,8 @@ import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Guest;
+import entity.OnlineReservation;
+import entity.ReservationLineItem;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +23,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import util.exception.FailedLoginException;
 import util.exception.GuestNotFoundException;
+import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 
 /**
@@ -29,37 +32,33 @@ import util.exception.RoomTypeNotFoundException;
  */
 public class MainApp {
 
-    private GuestSessionBeanRemote guestSessionBeanRemote; 
-    private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote; 
-    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote; 
-    private RoomRateSessionBeanRemote roomRateSessionBeanRemote; 
-    private ReservationSessionBeanRemote reservationSessionBeanRemote; 
+    private GuestSessionBeanRemote guestSessionBeanRemote;
+    private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote;
+    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
+    private ReservationSessionBeanRemote reservationSessionBeanRemote;
 
     Guest currentGuest;
-    Scanner scanner=new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
     public MainApp() {
 
     }
 
-   
     public MainApp(Guest currentGuest) {
         this.currentGuest = currentGuest;
     }
 
-    MainApp(GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomRecordSessionBeanRemote roomRecordSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean) 
-    {
-       this.guestSessionBeanRemote = guestSessionBeanRemote; 
-       this.reservationSessionBeanRemote = reservationSessionBeanRemote; 
-       this.roomRateSessionBeanRemote = roomRateSessionBeanRemote; 
-       this.roomRecordSessionBeanRemote = roomRecordSessionBeanRemote; 
-       this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote; 
+    MainApp(GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomRecordSessionBeanRemote roomRecordSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean) {
+        this.guestSessionBeanRemote = guestSessionBeanRemote;
+        this.reservationSessionBeanRemote = reservationSessionBeanRemote;
+        this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
+        this.roomRecordSessionBeanRemote = roomRecordSessionBeanRemote;
+        this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
     }
-    
-    
-    
-    public void runApp() throws FailedLoginException, GuestNotFoundException,  RoomTypeNotFoundException {
-        
+
+    public void runApp() throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
+
         Integer response = 0;
 
         while (true) {
@@ -69,7 +68,7 @@ public class MainApp {
             System.out.println("3: Exit\n");
             response = 0;
 
-            while (response < 1 || response > 2) {
+            while (response < 1 || response > 3) {
                 System.out.print("> ");
                 response = scanner.nextInt();
 
@@ -96,15 +95,11 @@ public class MainApp {
                     System.out.println("Invalid option, please try again! ");
                 }
             }
-
-            if (response == 3) {
-                break;
-            }
         }
     }
 
     private void doLogin() throws FailedLoginException, GuestNotFoundException {
-       
+
         String email;
         String password;
 
@@ -127,35 +122,98 @@ public class MainApp {
             }
         }
     }
-    
+
     private void registerAsGuest() {
         Guest newGuest = new Guest();
-        
+
         System.out.println("\n*** HoRS System :: Register As Guest ***\n");
-        
+
         System.out.println("Enter name >");
         newGuest.setName(scanner.next().trim());
-        
+
         System.out.println("Enter email > ");
         newGuest.setEmail(scanner.next().trim());
-        
+
         System.out.println("Enter password > ");
         newGuest.setPassword(scanner.next().trim());
-        
+
         System.out.println("Enter Phone Number > ");
         newGuest.setPhoneNum(scanner.next().trim());
-        
+
         System.out.println("Enter Passport Number > ");
         newGuest.setPassportNum(scanner.next().trim());
-        
+
         Long guestId = guestSessionBeanRemote.createGuest(newGuest);
-        
-        System.out.println("Visitor registered as guest "+guestId+" successfully! ");
+        currentGuest = newGuest;
+
+        System.out.println("Visitor registered as guest " + guestId + " successfully! ");
     }
 
-    
     public void menuMain() {
-        
+        Integer response = 0;
+
+        while (true) {
+            System.out.println("\n*** Welcome Guest: " + currentGuest.getName() + "***\n");
+            System.out.println("1: Search HotelRoom");
+            System.out.println("2: View My Reservations Details");
+            System.out.println("3: View All My Reservations");
+            System.out.println("4: Exit\n");
+            response = 0;
+
+            while (response < 1 || response > 4) {
+                System.out.print("> ");
+                response = scanner.nextInt();
+
+                if (response == 1) {
+                    searchHotel();
+
+                } else if (response == 2) {
+                    viewMyReservationDetails();
+
+                } else if (response == 3) {
+                    viewAllMyReservations();
+
+                } else if (response == 4) {
+                    break;
+
+                } else {
+                    System.out.println("Invalid option, please try again! ");
+                }
+
+            }
+
+        }
     }
 
+    private void searchHotel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void viewMyReservationDetails() {
+        System.out.println("\n *** HoRS System :: View My Reservation Details ***\n");
+        System.out.print("Enter reservation id> ");
+        Long reservationId = scanner.nextLong();
+
+        try {
+            ReservationLineItem lineItem = reservationSessionBeanRemote.findReservationLineItemById(reservationId);
+            System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+            System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+            System.out.println("Amount: " + lineItem.getAmount().toString());
+            System.out.println("Room Number: " + lineItem.getRoom().getRoomNum() + "\n");
+
+        } catch (ReservationLineItemNotFoundException ex) {
+            System.out.print(ex.getMessage());
+        }
+    }
+
+    private void viewAllMyReservations() {
+        for (OnlineReservation or : currentGuest.getOnlineReservations()) {
+            for (ReservationLineItem lineItem : or.getReservationLineItems()) {
+                System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+                System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+                System.out.println("Amount: " + lineItem.getAmount().toString());
+                System.out.println("Room Number: " + lineItem.getRoom().getRoomNum() + "\n");
+            }
+        }
+    }
 }

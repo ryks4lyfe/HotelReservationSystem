@@ -7,6 +7,8 @@ package ejb.session.statefull;
 
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import entity.Employee;
+import entity.Guest;
+import entity.OnlineReservation;
 import entity.ReservationLineItem;
 import entity.WalkInReservation;
 import java.math.BigDecimal;
@@ -60,6 +62,10 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
         totalLineItems++;
         totalAmount.add(lineItem.getAmount());
         lineItems.add(lineItem);
+        em.persist(lineItem);
+        //add Line Item into the selected room
+        lineItem.getRoom().getReservationLineItem().add(lineItem);
+        em.flush();
         return totalAmount;
     }
     
@@ -69,9 +75,44 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
         for(ReservationLineItem items : lineItems) {
             r.getReservationLineItems().add(items);
         }
+        em.persist(r);
+        Employee employee = em.find(Employee.class, e.getEmployeeId());
+        
+        employee.getWalkInReservations().add(r);
+        r.setEmployee(employee);
+        em.flush();
+        
         return r;
     }
     
+    @Override
+    public OnlineReservation doCheckout(Guest g) {
+        OnlineReservation r = new OnlineReservation(g, reservationDate, totalLineItems, totalAmount);
+        for(ReservationLineItem items : lineItems) {
+            r.getReservationLineItems().add(items);
+        }
+        em.persist(r);
+        Guest guest = em.find(Guest.class, g.getGuestId());
+        
+        guest.getOnlineReservations().add(r);
+        r.setGuest(guest);
+        em.flush();
+        
+        return r;
+    }
+    
+    @Override
+    public void removeAllItemsFromCart() {
+        for(ReservationLineItem r : lineItems) {
+            //Remove lineItems from associated room
+            r.getRoom().getReservationLineItem().remove(r);
+            
+            //Since room mandatory can just remove r
+            em.remove(r); 
+        }
+        
+        initialiseState();
+    }
     
     @Override
     public void resetCart() {

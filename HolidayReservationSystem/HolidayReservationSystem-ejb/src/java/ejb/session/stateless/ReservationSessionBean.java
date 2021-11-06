@@ -54,10 +54,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
-    @Override
-    public List<ReservationLineItem> findReservationLineItemByRoomType(Long roomTypeId) {
-        return new ArrayList<ReservationLineItem>();
-    }
 
     @Override
     public RoomRecord walkInSearch(RoomType roomType, Date checkIn, Date checkOut) {
@@ -97,8 +93,5 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return !(startDate.after(checkIn) || endDate.before(checkOut));
     }
 
-    @Override
-    public WalkInReservation createWalkInReservation(WalkInReservation w, Long eId) {
-        return null;
-    }
+    
 }

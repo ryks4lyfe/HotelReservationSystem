@@ -22,7 +22,6 @@ import util.exception.ReservationLineItemNotFoundException;
 @Local
 public interface ReservationSessionBeanLocal {
 
-    public List<ReservationLineItem> findReservationLineItemByRoomType(Long roomTypeId);
 
     public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException;
     
@@ -31,7 +30,6 @@ public interface ReservationSessionBeanLocal {
     public BigDecimal walkInPrice(RoomType roomType, Date checkInDate, Date checkOutDate);
 
     public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut);
-    
-    public WalkInReservation createWalkInReservation(WalkInReservation w, Long eId);
+
     
 }

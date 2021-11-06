@@ -6,6 +6,8 @@
 package ejb.session.statefull;
 
 import entity.Employee;
+import entity.Guest;
+import entity.OnlineReservation;
 import entity.ReservationLineItem;
 import entity.WalkInReservation;
 import java.math.BigDecimal;
@@ -43,5 +45,9 @@ public interface WalkInReservationSessionBeanRemote {
     public List<ReservationLineItem> getLineItems();
 
     public void setLineItems(List<ReservationLineItem> lineItems);
+
+    public void removeAllItemsFromCart();
+
+    public OnlineReservation doCheckout(Guest g);
     
 }
