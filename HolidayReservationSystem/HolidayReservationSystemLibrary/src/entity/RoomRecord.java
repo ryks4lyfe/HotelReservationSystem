@@ -44,9 +44,8 @@ public class RoomRecord implements Serializable {
         reservationLineItem = new ArrayList<>();
     }
 
-    public RoomRecord(Long roomRecordId, Integer roomNum, String roomStatus, RoomType roomType) {
+    public RoomRecord(Integer roomNum, String roomStatus, RoomType roomType) {
         this();
-        this.roomRecordId = roomRecordId;
         this.roomNum = roomNum;
         this.roomStatus = roomStatus;
         this.roomType = roomType;

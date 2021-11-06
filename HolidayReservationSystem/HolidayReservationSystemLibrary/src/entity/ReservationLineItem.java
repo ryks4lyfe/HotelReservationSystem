@@ -47,8 +47,7 @@ public class ReservationLineItem implements Serializable {
         
     }
 
-    public ReservationLineItem(Long reservationLineItemId, Date checkInDate, Date checkOutDate, BigDecimal amount, RoomRecord room) {
-        this.reservationLineItemId = reservationLineItemId;
+    public ReservationLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomRecord room) {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.amount = amount;

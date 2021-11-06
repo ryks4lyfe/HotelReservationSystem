@@ -14,6 +14,7 @@ import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
+import entity.ReservationLineItem;
 import entity.RoomRecord;
 import entity.RoomType;
 import entity.WalkInReservation;
@@ -114,6 +115,9 @@ public class FrontOfficeModule {
             Date checkOutDate;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             boolean continueReservation = true;
+            
+            List<ReservationLineItem> chosenReservation = new ArrayList<>();
+            
 
             System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
             System.out.print("Enter check in date (yyyy-MM-dd)> ");
@@ -158,7 +162,7 @@ public class FrontOfficeModule {
                         if (option < 1 || option > availableRooms.size()) {
                             System.out.println("Please input a proper option");
                         } else {
-                            
+                            chosenReservation.add(new ReservationLineItem())
                         }
                     }
 
