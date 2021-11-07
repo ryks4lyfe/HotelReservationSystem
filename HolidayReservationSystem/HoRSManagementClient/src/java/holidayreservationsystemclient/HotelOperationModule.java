@@ -413,15 +413,21 @@ private Employee employee;
             System.out.print("Enter Room Type Name> ");
             String roomTypeName = scanner.nextLine().trim();
             RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName);
+            newRoom.setRoomType(roomType);
             System.out.println("Open room for room type: " + roomType.getTypeName()+ "\n");
             newRoom.setRoomStatus("not in use");
             try {
             newRoom = roomRecordSessionBeanRemote.createRoomRecord(newRoom, roomTypeName);
-            }
-            catch(RoomNameExistsException | UnknownPersistenceException ex)
-            {
-            }
+            System.out.println(newRoom.getRoomNum()); 
             System.out.println("New room created successfully!: " + newRoom.getRoomNum()+ "\n");
+            }
+            catch(RoomTypeNotFoundException ex)
+            {
+                System.out.println("ffs..."); 
+                System.out.println(ex.getMessage() + "\n");
+            }
+            
+            
         } 
         catch (RoomTypeNotFoundException ex) 
         {
@@ -551,7 +557,7 @@ private Employee employee;
             {
                 if(roomRecord.getReservationLineItem() != null){
                     System.out.printf("%12s%12s%20s%20s\n", roomRecord.getRoomNum().toString(), roomRecord.getRoomStatus(),
-                            roomRecord.getRoomType().getTypeName(), roomRecord.getReservationLineItem().getReservationLineItemId().toString());
+                            roomRecord.getRoomType().getTypeName(), roomRecord.getReservationLineItem().get(0).toString());
                 }
                 else
                 {

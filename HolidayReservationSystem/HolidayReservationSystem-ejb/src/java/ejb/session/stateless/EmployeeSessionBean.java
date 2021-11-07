@@ -68,7 +68,8 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     //Tries to find e with username, if doesnt exists throw an error. Continue to check if password same,
     //if wrong throw an error, else, return the e.
     @Override
-    public Employee doLogin(String username, String password) throws FailedLoginException, EmployeeNotFoundException {
+    public Employee doLogin(String username, String password) throws FailedLoginException, EmployeeNotFoundException 
+    {
         try {
             Employee e = findEmployeeByUsername(username);
             if(e.getPassword().equals(password)) {

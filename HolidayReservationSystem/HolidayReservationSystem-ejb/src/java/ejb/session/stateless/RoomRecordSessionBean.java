@@ -4,8 +4,8 @@ import entity.ReservationLineItem;
 import entity.RoomRecord;
 import entity.RoomType;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -41,17 +41,17 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     }
 
     @Override
-    public RoomRecord createRoomRecord (RoomRecord newRoomRecord, String roomTypeName) throws RoomNameExistsException, UnknownPersistenceException, RoomTypeNotFoundException 
+    public RoomRecord createRoomRecord (RoomRecord newRoomRecord, String roomTypeName) throws /*RoomNameExistsException, UnknownPersistenceException,*/ RoomTypeNotFoundException 
     {
        
-        try 
-        {
+     
+       //try { 
             RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName);
-            
+           
             if (!roomType.getTypeStatus().equals("disabled")) {
             em.persist(newRoomRecord); 
-            newRoomRecord.setRoomType(roomType);
             roomType.getRoomRecords().add(newRoomRecord);
+            newRoomRecord.setRoomType(roomType);
             
             em.flush();
                       
@@ -64,7 +64,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
             
         }
         
-        catch(PersistenceException ex) 
+    /*    catch(PersistenceException ex) 
         {
             if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
             {
@@ -81,8 +81,8 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
             {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
-        }    
-    }  
+        } */   
+    
     
     @Override
     public List<RoomRecord> findAllRoomRecords() 
@@ -174,13 +174,13 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
                     roomRecordToUpdate.setRoomType(roomType);
                 }
                 if(roomRecord.getReservationLineItem() != null) {
-                    try {
-                        ReservationLineItem reservationLineItem = reservationSessionBeanRemote.findReservationLineItemById(roomRecord.getReservationLineItem().getReservationLineItemId());
-                        roomRecordToUpdate.setReservationLineItem(reservationLineItem);
+                    /*try {
+                        ReservationLineItem reservationLineItem = reservationSessionBeanRemote.findReservationLineItemById(roomRecord.getReservationLineItem().get(0).getReservationLineItemId());
+                        roomRecordToUpdate.setReservationLineItem(reservationLineItem.getReservationLineItemId());
                     } catch (ReservationLineItemNotFoundException ex) {
                         System.out.println(ex.getMessage());
                     }
-                }
+                }*/
             }
                 else
                 {
@@ -192,6 +192,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
             throw new RoomRecordNotFoundException("Room Record ID is not valid or Room Record does not exist"); 
             
         }
+    }
     }
     
     @Override

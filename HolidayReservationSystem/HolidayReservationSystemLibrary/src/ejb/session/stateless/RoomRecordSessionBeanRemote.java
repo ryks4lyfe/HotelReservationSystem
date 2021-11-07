@@ -20,7 +20,7 @@ import util.exception.UnknownPersistenceException;
  */
 @Remote
 public interface RoomRecordSessionBeanRemote {
-    public RoomRecord createRoomRecord(RoomRecord newRoomRecord, String roomTypeName) throws RoomNameExistsException, UnknownPersistenceException, RoomTypeNotFoundException;
+    public RoomRecord createRoomRecord(RoomRecord newRoomRecord, String roomTypeName) throws /*RoomNameExistsException, UnknownPersistenceException,*/ RoomTypeNotFoundException;
 
     public List<RoomRecord> findAllRoomRecords();
 
