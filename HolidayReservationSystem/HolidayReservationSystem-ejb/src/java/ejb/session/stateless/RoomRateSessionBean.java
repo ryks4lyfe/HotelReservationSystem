@@ -79,7 +79,7 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal, RoomRateSe
     @Override
     public List<RoomRate> findAllRoomRates() 
     {
-        Query query = em.createNamedQuery("SELECT rr FROM RoomRate rr"); 
+        Query query = em.createQuery("SELECT rr FROM RoomRate rr"); 
         return query.getResultList(); 
     }
     
