@@ -51,10 +51,10 @@ public class MainApp {
 
     MainApp(GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomRecordSessionBeanRemote roomRecordSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean) {
         this.guestSessionBeanRemote = guestSessionBeanRemote;
-        this.reservationSessionBeanRemote = reservationSessionBeanRemote;
-        this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
-        this.roomRecordSessionBeanRemote = roomRecordSessionBeanRemote;
-        this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
+        this.reservationSessionBeanRemote = reservationSessionBean;
+        this.roomRateSessionBeanRemote = roomRateSessionBean;
+        this.roomRecordSessionBeanRemote = roomRecordSessionBean;
+        this.roomTypeSessionBeanRemote = roomTypeSessionBean;
     }
 
     public void runApp() throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
@@ -207,13 +207,17 @@ public class MainApp {
     }
 
     private void viewAllMyReservations() {
-        for (OnlineReservation or : currentGuest.getOnlineReservations()) {
-            for (ReservationLineItem lineItem : or.getReservationLineItems()) {
-                System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
-                System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
-                System.out.println("Amount: " + lineItem.getAmount().toString());
-                System.out.println("Room Number: " + lineItem.getRoom().getRoomNum() + "\n");
+        if (!currentGuest.getOnlineReservations().isEmpty()) {
+            for (OnlineReservation or : currentGuest.getOnlineReservations()) {
+                for (ReservationLineItem lineItem : or.getReservationLineItems()) {
+                    System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+                    System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+                    System.out.println("Amount: " + lineItem.getAmount().toString());
+                    System.out.println("Room Number: " + lineItem.getRoom().getRoomNum() + "\n");
+                }
             }
+        } else {
+            System.out.println("You have no Reservations \n");
         }
     }
 }

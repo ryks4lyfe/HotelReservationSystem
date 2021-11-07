@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +37,7 @@ public class Employee implements Serializable {
     @Enumerated(EnumType.STRING)
     private EmployeeAccessRight Enum;
     
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", cascade = {}, fetch = FetchType.EAGER)
     private List<WalkInReservation> walkInReservations;
     
     public Employee() {

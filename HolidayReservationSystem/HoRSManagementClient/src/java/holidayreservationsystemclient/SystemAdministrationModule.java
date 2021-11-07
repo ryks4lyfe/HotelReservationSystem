@@ -18,14 +18,15 @@ import util.enumeration.EmployeeAccessRight;
  * @author 65912
  */
 public class SystemAdministrationModule {
+
     private PartnerSessionBeanRemote partnerSessionBeanRemote;
-    
+
     private EmployeeSessionBeanRemote employeeSessionBeanRemote;
-    
+
     private Employee employee;
-    
+
     public SystemAdministrationModule() {
-        
+
     }
 
     public SystemAdministrationModule(PartnerSessionBeanRemote partnerSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, Employee employee) {
@@ -33,14 +34,13 @@ public class SystemAdministrationModule {
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.employee = employee;
     }
-    
-    public void menuSystemAdministration(){
-        
+
+    public void menuSystemAdministration() {
+
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
-        
-        while(true)
-        {
+
+        while (true) {
             System.out.println("*** HoRS :: System Administration ***\n");
             System.out.println("1: Create New Employee");
             System.out.println("2: View All Employees");
@@ -50,48 +50,34 @@ public class SystemAdministrationModule {
             System.out.println("-----------------------");
             System.out.println("5: Back\n");
             response = 0;
-            
-            while(response < 1 || response > 5)
-            {
+
+            while (response < 1 || response > 5) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
 
-                if(response == 1)
-                {
+                if (response == 1) {
                     createEmployee();
-                }
-                else if(response == 2)
-                {
+                } else if (response == 2) {
                     viewAllEmployees();
-                }
-                else if(response == 3)
-                {
+                } else if (response == 3) {
                     createPartner();
-                }
-                else if(response == 4)
-                {
+                } else if (response == 4) {
                     viewAllPartners();
-                }
-                else if (response == 5)
-                {
+                } else if (response == 5) {
                     break;
-                }
-                else
-                {
-                    System.out.println("Invalid option, please try again!\n");                
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
                 }
             }
-            
-            if(response == 5)
-            {
+
+            if (response == 5) {
                 break;
             }
         }
     }
-    
-    public void createEmployee()
-    {
+
+    public void createEmployee() {
         Scanner scanner = new Scanner(System.in);
         Employee newEmployee = new Employee();
 
@@ -132,25 +118,26 @@ public class SystemAdministrationModule {
         System.out.println("New employee created successfully!: " + eId + "\n");
 
     }
-    
-     public void viewAllEmployees()
-    {
-        
-        System.out.println("*** HoRS :: Hotel Management System :: View All Employees ***\n");
-        
-        List<Employee> employees = employeeSessionBeanRemote.retrieveListOfEmployees();
-        System.out.printf("%11s%40s%40s%25s%20s\n", "Employee Id", "Name", "Email", "Access Right", "Password");
 
-        for(Employee employee:employees)
-        {
-            System.out.printf("%11s%40s%40s%25s%20s\n", employee.getEmployeeId().toString(), employee.getUsername(), employee.getEnum().toString(), employee.getPassword());
+    public void viewAllEmployees() {
+
+        System.out.println("*** HoRS :: Hotel Management System :: View All Employees ***\n");
+
+        List<Employee> employees = employeeSessionBeanRemote.retrieveListOfEmployees();
+
+        for (Employee employee : employees) {
+            System.out.println("Employee ID :" + employee.getEmployeeId());
+            System.out.println("Employee Username :" + employee.getUsername());
+            System.out.println("Employee Password :" + employee.getPassword());
+            System.out.println("Employee AccessRight :" + employee.getEnum().toString());
+            System.out.println("--------------------------------------------------------------------------------------");
+
         }
-        
+
         System.out.println("");
     }
-     
-     public void createPartner()
-    {
+
+    public void createPartner() {
         Scanner scanner = new Scanner(System.in);
         Partner newPartner = new Partner();
 
@@ -163,20 +150,21 @@ public class SystemAdministrationModule {
         System.out.println("New partner created successfully!: " + pId + "\n");
 
     }
-    
-    public void viewAllPartners()
-    {
-        
-        System.out.println("*** HoRS :: Hotel Management System :: View All Partners ***\n");
-        
-        List<Partner> partners = partnerSessionBeanRemote.retrieveListOfPartners();
-        System.out.printf("%10s%20s%30s%20s\n", "Partner Id", "Name", "Email", "Password");
 
-        for(Partner partner:partners)
-        {
-            System.out.printf("%10s%20s%30s%20s\n", partner.getPartnerId().toString(), partner.getUsername(), partner.getPassword());
+    public void viewAllPartners() {
+
+        System.out.println("*** HoRS :: Hotel Management System :: View All Partners ***\n");
+
+        List<Partner> partners = partnerSessionBeanRemote.retrieveListOfPartners();
+
+        for (Partner partner : partners) {
+            System.out.println("Partner ID : " + partner.getPartnerId());
+            System.out.println("Partner Name : " + partner.getPartnerName());
+            System.out.println("Partner Username : " + partner.getUsername());
+            System.out.println("Partner Password : " + partner.getPassword());
+            System.out.println("----------------------------------------------------------------");
         }
-        
+
         System.out.println("");
     }
 }

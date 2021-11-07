@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,7 +50,7 @@ public class RoomRate implements Serializable {
     private RoomRateTypeEnum roomRateType; 
     
     
-    @ManyToOne 
+    @ManyToOne(cascade = {}, fetch = FetchType.EAGER) 
     @JoinColumn(nullable = false)
     private RoomType roomType; 
 

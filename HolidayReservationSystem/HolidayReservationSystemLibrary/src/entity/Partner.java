@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +34,7 @@ public class Partner implements Serializable {
     @Column(nullable = false, length = 32)
     private String partnerName;
     
-    @OneToMany(mappedBy = "partner")
+    @OneToMany(mappedBy = "partner", cascade = {}, fetch = FetchType.EAGER)
     private List<PartnerReservation> partnerReservations;
     
     public Partner() {
