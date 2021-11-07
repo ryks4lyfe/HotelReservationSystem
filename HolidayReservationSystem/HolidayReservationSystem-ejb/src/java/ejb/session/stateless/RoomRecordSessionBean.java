@@ -88,7 +88,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     public List<RoomRecord> findAllRoomRecords() 
              
     {
-        Query query = em.createNamedQuery("SELECT rr FROM RoomRecord rr"); 
+        Query query = em.createQuery("SELECT rr FROM RoomRecord rr"); 
         return query.getResultList(); 
     }
     

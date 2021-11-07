@@ -58,7 +58,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @Override
     public RoomRecord walkInSearch(RoomType roomType, Date checkIn, Date checkOut) {
         for (RoomRecord r : roomType.getRoomRecords()) {
-            if (r.getRoomStatus().equals("available")) {
+            if (r.getRoomStatus().equals("not in use")) {
                 for (ReservationLineItem lineItem : r.getReservationLineItem()) {
                     if (availableForBooking(lineItem.getCheckInDate(), lineItem.getCheckOutDate(),
                             checkIn, checkOut)) {

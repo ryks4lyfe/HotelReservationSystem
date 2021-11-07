@@ -435,69 +435,58 @@ private Employee employee;
         } 
     }
 
-    public void updateRoom() 
+    public void updateRoom()  
     {
         try {
             Scanner scanner = new Scanner(System.in);
             String input;
             
             System.out.println("*** HoRS :: Hotel Management System :: Update Room ***\n");
-            System.out.print("Enter Room Number> ");
+            System.out.print("Enter Room Record Id> ");
             Long roomRecordId = scanner.nextLong();
             scanner.nextLine();
             RoomRecord room = roomRecordSessionBeanRemote.findRoomRecordById(roomRecordId);
-            System.out.print("Enter Room Type name (blank if no change)> ");
+            System.out.print("Enter new Room Type name (blank if no change)> ");
             input = scanner.nextLine();
+            
             String roomTypeName = "";
             if(input.length() > 0)
             {
                 roomTypeName = input;
+                try {
+                room.setRoomType(roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName));
+                } 
+                catch (RoomTypeNotFoundException ex)
+                {
+                    System.out.println("Room Type not found!") ; 
+                }
             }
             while(true)
             {
-                System.out.print("Choose Room Status (1. available, 2.occupied)> ");
+                System.out.print("Choose new Room Status (1. not in use, 2.in use)> ");
                 Integer roomStatusInt = scanner.nextInt();
                 
                 if(roomStatusInt >= 1 && roomStatusInt <= 2)
                 {
                     if(roomStatusInt == 1)
                     {
-                        room.setRoomStatus("available");
-                        Long resLineItemId = null;
-                        try {
-                        roomRecordSessionBeanRemote.updateRoomRecord(room);
-                        RoomRecord roomUpdated = roomRecordSessionBeanRemote.findRoomRecordById(room.getRoomRecordId()); 
-                        roomRecordSessionBeanRemote.updateRoomRecordListInRoomType(roomUpdated.getRoomRecordId());
-                        }
-                        catch (RoomTypeNotFoundException | RoomRecordNotFoundException ex){
-                        }
-                        System.out.println("Room Type updated successfully!\n");
-                        break;
+                        room.setRoomStatus("not in use");
                     }
                     else
-                    { 
-                        scanner.nextLine();
-                        System.out.print("Enter Reservation Line Item Id> ");
-                        Long resLineItemId = scanner.nextLong();
-                        if(resLineItemId != null)
-                        {
-                            room.setRoomStatus("in use");
+                    {                         
+                        room.setRoomStatus("in use");
+                    }
                             try {
                             roomRecordSessionBeanRemote.updateRoomRecord(room); 
                             RoomRecord roomUpdated = roomRecordSessionBeanRemote.findRoomRecordById(room.getRoomRecordId());
                             roomRecordSessionBeanRemote.updateRoomRecordListInRoomType(roomUpdated.getRoomRecordId());
                             } 
                             catch (RoomRecordNotFoundException | RoomTypeNotFoundException ex){
-                                System.out.println("RoomNumber is Invalid");
+                                System.out.println("Room Record Id is invalid");
                             }
                             System.out.println("Room Type updated successfully!\n");
-                        }
-                        else
-                        {
-                            System.out.println("Please enter a valid reservation line item Id.");
-                        }
+                            
                         break;
-                    }
                 }
                 else
                 {
@@ -515,7 +504,7 @@ private Employee employee;
             String input;
             
             System.out.println("*** HoRS :: Hotel Management System :: Delete Room ***\n");
-            System.out.print("Enter Room Number> ");
+            System.out.print("Enter Room Record ID> ");
             Long roomRecordId = scanner.nextLong();
             scanner.nextLine(); 
             try {
@@ -531,15 +520,16 @@ private Employee employee;
                 catch(DeleteRoomRecordException| RoomRecordNotFoundException ex) {
                     
                 }
-                System.out.println("Room deleted successfully!\n");
+                System.out.println("Room record deleted successfully!\n");
             }
             else 
             {
-                System.out.println("Room NOT deleted!\n");
+                System.out.println("Room record NOT deleted!\n");
             }
             }
             
             catch(RoomRecordNotFoundException ex){
+                System.out.println("Room record with room record ID " + roomRecordId + "does not exist!\n"); 
             }
             
     }
@@ -555,7 +545,7 @@ private Employee employee;
         try{
             for(RoomRecord roomRecord:rooms)
             {
-                if(roomRecord.getReservationLineItem() != null){
+                if(!roomRecord.getReservationLineItem().isEmpty()){
                     System.out.printf("%12s%12s%20s%20s\n", roomRecord.getRoomNum().toString(), roomRecord.getRoomStatus(),
                             roomRecord.getRoomType().getTypeName(), roomRecord.getReservationLineItem().get(0).toString());
                 }
@@ -634,35 +624,12 @@ private Employee employee;
             Date date;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             try {
-            if(newRoomRate.getRoomRateType().equals(PROMOTION)){
-                System.out.print("Enter Promotion Rate start date (yyyy-MM-dd)> ");
+                System.out.print("Enter " + newRoomRate.getRoomRateType().toString() + " Rate start date (yyyy-MM-dd)> ");
                 date = sdf.parse(scanner.nextLine());
                 newRoomRate.setStartRateDate(date);
                 System.out.print("Enter Promotion Rate end date (yyyy-MM-dd)> ");
                 date = sdf.parse(scanner.nextLine());
                 newRoomRate.setEndRateDate(date);
-            }
-            else if(newRoomRate.getRoomRateType().equals(PEAK)){
-                System.out.print("Enter Peak Rate start date (yyyy-MM-dd)> ");
-                date = sdf.parse(scanner.nextLine());
-                newRoomRate.setStartRateDate(date);
-                System.out.print("Enter Peak Rate end date (yyyy-MM-dd)> ");
-                date = sdf.parse(scanner.nextLine());
-                newRoomRate.setEndRateDate(date);
-            }
-            else if(newRoomRate.getRoomRateType().equals(NORMAL)){
-                System.out.print("Enter Normal Rate start date (yyyy-MM-dd)> ");
-                date = sdf.parse(scanner.nextLine());
-                newRoomRate.setStartRateDate(date);
-                System.out.print("Enter Normal Rate end date (yyyy-MM-dd)> ");
-                date = sdf.parse(scanner.nextLine());
-                newRoomRate.setEndRateDate(date);
-            }
-            if(newRoomRate.getRoomRateType().equals(PUBLISHED)){
-                System.out.print("Enter Published Rate validity date (yyyy-MM-dd)> ");
-                date = sdf.parse(scanner.nextLine());
-                newRoomRate.setStartRateDate(date);
-            }
             }
             catch (ParseException ex) {
             }
@@ -674,8 +641,9 @@ private Employee employee;
             newRoomRate = roomRateSessionBeanRemote.createRoomRate(newRoomRate, roomTypeId);
             System.out.println("New room rate created successfully!: " + newRoomRate.getRoomRateId()+ "\n");
         } 
-        catch (RoomTypeNotFoundException | RoomNameExistsException | UnknownPersistenceException | RoomRateExistsException ex) {
-            
+        catch (RoomTypeNotFoundException | RoomNameExistsException | UnknownPersistenceException | RoomRateExistsException ex) 
+        {   
+            System.out.println("An error has occurred " + ex.getMessage() + "\n");
         }
     }
 
@@ -698,23 +666,10 @@ private Employee employee;
             System.out.println("Room rate per night: " + roomRate.getRatePerNight().toString());
             System.out.println("Room rate type : " + roomRate.getRoomType().getTypeName());
             System.out.println("Room rate status: " + roomRate.getRoomRateStatus());
-            if(roomRate.getRoomRateType().equals(NORMAL)){
-                System.out.println("Room rate start date: " + roomRate.getStartRateDate().toString());
-                System.out.println("Room rate end date: " + roomRate.getEndRateDate().toString());
-            }
-            if(roomRate.getRoomRateType().equals(PUBLISHED)){
-                System.out.println("Room rate validity date: " + roomRate.getStartRateDate().toString());
-            }
-            if(roomRate.getRoomRateType().equals(PROMOTION)){
-            {
-                System.out.println("Room rate start date: " + roomRate.getStartRateDate().toString());
-                System.out.println("Room rate end date: " + roomRate.getEndRateDate().toString());
-            }
-            if(roomRate.getRoomRateType().equals(PEAK)){
-            {
-                System.out.println("Room rate start date: " + roomRate.getStartRateDate().toString());
-                System.out.println("Room rate end date: " +  roomRate.getEndRateDate().toString());
-            }
+         
+            System.out.println("Room rate start date: " + roomRate.getStartRateDate().toString());
+            System.out.println("Room rate end date: " + roomRate.getEndRateDate().toString());
+            
             System.out.println("------------------------");
             System.out.println("1: Update Room Rate");
             System.out.println("2: Delete Room Rate");
@@ -723,26 +678,17 @@ private Employee employee;
             response = scanner.nextInt();
 
             if(response == 1)
-            {
-                try{
-                    roomRateSessionBeanRemote.updateRoomRate(roomRate);
-                } 
-                catch(RoomRateNotFoundException| RoomTypeNotFoundException ex) {
-                }
+            {        
+                updateRoomRate(roomRate);     
             }
             else if(response == 2)
             {
-                try{
-                     roomRateSessionBeanRemote.deleteRoomRate(roomRate.getRoomRateId());
-                }
-                catch(DeleteRoomRateException|RoomRateNotFoundException ex) {
-                }
-               
-                } 
+                deleteRoomRate(roomRate);
             }
-          }
         }
-        catch (RoomRateNotFoundException ex) { 
+        catch (RoomRateNotFoundException ex) 
+        { 
+            System.out.println("An error has occurred " + ex.getMessage() + "\n");
         }
     }
     public void updateRoomRate(RoomRate roomRate) 
@@ -772,8 +718,8 @@ private Employee employee;
                 roomTypeName = input;
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            if(roomRate.getRoomRateType().equals(NORMAL)){
-                System.out.print("Enter Rate Start date (blank if no change)> ");
+            
+            System.out.print("Enter Rate Start date (blank if no change)> ");
                 input = scanner.nextLine().trim();
                 if(input.length() > 0)
                 {
@@ -784,52 +730,21 @@ private Employee employee;
                 if(input.length() > 0)
                 {
                     roomRate.setEndRateDate(sdf.parse(input));
-                }
-            }
-            else if(roomRate.getRoomRateType().equals(PUBLISHED))
-            {
-                System.out.print("Enter Rate Validity date (blank if no change)> ");
-                input = scanner.nextLine().trim();
-                if(input.length() > 0)
-                {
-                    roomRate.setStartRateDate(sdf.parse(input));
-                }
-            }
-            else if (roomRate.getRoomRateType().equals(PROMOTION))
-            {
-                System.out.print("Enter Rate Start date (blank if no change)> ");
-                input = scanner.nextLine().trim();
-                if(input.length() > 0)
-                {
-                    (roomRate).setStartRateDate(sdf.parse(input));
-                }
-                System.out.print("Enter Rate End date (blank if no change)> ");
-                input = scanner.nextLine().trim();
-                if(input.length() > 0)
-                {
-                    (roomRate).setEndRateDate(sdf.parse(input));
-                }
-            }
-            else if (roomRate.getRoomRateType().equals(PEAK))
-            {
-                System.out.print("Enter Rate Start date (blank if no change)> ");
-                input = scanner.nextLine().trim();
-                if(input.length() > 0)
-                {
-                    (roomRate).setStartRateDate(sdf.parse(input));
-                }
-                System.out.print("Enter Rate End date (blank if no change)> ");
-                input = scanner.nextLine().trim();
-                if(input.length() > 0)
-                {
-                    (roomRate).setEndRateDate(sdf.parse(input));
-                }
-            }
+                }  
+            
             if(roomRate.getRoomRateStatus().equals("disabled")){
-                System.out.print("Room rate is currently disabled, enable it? (Enter 'Y' to Enable)> ");
+                System.out.print("Room rate is currently disabled, do you wish to enable it? (Enter 'Y' to Enable)> ");
                 input = scanner.nextLine().trim();
                 if(input.equals("Y")){
                     roomRate.setRoomRateStatus("enabled");
+                }
+            }
+            
+            if(roomRate.getRoomRateStatus().equals("enabled")){
+                System.out.print("Room rate is currently enabled, do you wish to disable it? (Enter 'Y' to Enable)> ");
+                input = scanner.nextLine().trim();
+                if(input.equals("Y")){
+                    roomRate.setRoomRateStatus("disabled");
                 }
             }
             
@@ -884,7 +799,25 @@ private Employee employee;
     }
 
     private void viewAllRoomRates() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("*** HoRS :: Hotel Management System :: View All Room Rates ***\n");
+        
+        List<RoomRate> roomRates = roomRateSessionBeanRemote.findAllRoomRates();
+        System.out.printf("%12s%12s%20s%20s\n", "Room Rate Name", "Room Rate Status", "Room Rate Type", "Room Rate Per Night", "Sart Date" , "End Date");
+        try{
+            for(RoomRate roomRate : roomRates)
+            {
+                    System.out.printf("%12s%12s%20s%20s\n", roomRate.getRateName(), roomRate.getRoomRateStatus(), roomRate.getRoomType().toString(), 
+                            roomRate.getRatePerNight().toString(), roomRate.getStartRateDate().toString(), roomRate.getEndRateDate().toString(), "none");
+                
+            }
+        }catch(NullPointerException e) 
+        { 
+            System.out.print("A null pointer excepion has occurred"); 
+        } 
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
     }
 
 
