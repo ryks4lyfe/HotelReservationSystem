@@ -63,8 +63,8 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
         totalAmount.add(lineItem.getAmount());
         lineItems.add(lineItem);
         em.persist(lineItem);
-        //add Line Item into the selected room
-        lineItem.getRoom().getReservationLineItem().add(lineItem);
+        //add Line Item into the selected roomType
+        lineItem.getRoomType().getLineItems().add(lineItem);
         em.flush();
         return totalAmount;
     }
@@ -104,8 +104,8 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @Override
     public void removeAllItemsFromCart() {
         for(ReservationLineItem r : lineItems) {
-            //Remove lineItems from associated room
-            r.getRoom().getReservationLineItem().remove(r);
+            //Remove lineItems from associated roomType
+            r.getRoomType().getLineItems().remove(r);
             
             //Since room mandatory can just remove r
             em.remove(r); 

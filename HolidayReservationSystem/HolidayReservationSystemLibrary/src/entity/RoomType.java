@@ -49,17 +49,20 @@ public class RoomType implements Serializable {
     @OneToMany (mappedBy = "roomType", cascade = {}, fetch = FetchType.EAGER)
     private List<RoomRecord> roomRecords; 
     @OneToMany (mappedBy = "roomType", cascade = {}, fetch = FetchType.EAGER)
-    private List<RoomRate> roomRates;
+    private List<RoomRate> roomRates;    
+    @OneToMany(mappedBy = "roomType", cascade = {}, fetch = FetchType.EAGER)
+    private List<ReservationLineItem> lineItems;
     
     
     public RoomType() {
         
         roomRecords = new ArrayList<>();
-        roomRates = new ArrayList<>();        
+        roomRates = new ArrayList<>();   
+        lineItems = new ArrayList<>();
     }
 
-    public RoomType(String typeName, String description, String size, String bed, String amenities, String capacity, String typeStatus, List<RoomRecord> roomRecords, List<RoomRate> roomRates) {
-        this(); 
+    public RoomType(String typeName, String description, String size, String bed, String amenities, String capacity, String typeStatus) {
+        this();
         this.typeName = typeName;
         this.description = description;
         this.size = size;
@@ -67,12 +70,15 @@ public class RoomType implements Serializable {
         this.amenities = amenities;
         this.capacity = capacity;
         this.typeStatus = typeStatus;
-        
-        this.roomRecords = roomRecords;
-        this.roomRates = roomRates;
     }
 
-    
+    public List<ReservationLineItem> getLineItems() {
+        return lineItems;
+    }
+
+    public void setLineItems(List<ReservationLineItem> lineItems) {
+        this.lineItems = lineItems;
+    }
 
   
     public Long getRoomTypeId() {

@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Partner;
+import entity.PartnerReservation;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.FailedLoginException;
@@ -25,5 +26,7 @@ public interface PartnerSessionBeanRemote {
 
     public Long createPartner(Partner p);
     
-    public List<Partner> retrieveListOfPartners();
+    public List<Partner> retrieveListOfPartners() throws PartnerNotFoundException;
+
+    public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId);
 }

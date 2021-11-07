@@ -28,31 +28,35 @@ import javax.persistence.Temporal;
 @Entity
 public class ReservationLineItem implements Serializable {
 
-   
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationLineItemId;
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date checkInDate; 
+    private Date checkInDate;
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date checkOutDate; 
+    private Date checkOutDate;
     private BigDecimal amount;
-    
+
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
     private RoomRecord room;
-    
+
+    @ManyToOne
+    private RoomType roomType;
 
     public ReservationLineItem() {
-        
+
     }
 
-    public ReservationLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomRecord room) {
+    public ReservationLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomType roomType) {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.amount = amount;
-        this.room = room;
+        this.roomType = roomType;
+    }
+
+    public RoomType getRoomType() {
+        return roomType;
     }
 
     public RoomRecord getRoom() {
@@ -63,17 +67,15 @@ public class ReservationLineItem implements Serializable {
         this.room = room;
     }
 
-
-    
-
-     public BigDecimal getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-     /**
+
+    /**
      * @return the roomType
      */
 
@@ -110,7 +112,7 @@ public class ReservationLineItem implements Serializable {
         return "entity.ReservationLineItem[ id=" + reservationLineItemId + " ]";
     }
 
-     public Date getCheckInDate() {
+    public Date getCheckInDate() {
         return checkInDate;
     }
 
@@ -124,7 +126,6 @@ public class ReservationLineItem implements Serializable {
 
     public void setCheckOutDate(Date checkOutDate) {
         this.checkOutDate = checkOutDate;
-    }    
-    
-    
+    }
+
 }

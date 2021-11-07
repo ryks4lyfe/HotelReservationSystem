@@ -11,7 +11,11 @@ import entity.Employee;
 import entity.Partner;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.enumeration.EmployeeAccessRight;
+import util.exception.EmployeeNotFoundException;
+import util.exception.PartnerNotFoundException;
 
 /**
  *
@@ -123,18 +127,22 @@ public class SystemAdministrationModule {
 
         System.out.println("*** HoRS :: Hotel Management System :: View All Employees ***\n");
 
-        List<Employee> employees = employeeSessionBeanRemote.retrieveListOfEmployees();
+        List<Employee> employees;
+        try {
+            employees = employeeSessionBeanRemote.retrieveListOfEmployees();
+            for (Employee employee : employees) {
+                System.out.println("Employee ID :" + employee.getEmployeeId());
+                System.out.println("Employee Username :" + employee.getUsername());
+                System.out.println("Employee Password :" + employee.getPassword());
+                System.out.println("Employee AccessRight :" + employee.getEnum().toString());
+                System.out.println("--------------------------------------------------------------------------------------");
 
-        for (Employee employee : employees) {
-            System.out.println("Employee ID :" + employee.getEmployeeId());
-            System.out.println("Employee Username :" + employee.getUsername());
-            System.out.println("Employee Password :" + employee.getPassword());
-            System.out.println("Employee AccessRight :" + employee.getEnum().toString());
-            System.out.println("--------------------------------------------------------------------------------------");
-
+            }
+            System.out.println("");
+        } catch (EmployeeNotFoundException ex) {
+            System.out.println(ex.getMessage());
         }
 
-        System.out.println("");
     }
 
     public void createPartner() {
@@ -155,16 +163,21 @@ public class SystemAdministrationModule {
 
         System.out.println("*** HoRS :: Hotel Management System :: View All Partners ***\n");
 
-        List<Partner> partners = partnerSessionBeanRemote.retrieveListOfPartners();
+        List<Partner> partners;
+        try {
+            partners = partnerSessionBeanRemote.retrieveListOfPartners();
+            for (Partner partner : partners) {
+                System.out.println("Partner ID : " + partner.getPartnerId());
+                System.out.println("Partner Name : " + partner.getPartnerName());
+                System.out.println("Partner Username : " + partner.getUsername());
+                System.out.println("Partner Password : " + partner.getPassword());
+                System.out.println("----------------------------------------------------------------");
+            }
 
-        for (Partner partner : partners) {
-            System.out.println("Partner ID : " + partner.getPartnerId());
-            System.out.println("Partner Name : " + partner.getPartnerName());
-            System.out.println("Partner Username : " + partner.getUsername());
-            System.out.println("Partner Password : " + partner.getPassword());
-            System.out.println("----------------------------------------------------------------");
+            System.out.println("");
+        } catch (PartnerNotFoundException ex) {
+            System.out.println(ex.getMessage());
         }
 
-        System.out.println("");
     }
 }

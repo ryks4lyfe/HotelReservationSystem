@@ -123,25 +123,28 @@ public class FrontOfficeModule {
             checkOutDate = sdf.parse(scanner.nextLine());
 
             while (continueReservation == true) {
-                List<RoomRecord> availableRooms = new ArrayList<>();
+                List<Integer> numOfRooms = new ArrayList<>();
                 List<BigDecimal> availableRates = new ArrayList<>();
-                List<RoomType> enabledRooms = roomTypeSessionBeanRemote.retrieveAllRoomTypes();
+                List<RoomType> enabledRooms = new ArrayList<>();
 
-                for (RoomType r : enabledRooms) {
-                    //Check each room type for an available room 
-                    RoomRecord room = reservationSessionBeanRemote.walkInSearch(r, checkInDate, checkOutDate);
-                    if (room != null) {
-                        //if room is available for a room type, add the RoomRecord and the rates
-                        availableRooms.add(room);
+                for (RoomType r : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
+                    //Check each room type for number of available rooms 
+                    if (reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate) != 0) {
+                        enabledRooms.add(r);
+                        numOfRooms.add(reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate));
                         availableRates.add(reservationSessionBeanRemote.walkInPrice(r, checkInDate, checkOutDate));
+                    } else {
+                        System.out.println("-------------------------------------------");
+                        System.out.println("Room Type " + r.getTypeName() + " has no rooms left");
+                        System.out.println("-------------------------------------------");
                     }
                 }
 
-                if (availableRooms.size() != 0) {
+                if (!enabledRooms.isEmpty()) {
 
                     //For each avaialble roomType, display the room record and rate details
-                    for (int i = 0; i < availableRooms.size() - 1; i++) {
-                        RoomType rt = availableRooms.get(i).getRoomType();
+                    for (int i = 0; i < enabledRooms.size() - 1; i++) {
+                        RoomType rt = enabledRooms.get(i);
                         BigDecimal price = availableRates.get(i);
                         System.out.println("-------------------------------------------");
                         System.out.println("Option " + i + 1);
@@ -161,11 +164,11 @@ public class FrontOfficeModule {
                     System.out.println("Enter option for reservation : ");
                     Integer option = scanner.nextInt();
 
-                    if (option < 1 || option > availableRooms.size()) {
+                    if (option < 1 || option > enabledRooms.size()) {
                         System.out.println("Please input a proper option");
                     } else {
                         walkInReservationBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate, availableRates.get(option),
-                                availableRooms.get(option)));
+                                enabledRooms.get(option)));
                     }
                 } else {
 

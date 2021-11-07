@@ -85,9 +85,13 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     }
     
     @Override
-    public List<Partner> retrieveListOfPartners() {
+    public List<Partner> retrieveListOfPartners() throws PartnerNotFoundException  {
+        try {
         Query query = em.createQuery("SELECT p FROM Partner p");
         return query.getResultList();
+        } catch (NoResultException | NonUniqueResultException ex) {
+            throw new PartnerNotFoundException("No Partner data in database!");
+        }
     }
 
     public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId) {

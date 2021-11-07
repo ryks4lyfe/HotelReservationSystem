@@ -22,7 +22,7 @@ import util.exception.UnallowedCheckInException;
 public interface EmployeeSessionBeanRemote {
     public Employee doLogin(String username, String password) throws FailedLoginException, EmployeeNotFoundException;
 
-    public List<Employee> retrieveListOfEmployees();
+     public List<Employee> retrieveListOfEmployees() throws EmployeeNotFoundException;
 
     public Employee findEmployeeByUsername(String username) throws EmployeeNotFoundException;
 

@@ -5,6 +5,7 @@
  */
 package horsreservationclient;
 
+import ejb.session.statefull.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.GuestSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
@@ -22,6 +23,9 @@ import util.exception.RoomTypeNotFoundException;
  * @author 65912
  */
 public class Main {
+
+    @EJB
+    private static WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
 
     @EJB
     private static RoomTypeSessionBeanRemote roomTypeSessionBean;
@@ -43,7 +47,8 @@ public class Main {
 
     
     public static void main(String[] args) throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
-       MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean, roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean);
+       MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean, 
+               roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean,walkInReservationSessionBeanRemote);
        mainApp.runApp();
        
 

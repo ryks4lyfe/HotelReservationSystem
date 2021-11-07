@@ -5,6 +5,7 @@
  */
 package horsreservationclient;
 
+import ejb.session.statefull.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.GuestSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
@@ -15,6 +16,13 @@ import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Guest;
 import entity.OnlineReservation;
 import entity.ReservationLineItem;
+import entity.RoomType;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,6 +45,7 @@ public class MainApp {
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
+    private WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
 
     Guest currentGuest;
     Scanner scanner = new Scanner(System.in);
@@ -49,12 +58,15 @@ public class MainApp {
         this.currentGuest = currentGuest;
     }
 
-    MainApp(GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomRecordSessionBeanRemote roomRecordSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean) {
+    MainApp(GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean,
+            RoomRateSessionBeanRemote roomRateSessionBean, RoomRecordSessionBeanRemote roomRecordSessionBean,
+            RoomTypeSessionBeanRemote roomTypeSessionBean, WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote) {
         this.guestSessionBeanRemote = guestSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBean;
         this.roomRateSessionBeanRemote = roomRateSessionBean;
         this.roomRecordSessionBeanRemote = roomRecordSessionBean;
         this.roomTypeSessionBeanRemote = roomTypeSessionBean;
+        this.walkInReservationSessionBeanRemote = walkInReservationSessionBeanRemote;
     }
 
     public void runApp() throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
@@ -154,7 +166,7 @@ public class MainApp {
 
         while (true) {
             System.out.println("\n*** Welcome Guest: " + currentGuest.getName() + "***\n");
-            System.out.println("1: Search HotelRoom");
+            System.out.println("1: Search Hotel Room");
             System.out.println("2: View My Reservations Details");
             System.out.println("3: View All My Reservations");
             System.out.println("4: Exit\n");
@@ -186,7 +198,103 @@ public class MainApp {
     }
 
     private void searchHotel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            Scanner scanner = new Scanner(System.in);
+            Date checkInDate;
+            Date checkOutDate;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            boolean continueReservation = true;
+
+            System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
+            System.out.print("Enter check in date (yyyy-MM-dd)> ");
+            checkInDate = sdf.parse(scanner.nextLine());
+            System.out.print("Enter check out Date (yyyy-MM-dd)> ");
+            checkOutDate = sdf.parse(scanner.nextLine());
+
+            while (continueReservation == true) {
+                List<Integer> numOfRooms = new ArrayList<>();
+                List<BigDecimal> availableRates = new ArrayList<>();
+                List<RoomType> enabledRooms = new ArrayList<>();
+
+                for (RoomType r : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
+                    //Check each room type for number of available rooms 
+                    if (reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate) != 0) {
+                        enabledRooms.add(r);
+                        numOfRooms.add(reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate));
+                        availableRates.add(reservationSessionBeanRemote.reservationPrice(r, checkInDate, checkOutDate));
+                    } else {
+                        System.out.println("-------------------------------------------");
+                        System.out.println("Room Type " + r.getTypeName() + " has no rooms left");
+                        System.out.println("-------------------------------------------");
+                    }
+                }
+
+                if (!enabledRooms.isEmpty()) {
+
+                    //For each avaialble roomType, display the room record and rate details
+                    for (int i = 0; i < enabledRooms.size() - 1; i++) {
+                        RoomType rt = enabledRooms.get(i);
+                        BigDecimal price = availableRates.get(i);
+                        System.out.println("-------------------------------------------");
+                        System.out.println("Option " + i + 1);
+                        System.out.println("Room Type: " + rt.getTypeName());
+                        System.out.println("Room Size: " + rt.getSize());
+                        System.out.println("Bed Number: " + rt.getBed());
+                        System.out.println("Amenities: " + rt.getAmenities());
+                        System.out.println("Capacity: " + rt.getCapacity());
+                        System.out.println("");
+                        System.out.println("Room Cost: " + price);
+                        System.out.println("-------------------------------------------");
+                        System.out.println("");
+
+                    }
+
+                    //The chosen room will be instantiated as a line item and added into the list
+                    System.out.println("Enter option for reservation : ");
+                    Integer option = scanner.nextInt();
+
+                    if (option < 1 || option > enabledRooms.size()) {
+                        System.out.println("Please input a proper option");
+                    } else {
+                        walkInReservationSessionBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate, availableRates.get(option),
+                                enabledRooms.get(option)));
+                    }
+                } else {
+
+                    System.out.println("No more rooms left on the given dates.");
+                }
+                System.out.println("--------------------------------------------");
+                System.out.println("1: Add more items");
+                System.out.println("2: Checkout");
+                System.out.println("3: Quit");
+                Integer response = scanner.nextInt();
+
+                if (response == 1) {
+                    //Continue while loop to add more item
+                    continueReservation = true;
+                } else if (response == 2) {
+                    //If cart not empty, proceed to checkout and end loop
+                    if (!walkInReservationSessionBeanRemote.getLineItems().isEmpty()) {
+                        walkInReservationSessionBeanRemote.doCheckout(currentGuest);
+                        continueReservation = false;
+                        walkInReservationSessionBeanRemote.resetCart();
+                        System.out.println("CheckOut Completed");
+                    } else {
+                        //Cart empty, continue while loop to add more items
+                        System.out.println("Cart is Empty, please add items");
+                        continueReservation = true;
+                    }
+                } else if (response == 3) {
+                    //Quit, remove all item from cart and disassociate
+                    continueReservation = false;
+                    walkInReservationSessionBeanRemote.removeAllItemsFromCart();
+                }
+
+            }
+
+        } catch (ParseException ex) {
+            System.out.println("Invalid date input!\n");
+        }
     }
 
     private void viewMyReservationDetails() {

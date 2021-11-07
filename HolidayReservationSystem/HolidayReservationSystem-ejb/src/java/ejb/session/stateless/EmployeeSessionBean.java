@@ -27,70 +27,68 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     private EntityManager em;
 
     public EmployeeSessionBean() {
-        
+
     }
-    
+
     //Create and persist Employee, no need to add Reservation
     @Override
     public Long createEmployee(Employee e) {
         em.persist(e);
         em.flush();
-        
+
         return e.getEmployeeId();
     }
-    
+
     //Search via Id
     @Override
     public Employee findEmployeeById(Long employeeId) throws EmployeeNotFoundException {
         Employee e = em.find(Employee.class, employeeId);
-        
-        if(e!= null) {
+
+        if (e != null) {
             return e;
         } else {
             throw new EmployeeNotFoundException("Error, Employee " + employeeId + " does not exist.");
         }
     }
-    
+
     //Search via username
     @Override
     public Employee findEmployeeByUsername(String username) throws EmployeeNotFoundException {
         Query query = em.createQuery("SELECT e FROM Employee e WHERE e.username = :inUsername");
         query.setParameter("inUsername", username);
-        
+
         try {
-            return (Employee)query.getSingleResult();
-        } catch(NoResultException | NonUniqueResultException ex) {
+            return (Employee) query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException ex) {
             throw new EmployeeNotFoundException("Error, Employee with username " + username + " does not exist.");
         }
     }
-    
-    
+
     //Tries to find e with username, if doesnt exists throw an error. Continue to check if password same,
     //if wrong throw an error, else, return the e.
     @Override
-    public Employee doLogin(String username, String password) throws FailedLoginException, EmployeeNotFoundException 
-    {
+    public Employee doLogin(String username, String password) throws FailedLoginException, EmployeeNotFoundException {
         try {
             Employee e = findEmployeeByUsername(username);
-            if(e.getPassword().equals(password)) {
+            if (e.getPassword().equals(password)) {
                 e.getWalkInReservations().size();
                 return e;
             } else {
                 throw new FailedLoginException("Error, please try logging in again with a different username or password!");
             }
-        } catch(EmployeeNotFoundException ex) {
+        } catch (EmployeeNotFoundException ex) {
             throw new EmployeeNotFoundException("Error, Employee with username" + username + " does not exist.");
         }
     }
-    
+
     @Override
-    public List<Employee> retrieveListOfEmployees() {
-        Query query = em.createQuery("SELECT e FROM Employee e");
-        return query.getResultList();
+    public List<Employee> retrieveListOfEmployees() throws EmployeeNotFoundException {
+        try {
+            Query query = em.createQuery("SELECT e FROM Employee e");
+            return query.getResultList();
+        } catch (NoResultException | NonUniqueResultException ex) {
+            throw new EmployeeNotFoundException("No employee data in database!");
+        }
     }
 
-    
 }
-
-
-   

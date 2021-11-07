@@ -5,22 +5,22 @@
  */
 package ejb.session.stateless;
 
-import entity.Employee;
 import entity.ReservationLineItem;
 import entity.RoomRate;
 import entity.RoomRecord;
 import entity.RoomType;
-import entity.WalkInReservation;
 import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import static util.enumeration.RoomRateTypeEnum.NORMAL;
+import static util.enumeration.RoomRateTypeEnum.PEAK;
+import static util.enumeration.RoomRateTypeEnum.PROMOTION;
 import static util.enumeration.RoomRateTypeEnum.PUBLISHED;
 import util.exception.ReservationLineItemNotFoundException;
 
@@ -54,20 +54,25 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
-
     @Override
-    public RoomRecord walkInSearch(RoomType roomType, Date checkIn, Date checkOut) {
-        for (RoomRecord r : roomType.getRoomRecords()) {
-            if (r.getRoomStatus().equals("available")) {
-                for (ReservationLineItem lineItem : r.getReservationLineItem()) {
-                    if (availableForBooking(lineItem.getCheckInDate(), lineItem.getCheckOutDate(),
-                            checkIn, checkOut)) {
-                        return r;
-                    }
+    public Integer walkInSearchRoom(RoomType roomType, Date checkIn, Date checkOut) {
+        Integer numOfRooms = roomType.getRoomRecords().size();
+        Date currentDate = new Date();
+
+        for (ReservationLineItem lineItem : roomType.getLineItems()) {
+            if (!availableForBooking(lineItem.getCheckInDate(), lineItem.getCheckOutDate(), checkIn, checkOut)) {
+                numOfRooms--;
+            }
+        }
+
+        if (currentDate == checkIn) {
+            for (RoomRecord room : roomType.getRoomRecords()) {
+                if (!room.getRoomStatus().equalsIgnoreCase("available")) {
+                    numOfRooms--;
                 }
             }
         }
-        return null;
+        return numOfRooms;
     }
 
     @Override
@@ -85,7 +90,57 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 }
             }
         }
-        return BigDecimal.valueOf(amount.longValue());
+        return BigDecimal.valueOf(amount);
+    }
+
+    @Override
+    public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
+        Long amount = new Long(0);
+        RoomType rt = em.find(RoomType.class, roomType);
+        RoomRate normalRate = new RoomRate();
+        List<RoomRate> promoRates = new ArrayList<>();
+        List<RoomRate> peakRates = new ArrayList<>();
+
+        for (RoomRate rr : rt.getRoomRates()) {
+            if (rr.getRoomRateType().equals(NORMAL)) {
+                normalRate = rr;
+            } else if (rr.getRoomRateType().equals(PEAK)) {
+                peakRates.add(rr);
+            } else if (rr.getRoomRateType().equals(PROMOTION)) {
+                promoRates.add(rr);
+            }
+        }
+
+        Date current = checkInDate;
+
+        while (current.before(checkOutDate)) {
+            Long ratePerDay = normalRate.getRatePerNight().longValue();
+            
+            for(RoomRate peak : peakRates) {
+                if(current.after(peak.getStartRateDate()) && current.before(peak.getEndRateDate())
+                        || current.equals((peak.getEndRateDate())) 
+                        || current.after(peak.getStartRateDate())) {
+                    ratePerDay = peak.getRatePerNight().longValue();
+                }
+            }
+            
+            for(RoomRate promo : promoRates) {
+                if(current.after(promo.getStartRateDate()) && current.before(promo.getEndRateDate())
+                        || current.equals((promo.getEndRateDate())) 
+                        || current.after(promo.getStartRateDate())) {
+                    ratePerDay = promo.getRatePerNight().longValue();
+                }
+            }
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(current);
+            calendar.add(Calendar.DATE, 1);
+            current = calendar.getTime();
+            
+            amount += ratePerDay;
+        }
+
+        return BigDecimal.valueOf(amount);
     }
 
     @Override
@@ -93,5 +148,4 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return !(startDate.after(checkIn) || endDate.before(checkOut));
     }
 
-    
 }
