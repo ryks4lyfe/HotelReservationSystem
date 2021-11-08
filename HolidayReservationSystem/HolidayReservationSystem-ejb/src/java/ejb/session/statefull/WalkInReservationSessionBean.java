@@ -78,9 +78,7 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @Override
     public WalkInReservation doCheckout(Employee e) {
         WalkInReservation r = new WalkInReservation(e, reservationDate, totalLineItems, totalAmount);
-        for(ReservationLineItem items : lineItems) {
-            r.getReservationLineItems().add(items);
-        }
+         r.setReservationLineItems(lineItems);
         em.persist(r);
         Employee employee = em.find(Employee.class, e.getEmployeeId());
         
@@ -94,9 +92,7 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @Override
     public OnlineReservation doCheckout(Guest g) {
         OnlineReservation r = new OnlineReservation(g, reservationDate, totalLineItems, totalAmount);
-        for(ReservationLineItem items : lineItems) {
-            r.getReservationLineItems().add(items);
-        }
+        r.setReservationLineItems(lineItems);
         em.persist(r);
         Guest guest = em.find(Guest.class, g.getGuestId());
         

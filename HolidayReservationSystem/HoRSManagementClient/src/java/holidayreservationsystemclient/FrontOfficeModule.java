@@ -115,6 +115,7 @@ public class FrontOfficeModule {
             Date checkOutDate;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             boolean continueReservation = true;
+            boolean emptyRooms = false;
 
             System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
             System.out.print("Enter check in date (yyyy-MM-dd)> ");
@@ -129,9 +130,10 @@ public class FrontOfficeModule {
 
                 for (RoomType r : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
                     System.out.println(r.getRoomRecords().size());
-                     System.out.println(reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate));
+                    System.out.println(r.getLineItems().size());
+                    System.out.println(reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate));
                     //Check each room type for number of available rooms 
-                    if (reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate) != 0) {
+                    if (reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate) > 0) {
                         enabledRooms.add(r);
                         numOfRooms.add(reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate));
                         availableRates.add(reservationSessionBeanRemote.walkInPrice(r, checkInDate, checkOutDate));
@@ -171,40 +173,69 @@ public class FrontOfficeModule {
                     } else {
                         System.out.println(availableRates.get(option - 1));
                         System.out.println(walkInReservationBeanRemote.print());
-                        System.out.println("Cart Cost: " + walkInReservationBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate
-                                , availableRates.get(option - 1),
+                        System.out.println("Cart Cost: " + walkInReservationBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate,
+                                availableRates.get(option - 1),
                                 enabledRooms.get(option - 1))));
                         System.out.println("Cart Items: " + walkInReservationBeanRemote.getTotalLineItems());
                     }
+
                 } else {
 
                     System.out.println("No more rooms left on the given dates.");
+                    emptyRooms = true;
                 }
-                System.out.println("--------------------------------------------");
-                System.out.println("1: Add more items");
-                System.out.println("2: Checkout");
-                System.out.println("3: Quit");
-                Integer response = scanner.nextInt();
 
-                if (response == 1) {
-                    //Continue while loop to add more item
-                    continueReservation = true;
-                } else if (response == 2) {
-                    //If cart not empty, proceed to checkout and end loop
-                    if (!walkInReservationBeanRemote.getLineItems().isEmpty()) {
-                        walkInReservationBeanRemote.doCheckout(employee);
-                        continueReservation = false;
-                        walkInReservationBeanRemote.resetCart();
-                        System.out.println("CheckOut Completed");
-                    } else {
-                        //Cart empty, continue while loop to add more items
-                        System.out.println("Cart is Empty, please add items");
+                if (emptyRooms != true) {
+                    System.out.println("--------------------------------------------");
+                    System.out.println("1: Add more items");
+                    System.out.println("2: Checkout");
+                    System.out.println("3: Quit");
+                    Integer response = scanner.nextInt();
+
+                    if (response == 1) {
+                        //Continue while loop to add more item
                         continueReservation = true;
+                    } else if (response == 2) {
+                        //If cart not empty, proceed to checkout and end loop
+                        if (!walkInReservationBeanRemote.getLineItems().isEmpty()) {
+                            walkInReservationBeanRemote.doCheckout(employee);
+                            continueReservation = false;
+                            walkInReservationBeanRemote.resetCart();
+                            System.out.println("CheckOut Completed");
+                        } else {
+                            //Cart empty, continue while loop to add more items
+                            System.out.println("Cart is Empty, please add items");
+                            continueReservation = true;
+                        }
+                    } else if (response == 3) {
+                        //Quit, remove all item from cart and disassociate
+                        continueReservation = false;
+                        walkInReservationBeanRemote.removeAllItemsFromCart();
                     }
-                } else if (response == 3) {
-                    //Quit, remove all item from cart and disassociate
-                    continueReservation = false;
-                    walkInReservationBeanRemote.removeAllItemsFromCart();
+
+                } else {
+                    System.out.println("--------------------------------------------");
+                    System.out.println("1: Checkout");
+                    System.out.println("2: Quit");
+                    Integer response = scanner.nextInt();
+
+                    if (response == 1) {
+                        if (!walkInReservationBeanRemote.getLineItems().isEmpty()) {
+                            walkInReservationBeanRemote.doCheckout(employee);
+                            continueReservation = false;
+                            walkInReservationBeanRemote.resetCart();
+                            System.out.println("CheckOut Completed");
+                        } else {
+                            //Cart empty, continue while loop to add more items
+                            System.out.println("Cart is Empty, please add items");
+                            continueReservation = true;
+                        }
+                    } else if (response == 2) {
+                        //Quit, remove all item from cart and disassociate
+                        continueReservation = false;
+                        walkInReservationBeanRemote.removeAllItemsFromCart();
+                    }
+
                 }
 
             }

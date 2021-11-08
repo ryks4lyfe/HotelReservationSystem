@@ -60,7 +60,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         Date currentDate = new Date();
 
         for (ReservationLineItem lineItem : roomType.getLineItems()) {
-            if (!availableForBooking(lineItem.getCheckInDate(), lineItem.getCheckOutDate(), checkIn, checkOut)) {
+            if (!(checkIn.after(lineItem.getCheckOutDate()) || checkOut.before(lineItem.getCheckInDate()))) {
                 numOfRooms--;
             }
         }
@@ -78,12 +78,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @Override
     public BigDecimal walkInPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
         Long amount = new Long(0);
-        RoomType rt = em.find(RoomType.class, roomType.getRoomTypeId());
+        RoomType rt = em.find(RoomType.class,
+                roomType.getRoomTypeId());
         for (RoomRate rr : rt.getRoomRates()) {
             if (rr.getRoomRateType().equals(PUBLISHED)) {
                 BigDecimal price = rr.getRatePerNight();
                 if (checkOutDate.getTime() != checkInDate.getTime()) {
-                    Long daysBetween = (checkOutDate.getTime() - checkInDate.getTime())/86400000;
+                    Long daysBetween = (checkOutDate.getTime() - checkInDate.getTime()) / 86400000;
                     amount = price.longValue() * daysBetween;
                 } else {
                     amount = price.longValue();
@@ -96,7 +97,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @Override
     public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
         Long amount = new Long(0);
-        RoomType rt = em.find(RoomType.class, roomType);
+        RoomType rt = em.find(RoomType.class,
+                roomType.getRoomTypeId());
         RoomRate normalRate = new RoomRate();
         List<RoomRate> promoRates = new ArrayList<>();
         List<RoomRate> peakRates = new ArrayList<>();
@@ -115,19 +117,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         while (current.before(checkOutDate)) {
             Long ratePerDay = normalRate.getRatePerNight().longValue();
-            
-            for(RoomRate peak : peakRates) {
-                if(current.after(peak.getStartRateDate()) && current.before(peak.getEndRateDate())
-                        || current.equals((peak.getEndRateDate())) 
-                        || current.after(peak.getStartRateDate())) {
+
+            for (RoomRate peak : peakRates) {
+                //
+                if (!(current.after(peak.getEndRateDate()) || current.before(peak.getStartRateDate()))) {
                     ratePerDay = peak.getRatePerNight().longValue();
                 }
             }
-            
-            for(RoomRate promo : promoRates) {
-                if(current.after(promo.getStartRateDate()) && current.before(promo.getEndRateDate())
-                        || current.equals((promo.getEndRateDate())) 
-                        || current.after(promo.getStartRateDate())) {
+
+            for (RoomRate promo : promoRates) {
+                if (!(current.after(promo.getEndRateDate()) || current.before(promo.getStartRateDate()))) {
                     ratePerDay = promo.getRatePerNight().longValue();
                 }
             }
@@ -136,7 +135,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             calendar.setTime(current);
             calendar.add(Calendar.DATE, 1);
             current = calendar.getTime();
-            
+
             amount += ratePerDay;
         }
 
