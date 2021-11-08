@@ -10,6 +10,7 @@ import entity.Employee;
 import entity.Guest;
 import entity.OnlineReservation;
 import entity.ReservationLineItem;
+import entity.RoomType;
 import entity.WalkInReservation;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -47,6 +48,10 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
         initialiseState();
     }
     
+    @Override
+    public String print() {
+        return "-----------------------------------------------------";
+    }
     
     
     private void initialiseState() {
@@ -60,11 +65,12 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @Override
     public BigDecimal addItem(ReservationLineItem lineItem) {
         totalLineItems++;
-        totalAmount.add(lineItem.getAmount());
+        totalAmount = totalAmount.add(lineItem.getAmount());
         lineItems.add(lineItem);
         em.persist(lineItem);
         //add Line Item into the selected roomType
-        lineItem.getRoomType().getLineItems().add(lineItem);
+        RoomType rt = em.find(RoomType.class, lineItem.getRoomType().getRoomTypeId());
+        rt.getLineItems().add(lineItem);
         em.flush();
         return totalAmount;
     }
@@ -104,11 +110,12 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @Override
     public void removeAllItemsFromCart() {
         for(ReservationLineItem r : lineItems) {
+            ReservationLineItem r1 = em.find(ReservationLineItem.class, r.getReservationLineItemId());
             //Remove lineItems from associated roomType
-            r.getRoomType().getLineItems().remove(r);
+            r1.getRoomType().getLineItems().remove(r1);
             
             //Since room mandatory can just remove r
-            em.remove(r); 
+            em.remove(r1); 
         }
         
         initialiseState();

@@ -49,5 +49,7 @@ public interface WalkInReservationSessionBeanRemote {
     public void removeAllItemsFromCart();
 
     public OnlineReservation doCheckout(Guest g);
+
+    public String print();
     
 }

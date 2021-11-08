@@ -60,18 +60,13 @@ public class Main {
     @EJB
     private static EmployeeSessionBeanRemote employeeSessionBeanRemote;
     
-    
-    
-    
-    
-    
-
-    
+   
     public static void main(String[] args)  {
         MainApp mainApp = new MainApp(partnerSessionBeanRemote, employeeSessionBeanRemote,
                 guestSessionBeanRemote, reservationSessionBean, roomRateSessionBean,
                 roomRecordSessionBean, roomTypeSessionBean, walkInReservationSessionBeanRemote);
         mainApp.runApp();
+        
   
          try {
              //allocate room to guests reservations at 2am daily
@@ -86,7 +81,6 @@ public class Main {
         } catch (ParseException ex) {
             System.out.println("invalid date format");
         }
-
     }
     
 }

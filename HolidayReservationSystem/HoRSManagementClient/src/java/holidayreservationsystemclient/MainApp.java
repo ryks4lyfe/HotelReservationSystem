@@ -38,35 +38,33 @@ public class MainApp {
     private PartnerSessionBeanRemote partnerSessionBeanRemote;
     private EmployeeSessionBeanRemote employeeSessionBeanRemote;
     private GuestSessionBeanRemote guestSessionBeanRemote;
-    private RoomRateSessionBeanRemote roomRateSessionBeanRemote; 
-    private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote; 
-    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote; 
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
+    private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote;
+    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
-    
+
     private WalkInReservationSessionBeanRemote walkInReservationBeanRemote;
-    
+
     private SystemAdministrationModule systemAdminModule;
     private HotelOperationModule hotelOpModule;
     private FrontOfficeModule frontOfficeModule;
-    
+
     private Employee employee;
 
     public MainApp(PartnerSessionBeanRemote partnerSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote,
             GuestSessionBeanRemote guestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBean,
             RoomRateSessionBeanRemote roomRateSessionBeanRemote, RoomRecordSessionBeanRemote roomRecordSessionBeanRemote,
             RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, WalkInReservationSessionBeanRemote walkInReservationBeanRemote) {
-        this.partnerSessionBeanRemote = partnerSessionBeanRemote; 
-        this.employeeSessionBeanRemote = employeeSessionBeanRemote; 
-        this.guestSessionBeanRemote = guestSessionBeanRemote; 
-        this.reservationSessionBeanRemote = reservationSessionBean; 
-        this.roomRateSessionBeanRemote = roomRateSessionBeanRemote; 
-        this.roomRecordSessionBeanRemote = roomRecordSessionBeanRemote; 
-        this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote; 
+        this.partnerSessionBeanRemote = partnerSessionBeanRemote;
+        this.employeeSessionBeanRemote = employeeSessionBeanRemote;
+        this.guestSessionBeanRemote = guestSessionBeanRemote;
+        this.reservationSessionBeanRemote = reservationSessionBean;
+        this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
+        this.roomRecordSessionBeanRemote = roomRecordSessionBeanRemote;
+        this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.walkInReservationBeanRemote = walkInReservationBeanRemote;
-        
-    }
 
-    
+    }
 
     public void runApp() {
 
@@ -76,12 +74,11 @@ public class MainApp {
         while (true) {
             System.out.println("*** Welcome to HoRS :: Hotel Management System ***\n");
             System.out.println("1: Login");
-            System.out.println("2: Create Employee");
-            System.out.println("3: Exit\n");
-            
+            System.out.println("2: Exit\n");
+
             response = 0;
 
-            while (response < 1 || response > 3) {
+            while (response < 1 || response > 2) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -90,32 +87,22 @@ public class MainApp {
                     try {
                         doLogin();
                         System.out.println("Login successful!\n");
-
-                        //systemAdminModule = new SystemAdministrationModule(employeeSessionBeanRemote, partnerSessionBeanRemote, employee);
-                        //hotelOpModule = new HotelOperationModule(employeeSessionBeanRemote, partnerSessionBeanRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, reservationControllerRemote, employee);
-                        //frontOfficeModule = new FrontOfficeModule(employeeSessionBeanRemote, guestSessionBeanRemote, partnerSessionBeanRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, walkInReservationSessionBeanRemote, reservationControllerRemote, employee);
                         menuMain();
                     } catch (FailedLoginException | EmployeeNotFoundException ex) {
                         System.out.println(ex.getMessage());
                     }
-
                 } else if (response == 2) {
-                     SystemAdministrationModule systemAdminModule = new SystemAdministrationModule(partnerSessionBeanRemote, employeeSessionBeanRemote, employee);
-                     systemAdminModule.menuSystemAdministration();
-       
-                }
-                
-                else if (response == 3) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
 
-            if (response == 3) {
+            if (response == 2) {
                 break;
             }
         }
+        System.out.println("Finish!\n");
     }
 
     private void doLogin() throws FailedLoginException, EmployeeNotFoundException {
@@ -124,9 +111,9 @@ public class MainApp {
         String password;
 
         System.out.println("*** HoRS System :: Employee Login ***\n");
-        System.out.print("Enter email> ");
+        System.out.print("Enter Username> ");
         email = scanner.nextLine().trim();
-        System.out.print("Enter password> ");
+        System.out.print("Enter Password> ");
         password = scanner.nextLine().trim();
 
         if (email.length() > 0 && password.length() > 0) {
@@ -168,9 +155,9 @@ public class MainApp {
 
                     } else if (employee.getEnum().toString().equals("GUEST_RELATION_OFFICER")) {
                         frontOfficeModule = new FrontOfficeModule(employeeSessionBeanRemote, guestSessionBeanRemote, partnerSessionBeanRemote,
-                        roomRecordSessionBeanRemote, roomTypeSessionBeanRemote,
-                        roomRateSessionBeanRemote, reservationSessionBeanRemote, walkInReservationBeanRemote, employee);
-                        frontOfficeModule.menuFrontOffice();   
+                                roomRecordSessionBeanRemote, roomTypeSessionBeanRemote,
+                                roomRateSessionBeanRemote, reservationSessionBeanRemote, walkInReservationBeanRemote, employee);
+                        frontOfficeModule.menuFrontOffice();
                     }
 
                 } else if (response == 2) {

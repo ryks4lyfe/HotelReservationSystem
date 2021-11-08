@@ -128,6 +128,8 @@ public class FrontOfficeModule {
                 List<RoomType> enabledRooms = new ArrayList<>();
 
                 for (RoomType r : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
+                    System.out.println(r.getRoomRecords().size());
+                     System.out.println(reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate));
                     //Check each room type for number of available rooms 
                     if (reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate) != 0) {
                         enabledRooms.add(r);
@@ -143,7 +145,7 @@ public class FrontOfficeModule {
                 if (!enabledRooms.isEmpty()) {
 
                     //For each avaialble roomType, display the room record and rate details
-                    for (int i = 0; i < enabledRooms.size() - 1; i++) {
+                    for (int i = 0; i < enabledRooms.size(); i++) {
                         RoomType rt = enabledRooms.get(i);
                         BigDecimal price = availableRates.get(i);
                         System.out.println("-------------------------------------------");
@@ -167,8 +169,12 @@ public class FrontOfficeModule {
                     if (option < 1 || option > enabledRooms.size()) {
                         System.out.println("Please input a proper option");
                     } else {
-                        walkInReservationBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate, availableRates.get(option),
-                                enabledRooms.get(option)));
+                        System.out.println(availableRates.get(option - 1));
+                        System.out.println(walkInReservationBeanRemote.print());
+                        System.out.println("Cart Cost: " + walkInReservationBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate
+                                , availableRates.get(option - 1),
+                                enabledRooms.get(option - 1))));
+                        System.out.println("Cart Items: " + walkInReservationBeanRemote.getTotalLineItems());
                     }
                 } else {
 

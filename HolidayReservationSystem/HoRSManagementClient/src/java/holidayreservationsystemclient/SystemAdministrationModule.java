@@ -140,7 +140,7 @@ public class SystemAdministrationModule {
             }
             System.out.println("");
         } catch (EmployeeNotFoundException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("No Employee record in database!");
         }
 
     }
@@ -150,7 +150,9 @@ public class SystemAdministrationModule {
         Partner newPartner = new Partner();
 
         System.out.println("*** HoRS :: Hotel Management System :: Create New Partner ***\n");
-        System.out.print("Enter Name> ");
+        System.out.print("Enter Partner Name> ");
+        newPartner.setPartnerName(scanner.nextLine().trim());
+        System.out.print("Enter Username> ");
         newPartner.setUsername(scanner.nextLine().trim());
         System.out.print("Enter Password> ");
         newPartner.setPassword(scanner.nextLine().trim());
@@ -176,7 +178,7 @@ public class SystemAdministrationModule {
 
             System.out.println("");
         } catch (PartnerNotFoundException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("No Partner records in database!");
         }
 
     }

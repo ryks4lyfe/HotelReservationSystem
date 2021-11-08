@@ -67,7 +67,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         if (currentDate == checkIn) {
             for (RoomRecord room : roomType.getRoomRecords()) {
-                if (!room.getRoomStatus().equalsIgnoreCase("available")) {
+                if (!room.getRoomStatus().equalsIgnoreCase("not in use")) {
                     numOfRooms--;
                 }
             }
@@ -78,12 +78,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @Override
     public BigDecimal walkInPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
         Long amount = new Long(0);
-        RoomType rt = em.find(RoomType.class, roomType);
+        RoomType rt = em.find(RoomType.class, roomType.getRoomTypeId());
         for (RoomRate rr : rt.getRoomRates()) {
             if (rr.getRoomRateType().equals(PUBLISHED)) {
                 BigDecimal price = rr.getRatePerNight();
                 if (checkOutDate.getTime() != checkInDate.getTime()) {
-                    Long daysBetween = checkOutDate.getTime() - checkInDate.getTime();
+                    Long daysBetween = (checkOutDate.getTime() - checkInDate.getTime())/86400000;
                     amount = price.longValue() * daysBetween;
                 } else {
                     amount = price.longValue();

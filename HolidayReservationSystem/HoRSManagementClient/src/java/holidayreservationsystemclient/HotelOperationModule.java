@@ -255,6 +255,7 @@ private Employee employee;
             System.out.println("Room Type capacity: " + roomType.getCapacity());
             System.out.println("Room Type amenities: " + roomType.getAmenities());
             System.out.println("Room Type status: " + roomType.getTypeStatus());
+            System.out.println("Room Type number of rooms: " + roomType.getRoomRecords().size());
             System.out.println("------------------------");
             System.out.println("1: Update Room Type");
             System.out.println("2: Delete Room Type");
