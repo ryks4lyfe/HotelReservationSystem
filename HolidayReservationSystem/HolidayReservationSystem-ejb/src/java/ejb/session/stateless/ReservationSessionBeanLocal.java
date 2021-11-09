@@ -28,8 +28,6 @@ public interface ReservationSessionBeanLocal {
     public Integer walkInSearchRoom(RoomType roomType, Date checkIn, Date checkOut);
 
     public BigDecimal walkInPrice(RoomType roomType, Date checkInDate, Date checkOutDate);
-
-    public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut);
     
     public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate);
 

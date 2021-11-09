@@ -12,9 +12,11 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -33,6 +35,7 @@ public abstract class ReservationRecord implements Serializable {
     protected Integer totalLineItem;
     protected BigDecimal totalAmount;
 
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER)
     protected List<ReservationLineItem> reservationLineItems;
 
     public ReservationRecord() {

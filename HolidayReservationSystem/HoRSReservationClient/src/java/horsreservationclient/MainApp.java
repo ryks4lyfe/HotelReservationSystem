@@ -199,6 +199,9 @@ public class MainApp {
 
     private void searchHotel() {
         try {
+            for (RoomType r : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
+                    System.out.println(r.getRoomRecords().size());
+            }
             Scanner scanner = new Scanner(System.in);
             Date checkInDate;
             Date checkOutDate;
@@ -228,7 +231,7 @@ public class MainApp {
                         availableRates.add(reservationSessionBeanRemote.reservationPrice(r, checkInDate, checkOutDate));
                     } else {
                         System.out.println("-------------------------------------------");
-                        System.out.println("Room Type " + r.getTypeName() + " has no rooms left");
+                        System.out.println("Room Type : " + r.getTypeName() + " has no rooms left");
                         System.out.println("-------------------------------------------");
                     }
                 }
@@ -260,7 +263,7 @@ public class MainApp {
                     if (option < 1 || option > enabledRooms.size()) {
                         System.out.println("Please input a proper option");
                     } else {
-                        
+
                         System.out.println("Cart Cost: " + walkInReservationSessionBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate,
                                 availableRates.get(option - 1),
                                 enabledRooms.get(option - 1))));
@@ -336,14 +339,16 @@ public class MainApp {
     private void viewMyReservationDetails() {
         System.out.println("\n *** HoRS System :: View My Reservation Details ***\n");
         System.out.print("Enter reservation id> ");
-        Long reservationId = scanner.nextLong();
+        Integer rId = scanner.nextInt();
+        Long reservationId = rId.longValue();
 
         try {
             ReservationLineItem lineItem = reservationSessionBeanRemote.findReservationLineItemById(reservationId);
+            System.out.println("--------------------------------------------");
             System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
             System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
             System.out.println("Amount: " + lineItem.getAmount().toString());
-            System.out.println("Room Number: " + lineItem.getRoom().getRoomNum() + "\n");
+            System.out.println("--------------------------------------------");
 
         } catch (ReservationLineItemNotFoundException ex) {
             System.out.print(ex.getMessage());
@@ -351,17 +356,28 @@ public class MainApp {
     }
 
     private void viewAllMyReservations() {
-        if (!currentGuest.getOnlineReservations().isEmpty()) {
-            for (OnlineReservation or : currentGuest.getOnlineReservations()) {
-                for (ReservationLineItem lineItem : or.getReservationLineItems()) {
-                    System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
-                    System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
-                    System.out.println("Amount: " + lineItem.getAmount().toString());
-                    System.out.println("Room Number: " + lineItem.getRoom().getRoomNum() + "\n");
+        Guest g;
+        int i = 1;
+        try {
+            g = guestSessionBeanRemote.findGuestById(currentGuest.getGuestId());
+            if (!g.getOnlineReservations().isEmpty()) {
+                for (OnlineReservation or : g.getOnlineReservations()) {
+                    for (ReservationLineItem lineItem : or.getReservationLineItems()) {
+                        System.out.println("--------------------------------------------");
+                        System.out.println("Reservation " + i + ": ");
+                        System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+                        System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+                        System.out.println("Amount: " + lineItem.getAmount().toString());
+                        System.out.println("--------------------------------------------");
+                        i++;
+                    }
                 }
+            } else {
+                System.out.println("You have no Reservations \n");
             }
-        } else {
-            System.out.println("You have no Reservations \n");
+        } catch (GuestNotFoundException ex) {
+            System.out.println("Guest does not exist!");
         }
+
     }
 }

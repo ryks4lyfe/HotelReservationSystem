@@ -80,7 +80,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
                 throw new FailedLoginException("Error, please try logging in again with a different username or password!");
             }
         } catch(PartnerNotFoundException ex) {
-            throw new PartnerNotFoundException("Error, Partner with Username " + username + " does not exist.");
+            throw new PartnerNotFoundException("Error, Partner with Username: " + username + " does not exist.");
         }
     }
     
@@ -94,6 +94,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         }
     }
 
+    @Override
     public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId) {
         Partner p = em.find(Partner.class, partnerId);
         return p.getPartnerReservations();

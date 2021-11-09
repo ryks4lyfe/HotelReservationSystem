@@ -96,9 +96,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     @Override
     public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
+
         Long amount = new Long(0);
-        RoomType rt = em.find(RoomType.class,
-                roomType.getRoomTypeId());
+        RoomType rt = em.find(RoomType.class, roomType.getRoomTypeId());
         RoomRate normalRate = new RoomRate();
         List<RoomRate> promoRates = new ArrayList<>();
         List<RoomRate> peakRates = new ArrayList<>();
@@ -120,14 +120,20 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
             for (RoomRate peak : peakRates) {
                 //
-                if (!(current.after(peak.getEndRateDate()) || current.before(peak.getStartRateDate()))) {
+                if ((current.after(peak.getStartRateDate()) && current.before(peak.getEndRateDate()))
+                        || current.equals(peak.getEndRateDate())
+                        || current.equals(peak.getStartRateDate())) {
                     ratePerDay = peak.getRatePerNight().longValue();
+                    System.out.println("PEAK!");
                 }
             }
 
             for (RoomRate promo : promoRates) {
-                if (!(current.after(promo.getEndRateDate()) || current.before(promo.getStartRateDate()))) {
+                if ((current.after(promo.getStartRateDate()) && current.before(promo.getEndRateDate()))
+                        || current.equals(promo.getEndRateDate())
+                        || current.equals(promo.getStartRateDate())) {
                     ratePerDay = promo.getRatePerNight().longValue();
+                    System.out.println("PROMOTION!");
                 }
             }
 
@@ -137,14 +143,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             current = calendar.getTime();
 
             amount += ratePerDay;
+            System.out.println("This is the total" + amount);
         }
 
         return BigDecimal.valueOf(amount);
     }
 
-    @Override
-    public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut) {
-        return !(startDate.after(checkIn) || endDate.before(checkOut));
-    }
+    
 
 }
