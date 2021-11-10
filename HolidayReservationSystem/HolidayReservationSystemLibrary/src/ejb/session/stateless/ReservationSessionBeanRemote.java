@@ -47,9 +47,7 @@ public interface ReservationSessionBeanRemote {
 
     public List<ReservationLineItem> findListOfReservationLineItemsByCheckInDate(Date checkInDate) throws ReservationLineItemNotFoundException;
 
-    public void roomAllocationsForToday() throws ReservationLineItemNotFoundException;
-    
-    //public void updateRoomStatusForReservations(RoomRecord roomToCheckOut);
+    public List<RoomRecord> roomAllocationsForToday() throws ReservationLineItemNotFoundException;
 
 
 }

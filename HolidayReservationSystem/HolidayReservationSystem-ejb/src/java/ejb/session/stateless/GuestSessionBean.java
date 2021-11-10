@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -33,13 +32,8 @@ import util.exception.UnallowedCheckOutException;
 @Stateless
 public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBeanLocal {
 
-    @EJB
-    private ReservationSessionBeanLocal reservationSessionBean;
-
     @PersistenceContext(unitName = "HolidayReservationSystem-ejbPU")
     private EntityManager em;
-    
-    
 
     public GuestSessionBean() {
 
@@ -177,14 +171,15 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
                     if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {
                         RoomRecord roomToCheckOut = r.getRoom();
                         roomsCheckedOut.add(roomToCheckOut);
-                        if (roomToCheckOut.getRoomStatus().equals("occupied but available") /*|| roomToCheckOut.getRoomStatus().equals("occupied")*/) {
-                           // roomToCheckOut.setRoomStatus("unavailable1");
+                        if (roomToCheckOut.getRoomStatus().equals("occupied but available") || roomToCheckOut.getRoomStatus().equals("occupied")) {
+                            roomToCheckOut.setRoomStatus("unavailable");
+                            //after 1.5 hours for cleaning, make it available
                             roomToCheckOut.setRoomStatus("available");
                         } else if (roomToCheckOut.getRoomStatus().equals("reserved and not ready")) {
-                            roomToCheckOut.setRoomStatus("unavailable2");
+                            roomToCheckOut.setRoomStatus("unavailable");
+                            //after 1.5hours for cleaning, make it reserved and ready;
                             roomToCheckOut.setRoomStatus("reserved and ready");
                         }
-                        //reservationSessionBean.updateRoomStatusForReservations(roomToCheckOut);
                     }
                 }
             }

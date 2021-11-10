@@ -217,21 +217,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return query.getResultList(); 
     }
     
-  /*  @Schedule(hour = "13")
-    @Override
-    public void updateRoomStatusForReservations(RoomRecord roomToCheckOut) {
-        
-        
-        if (roomToCheckOut.getRoomStatus().equals("unavailable1")) {
-        roomToCheckOut.setRoomStatus("available");
-        } else if (roomToCheckOut.getRoomStatus().equals("unavailable2")) {
-            roomToCheckOut.setRoomStatus("reserved and ready");
-        }
-    }*/
-    
     @Override
     @Schedule(hour = "2")
-    public void roomAllocationsForToday() throws ReservationLineItemNotFoundException 
+    public List<RoomRecord> roomAllocationsForToday() throws ReservationLineItemNotFoundException 
     {
        Date todaysDate = new Date(); 
        List<RoomRecord> newlyReservedRoomRecords  = new ArrayList<>(); 
@@ -307,7 +295,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
        }
        
        
-      // return newlyReservedRoomRecords; 
+       return newlyReservedRoomRecords; 
        
     }
 

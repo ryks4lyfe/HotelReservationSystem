@@ -853,7 +853,7 @@ private Employee employee;
         try {
         Date todayDate = formatter.parse(dateString);    */
         try {
-        reservationSessionBeanRemote.roomAllocationsForToday(); 
+        List<RoomRecord> reservedToday = reservationSessionBeanRemote.roomAllocationsForToday(); 
        /* } catch (ParseException ex) {
             System.out.println("An error has occurred while entering date: " + ex.getMessage() + "\n"); */
         } catch(ReservationLineItemNotFoundException ex) {
