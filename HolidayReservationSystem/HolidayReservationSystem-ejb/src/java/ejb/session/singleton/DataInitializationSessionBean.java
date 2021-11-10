@@ -89,9 +89,9 @@ public class DataInitializationSessionBean {
         em.persist(new RoomRate("Grand Suite Published", BigDecimal.valueOf(500), "available", new Date(), new Date(), PUBLISHED, grandSuite));
         em.persist(new RoomRate("Grand Suite Normal", BigDecimal.valueOf(250), "available", new Date(), new Date(), NORMAL, grandSuite));
         
-        em.persist(new RoomRecord(0101, "available", deluxeRoom));
-        em.persist(new RoomRecord(0201, "available", deluxeRoom));
-        em.persist(new RoomRecord(0301, "available", deluxeRoom));
+        em.persist(new RoomRecord("0101", "available", deluxeRoom));
+        em.persist(new RoomRecord("0201", "available", deluxeRoom));
+        em.persist(new RoomRecord("0301, "available", deluxeRoom));
         em.persist(new RoomRecord(0401, "available", deluxeRoom));
         em.persist(new RoomRecord(0501, "available", deluxeRoom));
 
