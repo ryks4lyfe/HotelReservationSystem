@@ -428,7 +428,7 @@ private Employee employee;
             
             System.out.println("*** HoRS :: Hotel Management System :: Create New Room ***\n");
             System.out.print("Enter Room Number (room floor + room number)> ");
-            newRoom.setRoomNum(scanner.nextInt());
+            newRoom.setRoomNum(scanner.nextLine());
             scanner.nextLine();
             System.out.print("Enter Room Type Name> ");
             String roomTypeName = scanner.nextLine().trim();
