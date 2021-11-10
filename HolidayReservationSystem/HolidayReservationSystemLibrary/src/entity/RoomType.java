@@ -44,6 +44,8 @@ public class RoomType implements Serializable {
     private String capacity; 
     @Column(nullable = false)
     private String typeStatus; 
+    @Column(nullable = false) 
+    private String rankRoom; 
     
     
     @OneToMany (mappedBy = "roomType", cascade = {}, fetch = FetchType.EAGER)
@@ -61,7 +63,7 @@ public class RoomType implements Serializable {
         lineItems = new ArrayList<>();
     }
 
-    public RoomType(String typeName, String description, String size, String bed, String amenities, String capacity, String typeStatus) {
+    public RoomType(String typeName, String description, String size, String bed, String amenities, String capacity, String typeStatus, String rankRoom) {
         this();
         this.typeName = typeName;
         this.description = description;
@@ -70,6 +72,7 @@ public class RoomType implements Serializable {
         this.amenities = amenities;
         this.capacity = capacity;
         this.typeStatus = typeStatus;
+        this.rankRoom = rankRoom; 
     }
 
     public List<ReservationLineItem> getLineItems() {
@@ -185,6 +188,14 @@ public class RoomType implements Serializable {
 
     public void setAmenities(String amenities) {
         this.amenities = amenities;
+    }
+
+    public String getRankRoom() {
+        return rankRoom;
+    }
+
+    public void setRankRoom(String rankRoom) {
+        this.rankRoom = rankRoom;
     }
 
 

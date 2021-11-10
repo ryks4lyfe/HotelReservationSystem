@@ -1,12 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb.session.stateless;
 
 import entity.Partner;
 import entity.PartnerReservation;
+
+import classes.RankComparator;
+import classes.RankComparatorRooms;
+import entity.ExceptionReport;
+
 import entity.ReservationLineItem;
 import entity.RoomRate;
 import entity.RoomRecord;
@@ -14,9 +14,13 @@ import entity.RoomType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 import javax.ejb.EJB;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -56,6 +60,39 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         } else {
             throw new ReservationLineItemNotFoundException("Error, Guest " + reservationLineItemId + " does not exist.");
         }
+    }
+    
+    @Override
+    public List<ReservationLineItem> findListOfReservationLineItemsByCheckInDate(Date checkInDate) throws ReservationLineItemNotFoundException 
+    {
+        Query query = em.createQuery("SELECT r FROM ReservationLineItem r WHERE r.checkInDate = :inCheckInDate");
+        query.setParameter("inCheckInDate", checkInDate);
+        
+        if (query.getResultList() != null) 
+        {
+            return query.getResultList();
+        }
+        else throw new ReservationLineItemNotFoundException("Reservation Line Item with Check In Date " + checkInDate + " cannot be found!");  
+    }
+    
+    @Override
+    public List<ReservationLineItem> findListOfReservationLineItemsByCheckOutDate(Date checkOutDate) throws ReservationLineItemNotFoundException 
+    {
+        Query query = em.createQuery("SELECT r FROM ReservationLineItem r WHERE r.checkOutDate = :inCheckOutDate");
+        query.setParameter("inCheckOutDate", checkOutDate);
+        
+        if (query.getResultList() != null) 
+        {
+            return query.getResultList();
+        }
+        else throw new ReservationLineItemNotFoundException("Reservation Line Item with Check In Date " + checkOutDate + " cannot be found!");  
+    }
+    
+    @Override
+    public List<ReservationLineItem> findAllReservationLineItems() 
+    {
+        Query query = em.createQuery("SELECT r FROM ReservationLineItem r"); 
+        return query.getResultList(); 
     }
 
     @Override
@@ -119,9 +156,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     @Override
     public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
-
         Long amount = new Long(0);
-        RoomType rt = em.find(RoomType.class, roomType.getRoomTypeId());
+        RoomType rt = em.find(RoomType.class,
+                roomType.getRoomTypeId());
         RoomRate normalRate = new RoomRate();
         List<RoomRate> promoRates = new ArrayList<>();
         List<RoomRate> peakRates = new ArrayList<>();
@@ -143,20 +180,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
             for (RoomRate peak : peakRates) {
                 //
-                if ((current.after(peak.getStartRateDate()) && current.before(peak.getEndRateDate()))
-                        || current.equals(peak.getEndRateDate())
-                        || current.equals(peak.getStartRateDate())) {
+                if (!(current.after(peak.getEndRateDate()) || current.before(peak.getStartRateDate()))) {
                     ratePerDay = peak.getRatePerNight().longValue();
-                    System.out.println("PEAK!");
                 }
             }
 
             for (RoomRate promo : promoRates) {
-                if ((current.after(promo.getStartRateDate()) && current.before(promo.getEndRateDate()))
-                        || current.equals(promo.getEndRateDate())
-                        || current.equals(promo.getStartRateDate())) {
+                if (!(current.after(promo.getEndRateDate()) || current.before(promo.getStartRateDate()))) {
                     ratePerDay = promo.getRatePerNight().longValue();
-                    System.out.println("PROMOTION!");
                 }
             }
 
@@ -166,10 +197,131 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             current = calendar.getTime();
 
             amount += ratePerDay;
-            System.out.println("This is the total" + amount);
         }
 
         return BigDecimal.valueOf(amount);
+    }
+
+
+    @Override
+    public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut) 
+    {
+        return !(startDate.after(checkIn) || endDate.before(checkOut));
+    }
+    
+    @Override
+    public ExceptionReport createExceptionReport(ExceptionReport exceptionReport) {
+        em.persist(exceptionReport); 
+        em.flush();
+        return exceptionReport; 
+    } 
+    
+    @Override
+    public ExceptionReport updateExceptionReport (Long exceptionReportId, String report) {
+        ExceptionReport exceptionReport = em.find(ExceptionReport.class, exceptionReportId); 
+        
+        if (exceptionReport != null) {
+            List<String> reports = exceptionReport.getReports(); 
+            reports.add(report) ; 
+            exceptionReport.setReports(reports); 
+        }
+        
+        return exceptionReport; 
+    }
+    
+    @Override
+    public ExceptionReport findExceptionReport(Long exceptionReportId) {
+        ExceptionReport exceptionReport = em.find(ExceptionReport.class, exceptionReportId);
+        
+        return exceptionReport; 
+    }
+    
+    @Override
+    public List<ExceptionReport> viewAllExceptionReports() {
+        Query query = em.createQuery("SELECT er FROM ExceptionReport er"); 
+        return query.getResultList(); 
+    }
+    
+    @Override
+    @Schedule(hour = "2")
+    public List<RoomRecord> roomAllocationsForToday() throws ReservationLineItemNotFoundException 
+    {
+       Date todaysDate = new Date(); 
+       List<RoomRecord> newlyReservedRoomRecords  = new ArrayList<>(); 
+       List<RoomRecord> roomsAvailableForToday = roomRecordSessionBeanRemote.findAllAvailableRoomRecords(); 
+       ExceptionReport exceptionReport = new ExceptionReport(); 
+       
+       List<ReservationLineItem> reservationLineItemsCheckInToday = findListOfReservationLineItemsByCheckInDate(todaysDate); 
+       
+       List<ReservationLineItem> reservationLineItemsCheckOutToday = findListOfReservationLineItemsByCheckOutDate(todaysDate); 
+       
+       for (ReservationLineItem reservationLineItem : reservationLineItemsCheckOutToday) 
+       {
+           RoomRecord occupiedButAvailRoomRecord = reservationLineItem.getRoom(); 
+           occupiedButAvailRoomRecord.setRoomStatus("occupied but available");
+           roomsAvailableForToday.add(occupiedButAvailRoomRecord); 
+       }
+       
+       //first one to match all the exact room types of available rooms to reservation line items for today check in
+       //subsequently remove the available room from available list and add this room to newlyReservedRooms
+       for (ReservationLineItem reservationLineItemCheckIn : reservationLineItemsCheckInToday)
+       {
+           for (RoomRecord availableRoom : roomsAvailableForToday) 
+           {
+               if (reservationLineItemCheckIn.getRoomType().getTypeName().equals(availableRoom.getRoomType().getTypeName()))
+               {
+                   if (availableRoom.getRoomStatus().equals("available")){
+                   availableRoom.setRoomStatus("reserved and ready");
+                   } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
+                       availableRoom.setRoomStatus("reserved and not ready");
+                   }
+                   reservationLineItemCheckIn.setRoom(availableRoom);
+                   //dk whether set the room to the reservationLineItem
+                   newlyReservedRoomRecords.add(availableRoom); 
+                   
+                   roomsAvailableForToday.remove(availableRoom);
+                   reservationLineItemsCheckInToday.remove(reservationLineItemCheckIn); 
+                  
+               }
+           }
+       }
+       
+       reservationLineItemsCheckInToday.sort(new RankComparator()); 
+       roomsAvailableForToday.sort(new RankComparatorRooms());
+       
+       for (ReservationLineItem reservationLineItemCheckIn : reservationLineItemsCheckInToday)
+       {
+           for (RoomRecord availableRoom : roomsAvailableForToday)
+           {
+               if (Integer.parseInt(reservationLineItemCheckIn.getRoomType().getRankRoom()) > Integer.parseInt(availableRoom.getRoomType().getRankRoom()))
+               {
+                   if (availableRoom.getRoomStatus().equals("available")){
+                   availableRoom.setRoomStatus("reserved and ready");
+                   } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
+                       availableRoom.setRoomStatus("reserved and not ready");
+                   }
+                   reservationLineItemCheckIn.setRoom(availableRoom);
+                   newlyReservedRoomRecords.add(availableRoom); 
+                   roomsAvailableForToday.remove(availableRoom); 
+                   
+                   String reportDescription = "There was no available room for room type reserved for Room Reservation with Id " + reservationLineItemCheckIn.getReservationLineItemId() + 
+                                              ". Hence upgraded to the next highest room type; room allocated is Room " + availableRoom.getRoomNum(); 
+                   
+                   updateExceptionReport(exceptionReport.getExceptionReportId(), reportDescription); 
+               }
+           }
+       }
+       
+       for (ReservationLineItem reservationLineItemCheckIn : reservationLineItemsCheckInToday)
+       {
+           String reportDescription = "There was no available room for room type reserved,  and no upgrade available for Room Reservation with ID " + reservationLineItemCheckIn.getReservationLineItemId() + ". No room was allocated"; 
+                   
+           updateExceptionReport(exceptionReport.getExceptionReportId(), reportDescription); 
+       }
+       
+       
+       return newlyReservedRoomRecords; 
+       
     }
 
 }

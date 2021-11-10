@@ -7,6 +7,9 @@ package ejb.session.stateless;
 
 import entity.Partner;
 import entity.PartnerReservation;
+
+import entity.ExceptionReport;
+
 import entity.ReservationLineItem;
 import entity.RoomRecord;
 import entity.RoomType;
@@ -38,6 +41,26 @@ public interface ReservationSessionBeanLocal {
     public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems);
 
     
+
+    public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut);
+
+    public List<ExceptionReport> viewAllExceptionReports();
+
+    public ExceptionReport findExceptionReport(Long exceptionReportId);
+
+    public ExceptionReport updateExceptionReport(Long exceptionReportId, String report);
+
+    public ExceptionReport createExceptionReport(ExceptionReport exceptionReport);
+
+    public List<ReservationLineItem> findAllReservationLineItems();
+
+    public List<ReservationLineItem> findListOfReservationLineItemsByCheckOutDate(Date checkOutDate) throws ReservationLineItemNotFoundException;
+
+    public List<ReservationLineItem> findListOfReservationLineItemsByCheckInDate(Date checkInDate) throws ReservationLineItemNotFoundException;
+
+    public List<RoomRecord> roomAllocationsForToday() throws ReservationLineItemNotFoundException;
+
+
 
     
 }

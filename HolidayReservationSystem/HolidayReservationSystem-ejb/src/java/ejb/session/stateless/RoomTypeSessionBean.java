@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ejb.session.stateless;
+	package ejb.session.stateless;
 
 import entity.RoomType;
 import java.util.List;
@@ -143,6 +138,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
                 roomTypeToUpdate.setDescription(roomType.getDescription());
                 roomTypeToUpdate.setSize(roomType.getSize());
                 roomTypeToUpdate.setCapacity(roomType.getCapacity());
+                roomTypeToUpdate.setRankRoom(roomType.getRankRoom());
             }
             else 
             {
