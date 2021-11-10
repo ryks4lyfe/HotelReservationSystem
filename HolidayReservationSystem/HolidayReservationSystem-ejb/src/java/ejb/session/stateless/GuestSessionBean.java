@@ -103,7 +103,8 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
 
     //Check In 
     @Override
-    public List<RoomRecord> checkInGuest(Long guestId) throws GuestNotFoundException, UnallowedCheckInException {
+    public List<RoomRecord> checkInGuest(Long guestId) throws GuestNotFoundException, UnallowedCheckInException 
+    {
         try {
             Guest g = findGuestById(guestId);
             Date currentDate = new Date();
@@ -132,11 +133,11 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
                         } else {
                             //If before 2pm, check if reserved
                             RoomRecord roomToCheckIn = r.getRoom();
-                            if (roomToCheckIn.getRoomStatus().equals("reserved")) {
+                            if (roomToCheckIn.getRoomStatus().equals("reserved and ready")) {
                                 roomToCheckIn.setRoomStatus("occupied");
                                 //roomToCheckIn.setReservationLineItem(r);
                                 roomsCheckedIn.add(roomToCheckIn);
-                            } else {
+                            } else if (roomToCheckIn.getRoomStatus().equals("reserved and not ready") || (roomToCheckIn.getRoomStatus().equals("unavailable"))){
                                 throw new UnallowedCheckInException("Guest Check in at 2pm on the day of arrival only allowed if a room is available before then.");
                             }
                         }
@@ -150,6 +151,43 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
         } catch (GuestNotFoundException ex) {
             throw new GuestNotFoundException("Guest " + guestId + " does not exist! \n");
         }
+    }
+    
+    public List<RoomRecord> checkOutGuest(Long guestId) throws GuestNotFoundException 
+    {
+        try {
+            Guest g = findGuestById(guestId);
+            Date currentDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+
+            List<RoomRecord> roomsCheckedOut = new ArrayList<>();
+            
+            List<OnlineReservation> reservationList = retrieveOnlineReservationListOfGuest(guestId);
+            
+            for (OnlineReservation oR : reservationList) {
+                for (ReservationLineItem r : oR.getReservationLineItems()) {
+                    //Check for lineItems with the same check in date as currentDate
+                    if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {
+                        RoomRecord roomToCheckOut = r.getRoom();
+                        roomsCheckedOut.add(roomToCheckOut);
+                        if (roomToCheckOut.getRoomStatus().equals("occupied but available") || roomToCheckOut.getRoomStatus().equals("occupied")) {
+                            roomToCheckOut.setRoomStatus("unavailable");
+                            //after 1.5 hours for cleaning, make it available
+                            roomToCheckOut.setRoomStatus("available");
+                        } else if (roomToCheckOut.getRoomStatus().equals("reserved and not ready")) {
+                            roomToCheckOut.setRoomStatus("unavailable");
+                            //after 1.5hours for cleaning, make it reserved and ready;
+                            roomToCheckOut.setRoomStatus("reserved and ready");
+                        }
+                    }
+                }
+            }
+            return roomsCheckedOut;
+        } catch (GuestNotFoundException ex) {
+            throw new GuestNotFoundException("Guest " + guestId + " does not exist! \n");
+        }  
+         
     }
 
 }

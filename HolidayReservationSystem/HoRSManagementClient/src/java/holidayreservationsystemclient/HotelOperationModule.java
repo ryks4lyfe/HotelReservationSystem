@@ -12,10 +12,12 @@ import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
+import entity.ExceptionReport;
 import entity.RoomRate;
 import entity.RoomRecord;
 import entity.RoomType;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,6 +32,7 @@ import static util.enumeration.RoomRateTypeEnum.PUBLISHED;
 import util.exception.DeleteRoomRateException;
 import util.exception.DeleteRoomRecordException;
 import util.exception.DeleteRoomTypeException;
+import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomNameExistsException;
 import util.exception.RoomRateExistsException;
 import util.exception.RoomRateNotFoundException;
@@ -335,6 +338,22 @@ private Employee employee;
                 }
             }
         }
+        System.out.print("Enter Capacity (blank if no change)> ");
+        input = scanner.nextLine().trim();
+        if(input.length() > 0)
+        {
+            while(true){
+                try
+                {
+                    roomType.setRankRoom(input);
+                    break; 
+                }
+                catch (NumberFormatException e)
+                {
+                    System.out.println("Please enter a number");
+                }
+            }
+        }
         System.out.print("Enter Amenities (blank if no change)> ");
         input = scanner.nextLine().trim();
         if(input.length() > 0)
@@ -464,19 +483,36 @@ private Employee employee;
             }
             while(true)
             {
-                System.out.print("Choose new Room Status (1. not in use, 2.in use)> ");
+                System.out.print("Choose new Room Status (1. available, 2.occupied, 3.occupied but available, 4.reserved and ready, 5. reserved but not ready, 6.unavailable)> ");
                 Integer roomStatusInt = scanner.nextInt();
                 
-                if(roomStatusInt >= 1 && roomStatusInt <= 2)
+                if(roomStatusInt >= 1 && roomStatusInt <= 6)
                 {
                     if(roomStatusInt == 1)
                     {
-                        room.setRoomStatus("not in use");
+                        room.setRoomStatus("available");
                     }
-                    else
+                    else if (roomStatusInt == 2)
                     {                         
-                        room.setRoomStatus("in use");
+                        room.setRoomStatus("occupied");
                     }
+                    else if (roomStatusInt == 3)
+                    {                         
+                        room.setRoomStatus("occupied but available");
+                    }
+                    else if (roomStatusInt == 4)
+                    {                         
+                        room.setRoomStatus("reserved and ready");
+                    }
+                    else if (roomStatusInt == 5)
+                    {                         
+                        room.setRoomStatus("reserved and not ready");
+                    } 
+                    else if (roomStatusInt == 6)
+                    {                         
+                        room.setRoomStatus("unavailable");
+                    } 
+                    
                             try {
                             roomRecordSessionBeanRemote.updateRoomRecord(room); 
                             RoomRecord roomUpdated = roomRecordSessionBeanRemote.findRoomRecordById(room.getRoomRecordId());
@@ -564,9 +600,22 @@ private Employee employee;
         scanner.nextLine();
     }
 
-    public void viewRoomAllocationExceptionReport() //incomplete
+    public void viewRoomAllocationExceptionReport() 
     {
+      Scanner scanner = new Scanner(System.in);
+      System.out.println("*** HoRS :: Hotel Management System :: View Room Allocation Report ***\n");
       
+      List<ExceptionReport> exceptionReportList =reservationSessionBeanRemote.viewAllExceptionReports(); 
+      
+      System.out.printf("%20s%100s\n", "Exception Report Id", "Descriptions");
+      
+      for (ExceptionReport exceptionReport : exceptionReportList) {
+          List<String> descriptions = exceptionReport.getReports(); 
+        for  (String description : descriptions ) 
+        {
+            System.out.printf("%20s%100s\n", exceptionReport.getExceptionReportId().toString(), description); 
+        }
+      }
     }
 
     public void createRoomRate() 
@@ -796,7 +845,20 @@ private Employee employee;
     }
 
     private void allocateRoom() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("*** HoRS :: Hotel Management System :: Allocate Room ***\n");
+        /*Scanner scanner = new Scanner(System.in);
+        System.out.println("Key in today's date (DDMMYYYY)> ");
+        DateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+        String dateString = scanner.nextLine();
+        try {
+        Date todayDate = formatter.parse(dateString);    */
+        try {
+        List<RoomRecord> reservedToday = reservationSessionBeanRemote.roomAllocationsForToday(); 
+       /* } catch (ParseException ex) {
+            System.out.println("An error has occurred while entering date: " + ex.getMessage() + "\n"); */
+        } catch(ReservationLineItemNotFoundException ex) {
+            System.out.println("An error has occurred while allocting rooms: " + ex.getMessage() + "\n"); 
+        }
     }
 
     private void viewAllRoomRates() {

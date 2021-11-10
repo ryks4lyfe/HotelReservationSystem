@@ -13,6 +13,7 @@
     <class>entity.RoomRecord</class>
     <class>entity.RoomType</class>
     <class>entity.WalkInReservation</class>
+    <class>entity.ExceptionReport</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

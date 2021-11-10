@@ -126,7 +126,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     @Override
     public List<RoomRecord> findAllAvailableRoomRecords() {
         Query query = em.createNamedQuery("SELECT rr FROM RoomRecord rr WHERE rr.roomStatus  :inRoomStatus"); 
-        query.setParameter("inRoomStatus", "in use"); 
+        query.setParameter("inRoomStatus", "available"); 
         return query.getResultList(); 
     }
     
@@ -135,7 +135,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
         
         Query query = em.createQuery("SELECT r FROM RoomRecord r WHERE r.roomType = :inRoomType AND r.roomStatus = :inRoomStatus"); 
         query.setParameter("inRoomType", roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName)); 
-        query.setParameter("inRoomStatus", "in use");
+        query.setParameter("inRoomStatus", "available");
          
         return query.getResultList(); 
         
@@ -200,16 +200,16 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     {
         RoomRecord roomToRemove = findRoomRecordById(roomRecordId);
         
-        if(roomToRemove.getRoomStatus().equals("not in use"))
+        if(roomToRemove.getRoomStatus().equals("available"))
         {
             List<RoomRecord> removeRoomRecordFromRoomType = roomToRemove.getRoomType().getRoomRecords();
             removeRoomRecordFromRoomType.remove(roomToRemove);
             em.remove(roomToRemove); 
         }
-        else if(roomToRemove.getRoomStatus().equals("in use"))
+      /*  else if(roomToRemove.getRoomStatus().equals("occupied"))
         {
             roomToRemove.setRoomStatus("disabled");
-        }
+        }*/
         else
         {
             throw new DeleteRoomRecordException("Room Record ID " + roomRecordId + " cannot be deleted as it is being used!");
