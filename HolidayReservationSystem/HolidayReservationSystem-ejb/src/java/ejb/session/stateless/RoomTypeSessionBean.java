@@ -41,17 +41,15 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
 
     @Override
     public RoomType createRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException 
-    { em.persist(new RoomType(" "," ", " ", " ", " ", " ", " ", " " )); 
+    { //em.persist(new RoomType(" "," ", " ", " ", " ", " ", " ", " " )); 
         try{
-        if (findRoomTypeByName(newRoomType.getTypeName()) == null) {
-           em.persist(newRoomType); 
-           em.flush();
-        } else {
-            throw new RoomTypeNameExistsException ("Room Type with the name " + newRoomType.getTypeName() + " already exists!"); 
-        }
+         RoomType rt = findRoomTypeByName(newRoomType.getTypeName()); 
+           
         } catch 
                 (RoomTypeNotFoundException ex) {
-            System.out.println("An error occured"); 
+           em.persist(newRoomType); 
+           em.flush();
+           System.out.println("An error occured"); 
         }
            
            return newRoomType; 
@@ -103,7 +101,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
     }
     
     @Override
-    public RoomType findRoomTypeByName (String roomTypeName) throws RoomTypeNotFoundException
+    public RoomType findRoomTypeByName(String roomTypeName) throws RoomTypeNotFoundException
     {
         Query query = em.createQuery("SELECT r FROM RoomType r WHERE r.typeName = :inTypeName");
         query.setParameter("inTypeName", roomTypeName); 

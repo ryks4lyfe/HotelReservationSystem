@@ -43,9 +43,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     @Override
     public RoomRecord createRoomRecord (RoomRecord newRoomRecord, String roomTypeName) throws /*RoomNameExistsException, UnknownPersistenceException,*/ RoomTypeNotFoundException 
     {
-       
-     
-       //try { 
+      
             RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName);
            
             if (!roomType.getTypeStatus().equals("disabled")) {

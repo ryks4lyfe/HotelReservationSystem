@@ -122,7 +122,8 @@ private Employee employee;
                             String name = scanner.nextLine().trim();
                             try{
                             updateRoomType(roomTypeSessionBeanRemote.findRoomTypeByName(name));
-                            } catch (RoomTypeNotFoundException ex) {       
+                            } catch (RoomTypeNotFoundException ex) { 
+                                System.out.println("An errror occurred" + ex.getMessage() + "\n"); 
                             }
                             
                             break;
@@ -223,6 +224,9 @@ private Employee employee;
         System.out.print("Enter Amenities> ");
         newRoomType.setAmenities(scanner.nextLine().trim());
         newRoomType.setTypeStatus("enabled");
+        System.out.print("Enter Rank> ");
+        newRoomType.setRankRoom(scanner.nextLine().trim());
+        
         
         System.out.println(newRoomType.getSize()); 
         
@@ -435,7 +439,7 @@ private Employee employee;
             RoomType roomType = roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName);
             newRoom.setRoomType(roomType);
             System.out.println("Open room for room type: " + roomType.getTypeName()+ "\n");
-            newRoom.setRoomStatus("not in use");
+            newRoom.setRoomStatus("available");
             try {
             newRoom = roomRecordSessionBeanRemote.createRoomRecord(newRoom, roomTypeName);
             System.out.println(newRoom.getRoomNum()); 
@@ -546,7 +550,7 @@ private Employee employee;
             scanner.nextLine(); 
             try {
             RoomRecord room = roomRecordSessionBeanRemote.findRoomRecordById(roomRecordId);
-            System.out.printf("Confirm Delete Room Number %d (Enter 'Y' to Delete)> ", room.getRoomNum());
+            System.out.println("Confirm Delete Room Number (Enter 'Y' to Delete)> " + room.getRoomNum());
             input = scanner.nextLine().trim();
             
             if(input.equals("Y")) 
@@ -677,7 +681,7 @@ private Employee employee;
                 System.out.print("Enter " + newRoomRate.getRoomRateType().toString() + " Rate start date (yyyy-MM-dd)> ");
                 date = sdf.parse(scanner.nextLine());
                 newRoomRate.setStartRateDate(date);
-                System.out.print("Enter Promotion Rate end date (yyyy-MM-dd)> ");
+                System.out.print("Enter Rate end date (yyyy-MM-dd)> ");
                 date = sdf.parse(scanner.nextLine());
                 newRoomRate.setEndRateDate(date);
             }
