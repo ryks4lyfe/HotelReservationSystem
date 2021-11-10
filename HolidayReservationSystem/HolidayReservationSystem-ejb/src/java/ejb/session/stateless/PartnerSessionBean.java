@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.Partner;
 import entity.PartnerReservation;
 import entity.ReservationLineItem;
+import entity.RoomType;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -99,5 +101,29 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         Partner p = em.find(Partner.class, partnerId);
         return p.getPartnerReservations();
     }
+    
+    @Override
+    public BigDecimal addItem(ReservationLineItem lineItem) {
+        em.persist(lineItem);
+        //add Line Item into the selected roomType
+        RoomType rt = em.find(RoomType.class, lineItem.getRoomType().getRoomTypeId());
+        rt.getLineItems().add(lineItem);
+        em.flush();
+        return lineItem.getAmount();
+        
+    }
+    
+    @Override
+    public void removeAllItemsFromCart(List<ReservationLineItem> lineItems) {
+        for(ReservationLineItem r : lineItems) {
+            ReservationLineItem r1 = em.find(ReservationLineItem.class, r.getReservationLineItemId());
+            //Remove lineItems from associated roomType
+            r1.getRoomType().getLineItems().remove(r1);
+            
+            //Since room mandatory can just remove r
+            em.remove(r1); 
+        }
+    }
+    
     
 }

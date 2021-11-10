@@ -12,6 +12,8 @@ import entity.Partner;
 import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.RoomType;
+import entity.RoomRecord;
+import entity.RoomRate;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -51,27 +53,53 @@ public class HotelReservationWebService {
         return partnerSessionBeanLocal.doLogin(username, password);
     }
 
+    @WebMethod
     public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId) {
         return partnerSessionBeanLocal.retrieveAllPartnerReservations(partnerId);
     }
 
+    @WebMethod
     public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException {
         return reservationSessionBeanLocal.findReservationLineItemById(reservationLineItemId);
     }
-    
-     public Integer walkInSearchRoom(RoomType roomType, Date checkIn, Date checkOut) {
-         return reservationSessionBeanLocal.walkInSearchRoom(roomType, checkIn, checkOut);
-     }
 
-     public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
-         return reservationSessionBeanLocal.reservationPrice(roomType, checkInDate, checkOutDate);
-     }
-     
-     public List<RoomType> retrieveAllRoomTypes() {
-         return roomTypeSessionBeanLocal.retrieveAllRoomTypes();
-     }
-     
-     public Partner findPartnerById(Long partnerId) throws PartnerNotFoundException {
-         return partnerSessionBeanLocal.findPartnerById(partnerId);
-     }
+    @WebMethod
+    public Integer walkInSearchRoom(RoomType roomType, Date checkIn, Date checkOut) {
+        return reservationSessionBeanLocal.walkInSearchRoom(roomType, checkIn, checkOut);
+    }
+
+    @WebMethod
+    public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
+        return reservationSessionBeanLocal.reservationPrice(roomType, checkInDate, checkOutDate);
+    }
+
+    @WebMethod
+    public List<RoomType> retrieveAllRoomTypes() {
+        return roomTypeSessionBeanLocal.retrieveAllRoomTypesWS();
+    }
+
+    @WebMethod
+    public Partner findPartnerById(Long partnerId) throws PartnerNotFoundException {
+        return partnerSessionBeanLocal.findPartnerById(partnerId);
+    }
+
+    @WebMethod
+    public BigDecimal addItem(ReservationLineItem lineItem) {
+        return partnerSessionBeanLocal.addItem(lineItem);
+    }
+
+    @WebMethod
+    public void removeAllItemsFromCart(List<ReservationLineItem> lineItems) {
+        partnerSessionBeanLocal.removeAllItemsFromCart(lineItems);
+    }
+
+    @WebMethod
+    public ReservationLineItem createLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomType roomType) {
+        return reservationSessionBeanLocal.createLineItem(checkInDate, checkOutDate, amount, roomType);
+    }
+
+    @WebMethod
+    public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
+        return reservationSessionBeanLocal.doCheckout(partner, totalLineItems, totalAmount, lineItems);
+    }
 }

@@ -70,6 +70,8 @@ public class MainApp {
     }
 
     public void runApp() throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
+        
+        List<RoomType> rooms = roomTypeSessionBeanRemote.retrieveAllRoomTypes();
 
         Integer response = 0;
 
@@ -200,7 +202,7 @@ public class MainApp {
     private void searchHotel() {
         try {
             for (RoomType r : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
-                    System.out.println(r.getRoomRecords().size());
+                System.out.println(r.getRoomRecords().size());
             }
             Scanner scanner = new Scanner(System.in);
             Date checkInDate;
@@ -342,16 +344,30 @@ public class MainApp {
         Integer rId = scanner.nextInt();
         Long reservationId = rId.longValue();
 
-        try {
-            ReservationLineItem lineItem = reservationSessionBeanRemote.findReservationLineItemById(reservationId);
-            System.out.println("--------------------------------------------");
-            System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
-            System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
-            System.out.println("Amount: " + lineItem.getAmount().toString());
-            System.out.println("--------------------------------------------");
+        boolean contains = false;
 
-        } catch (ReservationLineItemNotFoundException ex) {
-            System.out.print(ex.getMessage());
+        try {
+            Guest g = guestSessionBeanRemote.findGuestById(currentGuest.getGuestId());
+            if (!g.getOnlineReservations().isEmpty()) {
+                for (OnlineReservation or : g.getOnlineReservations()) {
+                    for (ReservationLineItem lineItem : or.getReservationLineItems()) {
+                        if (lineItem.getReservationLineItemId().equals(reservationId)) {
+                            contains = true;
+                            System.out.println("--------------------------------------------");
+                            System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+                            System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+                            System.out.println("Amount: " + lineItem.getAmount().toString());
+                            System.out.println("--------------------------------------------");
+                        }
+                    }
+                }
+            }
+            
+            if(contains == false ) {
+                System.out.println("Guest does not have this line item!");
+            }
+        } catch (GuestNotFoundException ex) {
+            System.out.println("Guest does not exist!");
         }
     }
 

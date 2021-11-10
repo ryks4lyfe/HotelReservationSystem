@@ -7,6 +7,8 @@ package ejb.session.stateless;
 
 import entity.Partner;
 import entity.PartnerReservation;
+import entity.ReservationLineItem;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.FailedLoginException;
@@ -30,5 +32,8 @@ public interface PartnerSessionBeanLocal {
     public List<Partner> retrieveListOfPartners() throws PartnerNotFoundException;
     
     public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId);
+
+    public BigDecimal addItem(ReservationLineItem lineItem);
     
+    public void removeAllItemsFromCart(List<ReservationLineItem> lineItems);
 }
