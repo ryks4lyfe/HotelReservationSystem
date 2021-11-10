@@ -58,7 +58,7 @@ public interface ReservationSessionBeanLocal {
 
     public List<ReservationLineItem> findListOfReservationLineItemsByCheckInDate(Date checkInDate) throws ReservationLineItemNotFoundException;
 
-    public List<RoomRecord> roomAllocationsForToday() throws ReservationLineItemNotFoundException;
+    public void roomAllocationsForToday() throws ReservationLineItemNotFoundException;
 
 
 

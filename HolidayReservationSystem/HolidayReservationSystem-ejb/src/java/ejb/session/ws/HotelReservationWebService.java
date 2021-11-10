@@ -75,7 +75,7 @@ public class HotelReservationWebService {
 
     @WebMethod
     public List<RoomType> retrieveAllRoomTypes() {
-        return roomTypeSessionBeanLocal.retrieveAllRoomTypesWS();
+        return roomTypeSessionBeanLocal.retrieveAllRoomTypes();
     }
 
     @WebMethod

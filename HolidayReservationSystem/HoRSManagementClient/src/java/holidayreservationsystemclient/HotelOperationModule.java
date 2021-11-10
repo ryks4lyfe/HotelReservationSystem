@@ -228,12 +228,12 @@ private Employee employee;
         
         try {
         newRoomType = roomTypeSessionBeanRemote.createRoomType(newRoomType);
+             System.out.println("New room type created successfully!: " + newRoomType.getTypeName()+ "\n");
+             System.out.print("Press any key to continue...> ");
         }
         catch (RoomTypeNameExistsException | UnknownPersistenceException ex){
-            
+             System.out.println("An Error occurred while creating a new room type " + ex.getMessage() + "\n");
         }
-        System.out.println("New room type created successfully!: " + newRoomType.getTypeName()+ "\n");
-        System.out.print("Press any key to continue...> ");
 
     }
 
@@ -853,7 +853,7 @@ private Employee employee;
         try {
         Date todayDate = formatter.parse(dateString);    */
         try {
-        List<RoomRecord> reservedToday = reservationSessionBeanRemote.roomAllocationsForToday(); 
+        reservationSessionBeanRemote.roomAllocationsForToday(); 
        /* } catch (ParseException ex) {
             System.out.println("An error has occurred while entering date: " + ex.getMessage() + "\n"); */
         } catch(ReservationLineItemNotFoundException ex) {

@@ -1,12 +1,10 @@
 package ejb.session.stateless;
 
-import entity.Partner;
-import entity.PartnerReservation;
-
 import classes.RankComparator;
 import classes.RankComparatorRooms;
 import entity.ExceptionReport;
-
+import entity.Partner;
+import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.RoomRate;
 import entity.RoomRecord;
@@ -51,6 +49,24 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     public ReservationSessionBean() {
     }
     
+    @Override
+    public ReservationLineItem createLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomType roomType) {
+        return new ReservationLineItem(checkInDate, checkOutDate, amount, roomType);
+    }
+
+    @Override
+    public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
+        PartnerReservation p = new PartnerReservation(partner, new Date(), totalLineItems, totalAmount);
+        p.setReservationLineItems(lineItems);
+        em.persist(p);
+        Partner p1 = em.find(Partner.class, partner.getPartnerId());
+
+        p1.getPartnerReservations().add(p);
+        p.setPartner(p1);
+        em.flush();
+
+        return p;
+    }
 
     @Override
     public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException {
@@ -93,25 +109,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     {
         Query query = em.createQuery("SELECT r FROM ReservationLineItem r"); 
         return query.getResultList(); 
-    }
-
-    @Override
-    public ReservationLineItem createLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomType roomType) {
-        return new ReservationLineItem(checkInDate, checkOutDate, amount, roomType);
-    }
-
-    @Override
-    public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
-        PartnerReservation p = new PartnerReservation(partner, new Date(), totalLineItems, totalAmount);
-        p.setReservationLineItems(lineItems);
-        em.persist(p);
-        Partner p1 = em.find(Partner.class, partner.getPartnerId());
-
-        p1.getPartnerReservations().add(p);
-        p.setPartner(p1);
-        em.flush();
-
-        return p;
     }
 
     @Override
@@ -202,7 +199,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return BigDecimal.valueOf(amount);
     }
 
-
     @Override
     public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut) 
     {
@@ -242,15 +238,28 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return query.getResultList(); 
     }
     
+  /*  @Schedule(hour = "13")
+    @Override
+    public void updateRoomStatusForReservations(RoomRecord roomToCheckOut) {
+        
+        
+        if (roomToCheckOut.getRoomStatus().equals("unavailable1")) {
+        roomToCheckOut.setRoomStatus("available");
+        } else if (roomToCheckOut.getRoomStatus().equals("unavailable2")) {
+            roomToCheckOut.setRoomStatus("reserved and ready");
+        }
+    }*/
+    
     @Override
     @Schedule(hour = "2")
-    public List<RoomRecord> roomAllocationsForToday() throws ReservationLineItemNotFoundException 
+    public void roomAllocationsForToday() throws ReservationLineItemNotFoundException 
     {
        Date todaysDate = new Date(); 
        List<RoomRecord> newlyReservedRoomRecords  = new ArrayList<>(); 
        List<RoomRecord> roomsAvailableForToday = roomRecordSessionBeanRemote.findAllAvailableRoomRecords(); 
        ExceptionReport exceptionReport = new ExceptionReport(); 
        
+       //blls
        List<ReservationLineItem> reservationLineItemsCheckInToday = findListOfReservationLineItemsByCheckInDate(todaysDate); 
        
        List<ReservationLineItem> reservationLineItemsCheckOutToday = findListOfReservationLineItemsByCheckOutDate(todaysDate); 
@@ -320,7 +329,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
        }
        
        
-       return newlyReservedRoomRecords; 
+      // return newlyReservedRoomRecords; 
        
     }
 

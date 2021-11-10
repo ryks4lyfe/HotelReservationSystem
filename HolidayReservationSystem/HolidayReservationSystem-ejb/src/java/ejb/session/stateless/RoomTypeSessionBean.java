@@ -42,17 +42,24 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
     @Override
     public RoomType createRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException 
     {
-        
-        try 
-        {
+        try{
+        if (findRoomTypeByName(newRoomType.getTypeName()) == null) {
            em.persist(newRoomType); 
            em.flush();
+        } else {
+            throw new RoomTypeNameExistsException ("Room Type with the name " + newRoomType.getTypeName() + " already exists!"); 
+        }
+        } catch 
+                (RoomTypeNotFoundException ex) {
+            System.out.println("An error occured"); 
+        }
            
            return newRoomType; 
+    }
            
-        }
         
-        catch(PersistenceException ex)
+        
+        /*catch(PersistenceException ex)
         {
             if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
             {
@@ -69,25 +76,13 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
             {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
-        }
-    }
-
+        }*/
     @Override
     public List<RoomType> retrieveAllRoomTypes() 
     {
         
         Query query = em.createQuery("SELECT r FROM RoomType r"); 
         
-        return query.getResultList(); 
-
-    }
-    
-    @Override
-    public List<RoomType> retrieveAllRoomTypesWS() 
-    {
-        
-        Query query = em.createQuery("SELECT r FROM RoomType r"); 
-        System.out.println("Ws");
         return query.getResultList(); 
 
     }
