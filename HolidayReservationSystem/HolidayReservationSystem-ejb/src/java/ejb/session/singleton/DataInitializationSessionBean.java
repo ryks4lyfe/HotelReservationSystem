@@ -91,33 +91,33 @@ public class DataInitializationSessionBean {
         
         em.persist(new RoomRecord("0101", "available", deluxeRoom));
         em.persist(new RoomRecord("0201", "available", deluxeRoom));
-        em.persist(new RoomRecord("0301, "available", deluxeRoom));
-        em.persist(new RoomRecord(0401, "available", deluxeRoom));
-        em.persist(new RoomRecord(0501, "available", deluxeRoom));
+        em.persist(new RoomRecord("0301", "available", deluxeRoom));
+        em.persist(new RoomRecord("0401", "available", deluxeRoom));
+        em.persist(new RoomRecord("0501", "available", deluxeRoom));
 
-        em.persist(new RoomRecord(0102, "available", familyRoom));
-        em.persist(new RoomRecord(0202, "available", familyRoom));
-        em.persist(new RoomRecord(0302, "available", familyRoom));
-        em.persist(new RoomRecord(0402, "available", familyRoom));
-        em.persist(new RoomRecord(0502, "available", familyRoom));
+        em.persist(new RoomRecord("0102", "available", familyRoom));
+        em.persist(new RoomRecord("0202", "available", familyRoom));
+        em.persist(new RoomRecord("0302", "available", familyRoom));
+        em.persist(new RoomRecord("0402", "available", familyRoom));
+        em.persist(new RoomRecord("0502", "available", familyRoom));
 
-        em.persist(new RoomRecord(0103, "available", familyRoom));
-        em.persist(new RoomRecord(0203, "available", familyRoom));
-        em.persist(new RoomRecord(0303, "available", familyRoom));
-        em.persist(new RoomRecord(0403, "available", familyRoom));
-        em.persist(new RoomRecord(0503, "available", familyRoom));
+        em.persist(new RoomRecord("0103", "available", familyRoom));
+        em.persist(new RoomRecord("0203", "available", familyRoom));
+        em.persist(new RoomRecord("0303", "available", familyRoom));
+        em.persist(new RoomRecord("0403", "available", familyRoom));
+        em.persist(new RoomRecord("0503", "available", familyRoom));
 
-        em.persist(new RoomRecord(0104, "available", juniorSuite));
-        em.persist(new RoomRecord(0204, "available", juniorSuite));
-        em.persist(new RoomRecord(0304, "available", juniorSuite));
-        em.persist(new RoomRecord(0404, "available", juniorSuite));
-        em.persist(new RoomRecord(0504, "available", juniorSuite));
+        em.persist(new RoomRecord("0104", "available", juniorSuite));
+        em.persist(new RoomRecord("0204", "available", juniorSuite));
+        em.persist(new RoomRecord("0304", "available", juniorSuite));
+        em.persist(new RoomRecord("0404", "available", juniorSuite));
+        em.persist(new RoomRecord("0504", "available", juniorSuite));
 
-        em.persist(new RoomRecord(0105, "available", grandSuite));
-        em.persist(new RoomRecord(0205, "available", grandSuite));
-        em.persist(new RoomRecord(0305, "available", grandSuite));
-        em.persist(new RoomRecord(0405, "available", grandSuite));
-        em.persist(new RoomRecord(0505, "available", grandSuite));
+        em.persist(new RoomRecord("0105", "available", grandSuite));
+        em.persist(new RoomRecord("0205", "available", grandSuite));
+        em.persist(new RoomRecord("0305", "available", grandSuite));
+        em.persist(new RoomRecord("0405", "available", grandSuite));
+        em.persist(new RoomRecord("0505", "available", grandSuite));
         
         em.flush();
         
