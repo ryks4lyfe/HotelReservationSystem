@@ -5,6 +5,8 @@
  */
 package ejb.session.stateless;
 
+import entity.Partner;
+import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.RoomRecord;
 import entity.RoomType;
@@ -29,5 +31,10 @@ public interface ReservationSessionBeanRemote {
     public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate);
 
     public Integer walkInSearchRoom(RoomType roomType, Date checkIn, Date checkOut);
+
+    public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems);
+    
+    public ReservationLineItem createLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomType roomType);
+
 
 }

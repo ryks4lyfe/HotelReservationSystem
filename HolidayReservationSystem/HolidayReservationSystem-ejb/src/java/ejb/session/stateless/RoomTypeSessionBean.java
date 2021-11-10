@@ -88,6 +88,16 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
     }
     
     @Override
+    public List<RoomType> retrieveAllRoomTypesWS() 
+    {
+        
+        Query query = em.createQuery("SELECT r FROM RoomType r"); 
+        System.out.println("Ws");
+        return query.getResultList(); 
+
+    }
+    
+    @Override
     public RoomType findRoomTypeById (Long roomTypeId) throws RoomTypeNotFoundException
     {
         RoomType roomType = em.find(RoomType.class, roomTypeId); 

@@ -5,6 +5,8 @@
  */
 package ejb.session.stateless;
 
+import entity.Partner;
+import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.RoomRate;
 import entity.RoomRecord;
@@ -18,6 +20,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import static util.enumeration.RoomRateTypeEnum.NORMAL;
 import static util.enumeration.RoomRateTypeEnum.PEAK;
 import static util.enumeration.RoomRateTypeEnum.PROMOTION;
@@ -43,6 +46,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     public ReservationSessionBean() {
     }
+    
 
     @Override
     public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException {
@@ -52,6 +56,25 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         } else {
             throw new ReservationLineItemNotFoundException("Error, Guest " + reservationLineItemId + " does not exist.");
         }
+    }
+
+    @Override
+    public ReservationLineItem createLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomType roomType) {
+        return new ReservationLineItem(checkInDate, checkOutDate, amount, roomType);
+    }
+
+    @Override
+    public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
+        PartnerReservation p = new PartnerReservation(partner, new Date(), totalLineItems, totalAmount);
+        p.setReservationLineItems(lineItems);
+        em.persist(p);
+        Partner p1 = em.find(Partner.class, partner.getPartnerId());
+
+        p1.getPartnerReservations().add(p);
+        p.setPartner(p1);
+        em.flush();
+
+        return p;
     }
 
     @Override
@@ -148,7 +171,5 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         return BigDecimal.valueOf(amount);
     }
-
-    
 
 }
