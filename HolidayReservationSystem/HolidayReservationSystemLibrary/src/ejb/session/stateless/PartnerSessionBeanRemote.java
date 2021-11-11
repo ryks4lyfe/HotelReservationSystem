@@ -30,9 +30,9 @@ public interface PartnerSessionBeanRemote {
     
     public List<Partner> retrieveListOfPartners() throws PartnerNotFoundException;
 
-    public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId);
+    public List<ReservationLineItem> retrieveAllPartnerReservations(Long partnerId);
 
     public void removeAllItemsFromCart(List<ReservationLineItem> lineItems);
     
-    public BigDecimal addItem(ReservationLineItem lineItem);
+    public ReservationLineItem addItem(ReservationLineItem lineItem, Long rId);
 }

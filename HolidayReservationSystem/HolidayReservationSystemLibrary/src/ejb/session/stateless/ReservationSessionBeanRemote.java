@@ -52,9 +52,11 @@ public interface ReservationSessionBeanRemote {
     public void roomAllocationsForToday() throws ReservationLineItemNotFoundException;
 
 
-    public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems);
+    public void doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems);
     
     public ReservationLineItem createLineItem(Date checkInDate, Date checkOutDate, BigDecimal amount, RoomType roomType);
+
+    public ReservationLineItem findReservationLineItemOfPartner(Long reservationLineItemId, Long partnerId) throws ReservationLineItemNotFoundException;
 
 
 }

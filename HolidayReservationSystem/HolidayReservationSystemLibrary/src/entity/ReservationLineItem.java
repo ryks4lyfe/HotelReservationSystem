@@ -55,6 +55,10 @@ public class ReservationLineItem implements Serializable {
         this.roomType = roomType;
     }
 
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
+    }
+ 
     public RoomType getRoomType() {
         return roomType;
     }

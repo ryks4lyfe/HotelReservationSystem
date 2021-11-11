@@ -223,9 +223,7 @@ public class MainApp {
                 List<RoomType> enabledRooms = new ArrayList<>();
 
                 for (RoomType r : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
-                    System.out.println(r.getRoomRecords().size());
-                    System.out.println(r.getLineItems().size());
-                    System.out.println(reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate));
+                    
                     //Check each room type for number of available rooms 
                     if (reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate) > 0) {
                         enabledRooms.add(r);

@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,6 +38,10 @@ public class PartnerReservation extends ReservationRecord implements Serializabl
         this.partner = partner;
     }
     
+     public PartnerReservation(Partner partner, Date reservationDate,Integer totalLineItem, BigDecimal totalAmount, List<ReservationLineItem> reservationLineItems) {
+        super(reservationDate, totalLineItem, totalAmount, reservationLineItems);
+        this.partner = partner;
+    }
     
 
     public Partner getPartner() {

@@ -10,6 +10,7 @@ import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.RoomType;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -97,19 +98,28 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     }
 
     @Override
-    public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId) {
+    public List<ReservationLineItem> retrieveAllPartnerReservations(Long partnerId) {
         Partner p = em.find(Partner.class, partnerId);
-        return p.getPartnerReservations();
+        List<ReservationLineItem> r = new ArrayList<>();
+        for(PartnerReservation pr : p.getPartnerReservations()) {
+            for(ReservationLineItem item : pr.getReservationLineItems()) {
+                r.add(item);
+                System.out.println("add");
+            }
+        }
+        return r;
     }
     
     @Override
-    public BigDecimal addItem(ReservationLineItem lineItem) {
+    public ReservationLineItem addItem(ReservationLineItem lineItem, Long rId) {
         em.persist(lineItem);
-        //add Line Item into the selected roomType
-        RoomType rt = em.find(RoomType.class, lineItem.getRoomType().getRoomTypeId());
+        
+        
+        RoomType rt = em.find(RoomType.class, rId);
+        lineItem.setRoomType(rt);
         rt.getLineItems().add(lineItem);
-        em.flush();
-        return lineItem.getAmount();
+        em.flush();   
+        return lineItem;
         
     }
     

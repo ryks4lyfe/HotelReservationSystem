@@ -43,10 +43,20 @@ public abstract class ReservationRecord implements Serializable {
     }
 
     public ReservationRecord(Date reservationDate, Integer totalLineItem, BigDecimal totalAmount) {
+        this();
         this.reservationDate = reservationDate;
         this.totalLineItem = totalLineItem;
         this.totalAmount = totalAmount;
     }
+
+    public ReservationRecord(Date reservationDate, Integer totalLineItem, BigDecimal totalAmount, List<ReservationLineItem> reservationLineItems) {
+        this.reservationDate = reservationDate;
+        this.totalLineItem = totalLineItem;
+        this.totalAmount = totalAmount;
+        this.reservationLineItems = reservationLineItems;
+    }
+    
+    
 
     public Integer getTotalLineItem() {
         return totalLineItem;

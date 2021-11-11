@@ -192,9 +192,7 @@ public class MainApp {
             List<RoomType> enabledRooms = new ArrayList<>();
 
             for (RoomType r : retrieveAllRoomTypes()) {
-                System.out.println(r.getRoomRecords().size());
-                System.out.println(r.getLineItems().size());
-                System.out.println(walkInSearchRoom(r, xgcal1, xgcal2));
+                
                 //Check each room type for number of available rooms 
                 if (walkInSearchRoom(r, xgcal1, xgcal2) > 0) {
                     enabledRooms.add(r);
@@ -240,14 +238,14 @@ public class MainApp {
         try {
 
             Integer totalLineItems = 0;
-            BigDecimal totalAmount = BigDecimal.valueOf(0);
+            Long totalAmount = Long.valueOf(0);
             List<ReservationLineItem> lineItems = new ArrayList<>();
 
             boolean continueReservation = true;
             boolean emptyRooms = false;
 
             Scanner scanner = new Scanner(System.in);
-           
+
             SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
             SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
             Date checkInDate;
@@ -276,9 +274,7 @@ public class MainApp {
                 List<RoomType> enabledRooms = new ArrayList<>();
 
                 for (RoomType r : retrieveAllRoomTypes()) {
-                    System.out.println(r.getRoomRecords().size());
-                    System.out.println(r.getLineItems().size());
-                    System.out.println(walkInSearchRoom(r, xgcal1, xgcal2));
+                    
                     //Check each room type for number of available rooms 
                     if (walkInSearchRoom(r, xgcal1, xgcal2) > 0) {
                         enabledRooms.add(r);
@@ -319,11 +315,15 @@ public class MainApp {
                     if (option < 1 || option > enabledRooms.size()) {
                         System.out.println("Please input a proper option");
                     } else {
-
-                        totalAmount = addItem(createLineItem(xgcal1, xgcal2,
+                        
+                        totalAmount += availableRates.get(option - 1).longValue();
+                        ReservationLineItem item = createLineItem(xgcal1, xgcal2,
                                 availableRates.get(option - 1),
-                                enabledRooms.get(option - 1)));
-                        System.out.println("Cart Cost: $" + totalAmount);
+                                enabledRooms.get(option - 1));
+                        
+                        item = addItem(item, enabledRooms.get(option - 1).getRoomTypeId());
+                        lineItems.add(item);
+                        System.out.println("Cart Cost: $" + totalAmount.toString());
                         totalLineItems++;
                         System.out.println("Cart Items: " + totalLineItems);
                     }
@@ -347,7 +347,7 @@ public class MainApp {
                     } else if (response == 2) {
                         //If cart not empty, proceed to checkout and end loop
                         if (totalLineItems != 0) {
-                            doCheckout(currentPartner, totalLineItems, totalAmount, lineItems);
+                            doCheckout(currentPartner, totalLineItems, BigDecimal.valueOf(totalAmount), lineItems);
                             continueReservation = false;
                             //walkInReservationSessionBeanRemote.resetCart();
                             System.out.println("CheckOut Completed");
@@ -370,7 +370,7 @@ public class MainApp {
 
                     if (response == 1) {
                         if (totalLineItems != 0) {
-                            doCheckout(currentPartner, totalLineItems, totalAmount, lineItems);
+                            doCheckout(currentPartner, totalLineItems, BigDecimal.valueOf(totalAmount), lineItems);
                             continueReservation = false;
                             //walkInReservationSessionBeanRemote.resetCart();
                             System.out.println("CheckOut Completed");
@@ -399,59 +399,42 @@ public class MainApp {
         System.out.print("Enter reservation id> ");
         Integer rId = scanner.nextInt();
         Long reservationId = rId.longValue();
-
-        boolean contains = false;
-
         try {
-            Partner p = findPartnerById(currentPartner.getPartnerId());
-            if (!p.getPartnerReservations().isEmpty()) {
-                for (PartnerReservation or : p.getPartnerReservations()) {
-                    for (ReservationLineItem lineItem : or.getReservationLineItems()) {
-                        if (lineItem.getReservationLineItemId().equals(reservationId)) {
-                            contains = true;
-                            System.out.println("");
-                            System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
-                            System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
-                            System.out.println("Amount: " + lineItem.getAmount().toString());
-                            System.out.println("RoomType: " + lineItem.getRoom().getRoomType().getTypeName());
-                            System.out.println("--------------------------------------------");
-                        }
-                    }
-                }
-            }
-
-            if (contains == false) {
-                System.out.println("Guest does not have this line item!");
-            }
-        } catch (PartnerNotFoundException_Exception ex) {
-            System.out.println("Guest does not exist!");
+            ReservationLineItem lineItem = findReservationLineItemOfPartner(reservationId, currentPartner.getPartnerId());
+            System.out.println("");
+                System.out.println("Reservation " + rId + ": ");
+                System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+                System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+                System.out.println("Amount: " + lineItem.getAmount().toString());
+                
+                System.out.println("--------------------------------------------");
+        } catch(ReservationLineItemNotFoundException_Exception ex) {
+            System.out.println("Partner has doesnt have the entered reservation!");
         }
+
+        
+            
     }
 
     private void viewAllMyReservations() throws PartnerNotFoundException_Exception {
         HotelReservationWebService_Service service = new HotelReservationWebService_Service();
         Partner p;
         int i = 1;
-        try {
-            p = findPartnerById(currentPartner.getPartnerId());
-            if (!p.getPartnerReservations().isEmpty()) {
-                for (PartnerReservation pr : p.getPartnerReservations()) {
-                    for (ReservationLineItem lineItem : pr.getReservationLineItems()) {
-                        System.out.println("");
-                        System.out.println("Reservation " + i + ": ");
-                        System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
-                        System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
-                        System.out.println("Amount: " + lineItem.getAmount().toString());
-                        System.out.println("RoomType: " + lineItem.getRoom().getRoomType().getTypeName());
-                        System.out.println("--------------------------------------------");
-                        i++;
-                    }
-                }
-            } else {
-                System.out.println("You have no Reservations \n");
+        List<ReservationLineItem> lineItems = retrieveAllPartnerReservations(currentPartner.getPartnerId());
+        System.out.println(lineItems.size());
+        if (!lineItems.isEmpty()) {
+            for (ReservationLineItem lineItem : lineItems) {
+                System.out.println("");
+                System.out.println("Reservation " + i + ": ");
+                System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+                System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+                System.out.println("Amount: " + lineItem.getAmount().toString());
+                
+                System.out.println("--------------------------------------------");
+                i++;
             }
-        } catch (PartnerNotFoundException_Exception ex) {
-            System.out.println("You have no Reservations \n");
+        } else {
+            System.out.println("Partner has no reservations!");
         }
 
     }
@@ -488,10 +471,10 @@ public class MainApp {
         return port.reservationPrice(roomType, arg0, arg1);
     }
 
-    private java.math.BigDecimal addItem(ws.client.ReservationLineItem lineItem) {
+    private ws.client.ReservationLineItem addItem(ws.client.ReservationLineItem lineItem, Long rId) {
         ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
-        return port.addItem(lineItem);
+        return port.addItem(lineItem, rId);
     }
 
     private void removeAllItemsFromCart(java.util.List<ws.client.ReservationLineItem> lineItems) {
@@ -506,10 +489,28 @@ public class MainApp {
         return port.createLineItem(arg0, arg1, amount, roomType);
     }
 
-    private ws.client.PartnerReservation doCheckout(ws.client.Partner partner, java.lang.Integer totalLineItems, java.math.BigDecimal totalAmount,
+    private void doCheckout(ws.client.Partner partner, java.lang.Integer totalLineItems, java.math.BigDecimal totalAmount,
             java.util.List<ws.client.ReservationLineItem> lineItems) {
         ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
-        return port.doCheckout(partner, totalLineItems, totalAmount, lineItems);
+        port.doCheckout(partner, totalLineItems, totalAmount, lineItems);
+    }
+
+    public java.util.List<ws.client.ReservationLineItem> retrieveAllPartnerReservations(Long partnerId) throws PartnerNotFoundException_Exception {
+        ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
+        ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
+        return port.retrieveAllPartnerReservations(partnerId);
+    }
+    
+    public ws.client.ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException_Exception {
+        ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
+        ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
+        return port.findReservationLineItemById(reservationLineItemId);
+    }
+    
+    public ReservationLineItem findReservationLineItemOfPartner(Long reservationLineItemId, Long partnerId) throws ReservationLineItemNotFoundException_Exception {
+        ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
+        ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
+        return port.findReservationLineItemOfPartner(reservationLineItemId, partnerId);
     }
 }

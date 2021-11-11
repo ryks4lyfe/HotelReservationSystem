@@ -26,6 +26,7 @@ import static util.enumeration.RoomRateTypeEnum.NORMAL;
 import static util.enumeration.RoomRateTypeEnum.PEAK;
 import static util.enumeration.RoomRateTypeEnum.PROMOTION;
 import static util.enumeration.RoomRateTypeEnum.PUBLISHED;
+import util.exception.PartnerNotFoundException;
 import util.exception.ReservationLineItemNotFoundException;
 
 /**
@@ -54,17 +55,19 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     }
 
     @Override
-    public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
-        PartnerReservation p = new PartnerReservation(partner, new Date(), totalLineItems, totalAmount);
-        p.setReservationLineItems(lineItems);
+    public void doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
+        List<ReservationLineItem> items = new ArrayList<>();
+        for(ReservationLineItem i : lineItems) {
+            items.add(em.find(ReservationLineItem.class, i.getReservationLineItemId()));
+        }
+        PartnerReservation p = new PartnerReservation(partner, new Date(), totalLineItems, totalAmount, items);
+        
         em.persist(p);
         Partner p1 = em.find(Partner.class, partner.getPartnerId());
 
         p1.getPartnerReservations().add(p);
         p.setPartner(p1);
         em.flush();
-
-        return p;
     }
 
     @Override
@@ -75,6 +78,19 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         } else {
             throw new ReservationLineItemNotFoundException("Error, Guest " + reservationLineItemId + " does not exist.");
         }
+    }
+    
+    @Override
+    public ReservationLineItem findReservationLineItemOfPartner(Long reservationLineItemId, Long partnerId) throws ReservationLineItemNotFoundException {
+        Partner p = em.find(Partner.class, partnerId);
+        for(PartnerReservation pr : p.getPartnerReservations()) {
+            for(ReservationLineItem items : pr.getReservationLineItems()) {
+                if(items.getReservationLineItemId().equals(reservationLineItemId)) {
+                    return items;
+                }
+            }
+        }
+        throw new ReservationLineItemNotFoundException("Error, Reservation Id: " + reservationLineItemId + " does not exist.");
     }
     
     @Override

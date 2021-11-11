@@ -15,6 +15,7 @@ import entity.RoomType;
 import entity.RoomRecord;
 import entity.RoomRate;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -50,17 +51,65 @@ public class HotelReservationWebService {
 
     @WebMethod(operationName = "partnerLogin")
     public Partner doLogin(String username, String password) throws FailedLoginException, PartnerNotFoundException {
-        return partnerSessionBeanLocal.doLogin(username, password);
+        Partner p = partnerSessionBeanLocal.doLogin(username, password);
+        em.detach(p);
+        
+        
+        for(PartnerReservation pr: p.getPartnerReservations()) {
+            em.detach(pr);
+            pr.setPartner(null);
+        }
+        p.setPartnerReservations(null);
+        return p;
     }
 
     @WebMethod
-    public List<PartnerReservation> retrieveAllPartnerReservations(Long partnerId) {
-        return partnerSessionBeanLocal.retrieveAllPartnerReservations(partnerId);
+    public List<ReservationLineItem> retrieveAllPartnerReservations(Long partnerId) throws PartnerNotFoundException {
+        Partner p = partnerSessionBeanLocal.findPartnerById(partnerId);
+        List<ReservationLineItem> r = new ArrayList<>();
+        for(PartnerReservation pr: p.getPartnerReservations()) {
+            for(ReservationLineItem item : pr.getReservationLineItems()) {
+                r.add(item);
+            }
+        }
+        
+        for(ReservationLineItem i : r) {
+            em.detach(i);
+            RoomType rt = i.getRoomType();
+            em.detach(rt);
+            rt.getLineItems().remove(i);
+            i.setRoomType(null);
+        }
+        
+        
+        
+        return r;
+       
     }
 
     @WebMethod
     public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException {
-        return reservationSessionBeanLocal.findReservationLineItemById(reservationLineItemId);
+        ReservationLineItem r = reservationSessionBeanLocal.findReservationLineItemById(reservationLineItemId);
+        
+        
+        em.detach(r.getRoomType());
+        
+        return r;
+        
+    }
+    
+    @WebMethod
+    public ReservationLineItem findReservationLineItemOfPartner(Long reservationLineItemId, Long partnerId) throws ReservationLineItemNotFoundException {
+        ReservationLineItem r = reservationSessionBeanLocal.findReservationLineItemOfPartner(reservationLineItemId, partnerId);
+        em.detach(r);
+        
+        RoomType rt = r.getRoomType();
+        em.detach(rt);
+        
+        rt.getLineItems().remove(r);
+        r.setRoomType(null);
+        
+        return r;
     }
 
     @WebMethod
@@ -75,12 +124,32 @@ public class HotelReservationWebService {
 
     @WebMethod
     public Partner findPartnerById(Long partnerId) throws PartnerNotFoundException {
-        return partnerSessionBeanLocal.findPartnerById(partnerId);
+        Partner p = partnerSessionBeanLocal.findPartnerById(partnerId);
+        em.detach(p);
+        p.setPartnerReservations(null);
+        
+        for(PartnerReservation pr: p.getPartnerReservations()) {
+            em.detach(pr);
+            pr.setPartner(null);
+            
+        }
+        
+        return p;
     }
 
     @WebMethod
-    public BigDecimal addItem(ReservationLineItem lineItem) {
-        return partnerSessionBeanLocal.addItem(lineItem);
+    public ReservationLineItem addItem(ReservationLineItem lineItem, Long rId) {
+        ReservationLineItem r = partnerSessionBeanLocal.addItem(lineItem, rId);
+        em.detach(r);
+        r.setRoomType(null);
+        
+        /**RoomType rt = r.getRoomType();
+        em.detach(rt);
+        rt.getLineItems().remove(r);
+        **/
+        
+        return r;
+        
     }
 
     @WebMethod
@@ -94,8 +163,8 @@ public class HotelReservationWebService {
     }
 
     @WebMethod
-    public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
-        return reservationSessionBeanLocal.doCheckout(partner, totalLineItems, totalAmount, lineItems);
+    public void doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
+        reservationSessionBeanLocal.doCheckout(partner, totalLineItems, totalAmount, lineItems);
     }
 
     @WebMethod
@@ -112,6 +181,11 @@ public class HotelReservationWebService {
             for (RoomRecord r : rt.getRoomRecords()) {
                 em.detach(r);
                 r.setRoomType(null);
+            }
+            
+            for (ReservationLineItem item : rt.getLineItems()) {
+                em.detach(item);
+                item.setRoomType(null);
             }
 
         }

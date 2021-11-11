@@ -13,9 +13,13 @@ import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
+import entity.PartnerReservation;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import util.exception.FailedLoginException;
 import util.exception.GuestNotFoundException;
+import util.exception.PartnerNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 
 /**
@@ -39,19 +43,15 @@ public class Main {
     @EJB
     private static ReservationSessionBeanRemote reservationSessionBean;
 
-
     @EJB
     private static GuestSessionBeanRemote guestSessionBeanRemote;
-    
-    
 
-    
     public static void main(String[] args) throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
-       MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean, 
-               roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean,walkInReservationSessionBeanRemote);
-       mainApp.runApp();
-       
+
+        MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean,
+                roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean, walkInReservationSessionBeanRemote);
+        mainApp.runApp();
 
     }
-    
+
 }
