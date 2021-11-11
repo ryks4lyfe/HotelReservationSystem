@@ -4,27 +4,6 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/HotelReservationWebService/HotelReservationWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="addItem">
-<part name="parameters" element="tns:addItem"/>
-</message>
-<message name="addItemResponse">
-<part name="parameters" element="tns:addItemResponse"/>
-</message>
-<message name="findPartnerById">
-<part name="parameters" element="tns:findPartnerById"/>
-</message>
-<message name="findPartnerByIdResponse">
-<part name="parameters" element="tns:findPartnerByIdResponse"/>
-</message>
-<message name="PartnerNotFoundException">
-<part name="fault" element="tns:PartnerNotFoundException"/>
-</message>
-<message name="retrieveAllPartnerReservations">
-<part name="parameters" element="tns:retrieveAllPartnerReservations"/>
-</message>
-<message name="retrieveAllPartnerReservationsResponse">
-<part name="parameters" element="tns:retrieveAllPartnerReservationsResponse"/>
-</message>
 <message name="partnerLogin">
 <part name="parameters" element="tns:partnerLogin"/>
 </message>
@@ -33,6 +12,57 @@
 </message>
 <message name="FailedLoginException">
 <part name="fault" element="tns:FailedLoginException"/>
+</message>
+<message name="PartnerNotFoundException">
+<part name="fault" element="tns:PartnerNotFoundException"/>
+</message>
+<message name="addItem">
+<part name="parameters" element="tns:addItem"/>
+</message>
+<message name="addItemResponse">
+<part name="parameters" element="tns:addItemResponse"/>
+</message>
+<message name="reservationPrice">
+<part name="parameters" element="tns:reservationPrice"/>
+</message>
+<message name="reservationPriceResponse">
+<part name="parameters" element="tns:reservationPriceResponse"/>
+</message>
+<message name="doCheckout">
+<part name="parameters" element="tns:doCheckout"/>
+</message>
+<message name="doCheckoutResponse">
+<part name="parameters" element="tns:doCheckoutResponse"/>
+</message>
+<message name="walkInSearchRoom">
+<part name="parameters" element="tns:walkInSearchRoom"/>
+</message>
+<message name="walkInSearchRoomResponse">
+<part name="parameters" element="tns:walkInSearchRoomResponse"/>
+</message>
+<message name="createLineItem">
+<part name="parameters" element="tns:createLineItem"/>
+</message>
+<message name="createLineItemResponse">
+<part name="parameters" element="tns:createLineItemResponse"/>
+</message>
+<message name="findPartnerById">
+<part name="parameters" element="tns:findPartnerById"/>
+</message>
+<message name="findPartnerByIdResponse">
+<part name="parameters" element="tns:findPartnerByIdResponse"/>
+</message>
+<message name="retrieveAllPartnerReservations">
+<part name="parameters" element="tns:retrieveAllPartnerReservations"/>
+</message>
+<message name="retrieveAllPartnerReservationsResponse">
+<part name="parameters" element="tns:retrieveAllPartnerReservationsResponse"/>
+</message>
+<message name="removeAllItemsFromCart">
+<part name="parameters" element="tns:removeAllItemsFromCart"/>
+</message>
+<message name="removeAllItemsFromCartResponse">
+<part name="parameters" element="tns:removeAllItemsFromCartResponse"/>
 </message>
 <message name="findReservationLineItemById">
 <part name="parameters" element="tns:findReservationLineItemById"/>
@@ -43,46 +73,38 @@
 <message name="ReservationLineItemNotFoundException">
 <part name="fault" element="tns:ReservationLineItemNotFoundException"/>
 </message>
-<message name="walkInSearchRoom">
-<part name="parameters" element="tns:walkInSearchRoom"/>
+<message name="retrieveAllRoomTypesForWebservice">
+<part name="parameters" element="tns:retrieveAllRoomTypesForWebservice"/>
 </message>
-<message name="walkInSearchRoomResponse">
-<part name="parameters" element="tns:walkInSearchRoomResponse"/>
-</message>
-<message name="reservationPrice">
-<part name="parameters" element="tns:reservationPrice"/>
-</message>
-<message name="reservationPriceResponse">
-<part name="parameters" element="tns:reservationPriceResponse"/>
-</message>
-<message name="retrieveAllRoomTypes">
-<part name="parameters" element="tns:retrieveAllRoomTypes"/>
-</message>
-<message name="retrieveAllRoomTypesResponse">
-<part name="parameters" element="tns:retrieveAllRoomTypesResponse"/>
-</message>
-<message name="createLineItem">
-<part name="parameters" element="tns:createLineItem"/>
-</message>
-<message name="createLineItemResponse">
-<part name="parameters" element="tns:createLineItemResponse"/>
-</message>
-<message name="doCheckout">
-<part name="parameters" element="tns:doCheckout"/>
-</message>
-<message name="doCheckoutResponse">
-<part name="parameters" element="tns:doCheckoutResponse"/>
-</message>
-<message name="removeAllItemsFromCart">
-<part name="parameters" element="tns:removeAllItemsFromCart"/>
-</message>
-<message name="removeAllItemsFromCartResponse">
-<part name="parameters" element="tns:removeAllItemsFromCartResponse"/>
+<message name="retrieveAllRoomTypesForWebserviceResponse">
+<part name="parameters" element="tns:retrieveAllRoomTypesForWebserviceResponse"/>
 </message>
 <portType name="HotelReservationWebService">
+<operation name="partnerLogin">
+<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
+<fault message="tns:FailedLoginException" name="FailedLoginException" wsam:Action="http://ws.session.ejb/HotelReservationWebService/partnerLogin/Fault/FailedLoginException"/>
+<fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/HotelReservationWebService/partnerLogin/Fault/PartnerNotFoundException"/>
+</operation>
 <operation name="addItem">
 <input wsam:Action="http://ws.session.ejb/HotelReservationWebService/addItemRequest" message="tns:addItem"/>
 <output wsam:Action="http://ws.session.ejb/HotelReservationWebService/addItemResponse" message="tns:addItemResponse"/>
+</operation>
+<operation name="reservationPrice">
+<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/reservationPriceRequest" message="tns:reservationPrice"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/reservationPriceResponse" message="tns:reservationPriceResponse"/>
+</operation>
+<operation name="doCheckout">
+<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/doCheckoutRequest" message="tns:doCheckout"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/doCheckoutResponse" message="tns:doCheckoutResponse"/>
+</operation>
+<operation name="walkInSearchRoom">
+<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/walkInSearchRoomRequest" message="tns:walkInSearchRoom"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/walkInSearchRoomResponse" message="tns:walkInSearchRoomResponse"/>
+</operation>
+<operation name="createLineItem">
+<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/createLineItemRequest" message="tns:createLineItem"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/createLineItemResponse" message="tns:createLineItemResponse"/>
 </operation>
 <operation name="findPartnerById">
 <input wsam:Action="http://ws.session.ejb/HotelReservationWebService/findPartnerByIdRequest" message="tns:findPartnerById"/>
@@ -93,74 +115,22 @@
 <input wsam:Action="http://ws.session.ejb/HotelReservationWebService/retrieveAllPartnerReservationsRequest" message="tns:retrieveAllPartnerReservations"/>
 <output wsam:Action="http://ws.session.ejb/HotelReservationWebService/retrieveAllPartnerReservationsResponse" message="tns:retrieveAllPartnerReservationsResponse"/>
 </operation>
-<operation name="partnerLogin">
-<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
-<fault message="tns:FailedLoginException" name="FailedLoginException" wsam:Action="http://ws.session.ejb/HotelReservationWebService/partnerLogin/Fault/FailedLoginException"/>
-<fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/HotelReservationWebService/partnerLogin/Fault/PartnerNotFoundException"/>
+<operation name="removeAllItemsFromCart">
+<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/removeAllItemsFromCartRequest" message="tns:removeAllItemsFromCart"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/removeAllItemsFromCartResponse" message="tns:removeAllItemsFromCartResponse"/>
 </operation>
 <operation name="findReservationLineItemById">
 <input wsam:Action="http://ws.session.ejb/HotelReservationWebService/findReservationLineItemByIdRequest" message="tns:findReservationLineItemById"/>
 <output wsam:Action="http://ws.session.ejb/HotelReservationWebService/findReservationLineItemByIdResponse" message="tns:findReservationLineItemByIdResponse"/>
 <fault message="tns:ReservationLineItemNotFoundException" name="ReservationLineItemNotFoundException" wsam:Action="http://ws.session.ejb/HotelReservationWebService/findReservationLineItemById/Fault/ReservationLineItemNotFoundException"/>
 </operation>
-<operation name="walkInSearchRoom">
-<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/walkInSearchRoomRequest" message="tns:walkInSearchRoom"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/walkInSearchRoomResponse" message="tns:walkInSearchRoomResponse"/>
-</operation>
-<operation name="reservationPrice">
-<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/reservationPriceRequest" message="tns:reservationPrice"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/reservationPriceResponse" message="tns:reservationPriceResponse"/>
-</operation>
-<operation name="retrieveAllRoomTypes">
-<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/retrieveAllRoomTypesRequest" message="tns:retrieveAllRoomTypes"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/retrieveAllRoomTypesResponse" message="tns:retrieveAllRoomTypesResponse"/>
-</operation>
-<operation name="createLineItem">
-<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/createLineItemRequest" message="tns:createLineItem"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/createLineItemResponse" message="tns:createLineItemResponse"/>
-</operation>
-<operation name="doCheckout">
-<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/doCheckoutRequest" message="tns:doCheckout"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/doCheckoutResponse" message="tns:doCheckoutResponse"/>
-</operation>
-<operation name="removeAllItemsFromCart">
-<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/removeAllItemsFromCartRequest" message="tns:removeAllItemsFromCart"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/removeAllItemsFromCartResponse" message="tns:removeAllItemsFromCartResponse"/>
+<operation name="retrieveAllRoomTypesForWebservice">
+<input wsam:Action="http://ws.session.ejb/HotelReservationWebService/retrieveAllRoomTypesForWebserviceRequest" message="tns:retrieveAllRoomTypesForWebservice"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationWebService/retrieveAllRoomTypesForWebserviceResponse" message="tns:retrieveAllRoomTypesForWebserviceResponse"/>
 </operation>
 </portType>
 <binding name="HotelReservationWebServicePortBinding" type="tns:HotelReservationWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="addItem">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="findPartnerById">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="PartnerNotFoundException">
-<soap:fault name="PartnerNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="retrieveAllPartnerReservations">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
 <operation name="partnerLogin">
 <soap:operation soapAction=""/>
 <input>
@@ -176,19 +146,7 @@
 <soap:fault name="PartnerNotFoundException" use="literal"/>
 </fault>
 </operation>
-<operation name="findReservationLineItemById">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="ReservationLineItemNotFoundException">
-<soap:fault name="ReservationLineItemNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="walkInSearchRoom">
+<operation name="addItem">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -206,7 +164,16 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="retrieveAllRoomTypes">
+<operation name="doCheckout">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="walkInSearchRoom">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -224,7 +191,19 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="doCheckout">
+<operation name="findPartnerById">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="PartnerNotFoundException">
+<soap:fault name="PartnerNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveAllPartnerReservations">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -234,6 +213,27 @@
 </output>
 </operation>
 <operation name="removeAllItemsFromCart">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="findReservationLineItemById">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="ReservationLineItemNotFoundException">
+<soap:fault name="ReservationLineItemNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveAllRoomTypesForWebservice">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

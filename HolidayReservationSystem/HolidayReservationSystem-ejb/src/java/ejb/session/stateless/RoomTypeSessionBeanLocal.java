@@ -23,7 +23,7 @@ public interface RoomTypeSessionBeanLocal {
 
     public List<RoomType> retrieveAllRoomTypes();
 
-    public RoomType createRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException ;
+    public RoomType createRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException;
 
     public RoomType findRoomTypeById(Long roomTypeId) throws RoomTypeNotFoundException;
 
@@ -32,7 +32,7 @@ public interface RoomTypeSessionBeanLocal {
     public void updateRoomType(RoomType roomType) throws RoomTypeNotFoundException, UpdateRoomTypeException;
 
     public void deleteRoomType(Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException;
-    
-    //public List<RoomType> retrieveAllRoomTypesWS();
-    
+
+    public List<RoomType> retrieveAllRoomTypesForWebservice();
+
 }

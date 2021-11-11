@@ -163,37 +163,29 @@ public class MainApp {
 
     public void searchHotel() throws DatatypeConfigurationException {
         try {
-            for (RoomType r : retrieveAllRoomTypes()) {
-                System.out.println(r.getRoomRecords().size());
-            }
             Scanner scanner = new Scanner(System.in);
-
-            Date checkIn;
-            Date checkOut;
-            Date checkIn1;
-            Date checkOut1;
-
-            GregorianCalendar gcal = null;
-            XMLGregorianCalendar checkInDate;
-            XMLGregorianCalendar checkOutDate;
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Integer response = 0;
             SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyyhh:mm a");
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            Date checkInDate;
+            Date checkOutDate;
+            String roomType;
 
-            System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
-            System.out.print("Enter check in date (yyyy-MM-dd)> ");
-            checkIn = sdf.parse(scanner.nextLine().trim());
-            checkIn1 = inputDateFormat.parse(checkIn.toString());
-            System.out.print("Enter checkout Date (yyyy-MM-dd)> ");
-            checkOut = sdf.parse(scanner.nextLine().trim());
-            checkOut1 = inputDateFormat.parse(checkOut.toString());
+            GregorianCalendar gcal = new GregorianCalendar();
+            XMLGregorianCalendar xgcal1;
+            XMLGregorianCalendar xgcal2;
 
-            gcal.setTime(checkIn1);
-            checkInDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+            System.out.println("\n*** HoRS System :: Search Hotel Room ***\n");
+            System.out.print("Enter check in date (dd/mm/yyyy)> ");
+            checkInDate = inputDateFormat.parse(scanner.nextLine().trim());
+            System.out.print("Enter check out Date (dd/mm/yyyy)> ");
+            checkOutDate = inputDateFormat.parse(scanner.nextLine().trim());
 
-            gcal.setTime(checkOut1);
-            checkOutDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+            gcal.setTime(checkInDate);
+            xgcal1 = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+
+            gcal.setTime(checkOutDate);
+            xgcal2 = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
 
             List<Integer> numOfRooms = new ArrayList<>();
             List<BigDecimal> availableRates = new ArrayList<>();
@@ -202,14 +194,14 @@ public class MainApp {
             for (RoomType r : retrieveAllRoomTypes()) {
                 System.out.println(r.getRoomRecords().size());
                 System.out.println(r.getLineItems().size());
-                System.out.println(walkInSearchRoom(r, checkInDate, checkOutDate));
+                System.out.println(walkInSearchRoom(r, xgcal1, xgcal2));
                 //Check each room type for number of available rooms 
-                if (walkInSearchRoom(r, checkInDate, checkOutDate) > 0) {
+                if (walkInSearchRoom(r, xgcal1, xgcal2) > 0) {
                     enabledRooms.add(r);
-                    numOfRooms.add(walkInSearchRoom(r, checkInDate, checkOutDate));
-                    availableRates.add(reservationPrice(r, checkInDate, checkOutDate));
+                    numOfRooms.add(walkInSearchRoom(r, xgcal1, xgcal2));
+                    availableRates.add(reservationPrice(r, xgcal1, xgcal2));
                 } else {
-                    System.out.println("-------------------------------------------");
+                    System.out.println("");
                     System.out.println("Room Type : " + r.getTypeName() + " has no rooms left");
                     System.out.println("-------------------------------------------");
                 }
@@ -221,8 +213,9 @@ public class MainApp {
                 for (int i = 0; i < enabledRooms.size(); i++) {
                     RoomType rt = enabledRooms.get(i);
                     BigDecimal price = availableRates.get(i);
-                    System.out.println("-------------------------------------------");
-                    System.out.println("Option " + i + 1);
+                    System.out.println("");
+                    int i2 = i + 1;
+                    System.out.println("Option " + i2);
                     System.out.println("Room Type: " + rt.getTypeName());
                     System.out.println("Room Size: " + rt.getSize());
                     System.out.println("Bed Number: " + rt.getBed());
@@ -245,23 +238,6 @@ public class MainApp {
 
     public void searchAndReserveHotel() throws DatatypeConfigurationException {
         try {
-            for (RoomType r : retrieveAllRoomTypes()) {
-                System.out.println(r.getRoomRecords().size());
-            }
-            Scanner scanner = new Scanner(System.in);
-
-            Date checkIn;
-            Date checkOut;
-            Date checkIn1;
-            Date checkOut1;
-
-            GregorianCalendar gcal = null;
-            XMLGregorianCalendar checkInDate;
-            XMLGregorianCalendar checkOutDate;
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyyhh:mm a");
 
             Integer totalLineItems = 0;
             BigDecimal totalAmount = BigDecimal.valueOf(0);
@@ -270,19 +246,29 @@ public class MainApp {
             boolean continueReservation = true;
             boolean emptyRooms = false;
 
-            System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
-            System.out.print("Enter check in date (yyyy-MM-dd)> ");
-            checkIn = sdf.parse(scanner.nextLine().trim());
-            checkIn1 = inputDateFormat.parse(checkIn.toString());
-            System.out.print("Enter checkout Date (yyyy-MM-dd)> ");
-            checkOut = sdf.parse(scanner.nextLine().trim());
-            checkOut1 = inputDateFormat.parse(checkOut.toString());
+            Scanner scanner = new Scanner(System.in);
+           
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            Date checkInDate;
+            Date checkOutDate;
+            String roomType;
 
-            gcal.setTime(checkIn1);
-            checkInDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+            GregorianCalendar gcal = new GregorianCalendar();
+            XMLGregorianCalendar xgcal1;
+            XMLGregorianCalendar xgcal2;
 
-            gcal.setTime(checkOut1);
-            checkOutDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+            System.out.println("\n*** HoRS System :: Search Hotel Room ***\n");
+            System.out.print("Enter check in date (dd/mm/yyyy)> ");
+            checkInDate = inputDateFormat.parse(scanner.nextLine().trim());
+            System.out.print("Enter check out Date (dd/mm/yyyy)> ");
+            checkOutDate = inputDateFormat.parse(scanner.nextLine().trim());
+
+            gcal.setTime(checkInDate);
+            xgcal1 = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+
+            gcal.setTime(checkOutDate);
+            xgcal2 = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
 
             while (continueReservation == true) {
                 List<Integer> numOfRooms = new ArrayList<>();
@@ -292,12 +278,12 @@ public class MainApp {
                 for (RoomType r : retrieveAllRoomTypes()) {
                     System.out.println(r.getRoomRecords().size());
                     System.out.println(r.getLineItems().size());
-                    System.out.println(walkInSearchRoom(r, checkInDate, checkOutDate));
+                    System.out.println(walkInSearchRoom(r, xgcal1, xgcal2));
                     //Check each room type for number of available rooms 
-                    if (walkInSearchRoom(r, checkInDate, checkOutDate) > 0) {
+                    if (walkInSearchRoom(r, xgcal1, xgcal2) > 0) {
                         enabledRooms.add(r);
-                        numOfRooms.add(walkInSearchRoom(r, checkInDate, checkOutDate));
-                        availableRates.add(reservationPrice(r, checkInDate, checkOutDate));
+                        numOfRooms.add(walkInSearchRoom(r, xgcal1, xgcal2));
+                        availableRates.add(reservationPrice(r, xgcal1, xgcal2));
                     } else {
                         System.out.println("-------------------------------------------");
                         System.out.println("Room Type : " + r.getTypeName() + " has no rooms left");
@@ -311,8 +297,9 @@ public class MainApp {
                     for (int i = 0; i < enabledRooms.size(); i++) {
                         RoomType rt = enabledRooms.get(i);
                         BigDecimal price = availableRates.get(i);
-                        System.out.println("-------------------------------------------");
-                        System.out.println("Option " + i + 1);
+                        System.out.println("");
+                        int i2 = i + 1;
+                        System.out.println("Option " + i2);
                         System.out.println("Room Type: " + rt.getTypeName());
                         System.out.println("Room Size: " + rt.getSize());
                         System.out.println("Bed Number: " + rt.getBed());
@@ -333,7 +320,7 @@ public class MainApp {
                         System.out.println("Please input a proper option");
                     } else {
 
-                        totalAmount = addItem(createLineItem(checkInDate, checkOutDate,
+                        totalAmount = addItem(createLineItem(xgcal1, xgcal2,
                                 availableRates.get(option - 1),
                                 enabledRooms.get(option - 1)));
                         System.out.println("Cart Cost: $" + totalAmount);
@@ -422,10 +409,11 @@ public class MainApp {
                     for (ReservationLineItem lineItem : or.getReservationLineItems()) {
                         if (lineItem.getReservationLineItemId().equals(reservationId)) {
                             contains = true;
-                            System.out.println("--------------------------------------------");
+                            System.out.println("");
                             System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
                             System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
                             System.out.println("Amount: " + lineItem.getAmount().toString());
+                            System.out.println("RoomType: " + lineItem.getRoom().getRoomType().getTypeName());
                             System.out.println("--------------------------------------------");
                         }
                     }
@@ -439,7 +427,6 @@ public class MainApp {
             System.out.println("Guest does not exist!");
         }
     }
-    
 
     private void viewAllMyReservations() throws PartnerNotFoundException_Exception {
         HotelReservationWebService_Service service = new HotelReservationWebService_Service();
@@ -450,11 +437,12 @@ public class MainApp {
             if (!p.getPartnerReservations().isEmpty()) {
                 for (PartnerReservation pr : p.getPartnerReservations()) {
                     for (ReservationLineItem lineItem : pr.getReservationLineItems()) {
-                        System.out.println("--------------------------------------------");
+                        System.out.println("");
                         System.out.println("Reservation " + i + ": ");
                         System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
                         System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
                         System.out.println("Amount: " + lineItem.getAmount().toString());
+                        System.out.println("RoomType: " + lineItem.getRoom().getRoomType().getTypeName());
                         System.out.println("--------------------------------------------");
                         i++;
                     }
@@ -475,7 +463,6 @@ public class MainApp {
 
     }
 
-
     private ws.client.Partner findPartnerById(java.lang.Long partnerId) throws PartnerNotFoundException_Exception {
         ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
@@ -492,7 +479,7 @@ public class MainApp {
     private java.util.List<ws.client.RoomType> retrieveAllRoomTypes() {
         ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
-        return port.retrieveAllRoomTypes();
+        return port.retrieveAllRoomTypesForWebservice();
     }
 
     private java.math.BigDecimal reservationPrice(ws.client.RoomType roomType, javax.xml.datatype.XMLGregorianCalendar arg0, javax.xml.datatype.XMLGregorianCalendar arg1) {

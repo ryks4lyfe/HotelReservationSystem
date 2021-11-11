@@ -32,6 +32,6 @@ public interface RoomTypeSessionBeanRemote {
 
     public void deleteRoomType(Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException;
 
-    //public List<RoomType> retrieveAllRoomTypesWS();
+    public List<RoomType> retrieveAllRoomTypesForWebservice();
     
 }

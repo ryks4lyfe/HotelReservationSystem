@@ -74,11 +74,6 @@ public class HotelReservationWebService {
     }
 
     @WebMethod
-    public List<RoomType> retrieveAllRoomTypes() {
-        return roomTypeSessionBeanLocal.retrieveAllRoomTypes();
-    }
-
-    @WebMethod
     public Partner findPartnerById(Long partnerId) throws PartnerNotFoundException {
         return partnerSessionBeanLocal.findPartnerById(partnerId);
     }
@@ -101,5 +96,25 @@ public class HotelReservationWebService {
     @WebMethod
     public PartnerReservation doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
         return reservationSessionBeanLocal.doCheckout(partner, totalLineItems, totalAmount, lineItems);
+    }
+
+    @WebMethod
+    public List<RoomType> retrieveAllRoomTypesForWebservice() {
+        List<RoomType> roomTypes = roomTypeSessionBeanLocal.retrieveAllRoomTypesForWebservice();
+        for (RoomType rt : roomTypes) {
+            em.detach(rt);
+            
+            for (RoomRate rr : rt.getRoomRates()) {
+                em.detach(rr);
+                rr.setRoomType(null);
+            }
+
+            for (RoomRecord r : rt.getRoomRecords()) {
+                em.detach(r);
+                r.setRoomType(null);
+            }
+
+        }
+        return roomTypes;
     }
 }
