@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -251,7 +250,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     }*/
     
     @Override
-    @Schedule(hour = "2")
+    //@Schedule(persistent = false, hour = "2")
     public void roomAllocationsForToday() throws ReservationLineItemNotFoundException 
     {
        Date todaysDate = new Date(); 

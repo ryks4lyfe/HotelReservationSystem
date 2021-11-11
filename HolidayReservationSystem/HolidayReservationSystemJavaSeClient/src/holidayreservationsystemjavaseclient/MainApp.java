@@ -475,11 +475,6 @@ public class MainApp {
 
     }
 
-    private ws.client.ReservationLineItem findReservationLineItemById(java.lang.Long reservationLineItemId) throws ReservationLineItemNotFoundException_Exception {
-        ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
-        ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
-        return port.findReservationLineItemById(reservationLineItemId);
-    }
 
     private ws.client.Partner findPartnerById(java.lang.Long partnerId) throws PartnerNotFoundException_Exception {
         ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();

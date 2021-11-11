@@ -74,35 +74,33 @@ public class FrontOfficeModule {
         while (true) {
             System.out.println("*** HoRS :: Front Office ***\n");
             System.out.println("1: Walk-in Search Room");
-            System.out.println("2: Walk-in Reserve Room");
             System.out.println("-----------------------");
-            System.out.println("3: Check-in Guest");
-            System.out.println("4: Check-out Guest");
+            System.out.println("2: Check-in Guest");
+            System.out.println("3: Check-out Guest");
             System.out.println("-----------------------");
-            System.out.println("5: Back\n");
+            System.out.println("4: Back\n");
             response = 0;
 
-            while (response < 1 || response > 5) {
+            while (response < 1 || response > 4) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
 
                 if (response == 1) {
                     walkInSearchRoom();
-                    //} else if (response == 2) {
-                    //walkInreserveRoom();
-                } else if (response == 3) {
+                    
+                } else if (response == 2) {
                     checkInGuest();
+                } else if (response == 3) {
+                    checkOutGuest();
                 } else if (response == 4) {
-                    //checkOutGuest();
-                } else if (response == 5) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
 
-            if (response == 5) {
+            if (response == 4) {
                 break;
             }
         }
@@ -138,7 +136,7 @@ public class FrontOfficeModule {
                         numOfRooms.add(reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate));
                         availableRates.add(reservationSessionBeanRemote.walkInPrice(r, checkInDate, checkOutDate));
                     } else {
-                        System.out.println("-------------------------------------------");
+                        System.out.println("");
                         System.out.println("Room Type " + r.getTypeName() + " has no rooms left");
                         System.out.println("-------------------------------------------");
                     }
@@ -150,8 +148,9 @@ public class FrontOfficeModule {
                     for (int i = 0; i < enabledRooms.size(); i++) {
                         RoomType rt = enabledRooms.get(i);
                         BigDecimal price = availableRates.get(i);
-                        System.out.println("-------------------------------------------");
-                        System.out.println("Option " + i + 1);
+                        System.out.println("");
+                        int i2 = i + 1;
+                        System.out.println("Option " + i2);
                         System.out.println("Room Type: " + rt.getTypeName());
                         System.out.println("Room Size: " + rt.getSize());
                         System.out.println("Bed Number: " + rt.getBed());
@@ -171,8 +170,13 @@ public class FrontOfficeModule {
                     if (option < 1 || option > enabledRooms.size()) {
                         System.out.println("Please input a proper option");
                     } else {
-                        System.out.println(availableRates.get(option - 1));
-                        System.out.println(walkInReservationBeanRemote.print());
+
+                        for (ReservationLineItem lineItem : walkInReservationBeanRemote.getLineItems()) {
+                            System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+                            System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+                            System.out.println("Amount: " + lineItem.getAmount().toString());
+                            System.out.println("RoomType: " + lineItem.getRoomType().getTypeName());
+                        }
                         System.out.println("Cart Cost: " + walkInReservationBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate,
                                 availableRates.get(option - 1),
                                 enabledRooms.get(option - 1))));
@@ -264,5 +268,9 @@ public class FrontOfficeModule {
         } catch (GuestNotFoundException | UnallowedCheckInException ex) {
             System.out.println("An error has occurred while checking in guest: " + guestId.toString() + ex.getMessage() + "\n");
         }
+    }
+
+    private void checkOutGuest() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
