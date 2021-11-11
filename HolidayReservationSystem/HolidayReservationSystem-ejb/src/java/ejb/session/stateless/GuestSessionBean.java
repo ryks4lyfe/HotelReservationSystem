@@ -101,7 +101,7 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
         }
     }
 
-    //Check In 
+    //Change to fit the client
     @Override
     public List<RoomRecord> checkInGuest(Long guestId) throws GuestNotFoundException, UnallowedCheckInException 
     {
@@ -153,6 +153,7 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
         }
     }
     
+    //Change to fit the client
     public List<RoomRecord> checkOutGuest(Long guestId) throws GuestNotFoundException 
     {
         try {

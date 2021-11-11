@@ -14,6 +14,10 @@ import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
+import entity.Guest;
+import entity.OnlineReservation;
+import entity.Partner;
+import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.RoomRecord;
 import entity.RoomType;
@@ -25,8 +29,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.exception.EmployeeNotFoundException;
 import util.exception.GuestNotFoundException;
+import util.exception.PartnerNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 import util.exception.UnallowedCheckInException;
 
@@ -88,7 +95,7 @@ public class FrontOfficeModule {
 
                 if (response == 1) {
                     walkInSearchRoom();
-                    
+
                 } else if (response == 2) {
                     checkInGuest();
                 } else if (response == 3) {
@@ -127,7 +134,7 @@ public class FrontOfficeModule {
                 List<RoomType> enabledRooms = new ArrayList<>();
 
                 for (RoomType r : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
-                    
+
                     //Check each room type for number of available rooms 
                     if (reservationSessionBeanRemote.walkInSearchRoom(r, checkInDate, checkOutDate) > 0) {
                         enabledRooms.add(r);
@@ -248,27 +255,132 @@ public class FrontOfficeModule {
     }
 
     public void checkInGuest() {
-        Long guestId = null;
-        try {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
-            System.out.print("Enter Guest id>");
-            guestId = scanner.nextLong();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** HoRS :: Hotel Management System :: Check-In Guest ***\n");
+        System.out.println("Enter booking type : 1: Walk-in , 2: Guest,  3: Partner\n");
+        Integer choice = scanner.nextInt();
+        ReservationLineItem lineItem;
+        Date currentDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-            List<RoomRecord> roomsCheckedIn = guestSessionBeanRemote.checkInGuest(guestId);
-            System.out.println("Guest " + guestId.toString() + " checked in successfully to the following rooms: ");
-            for (RoomRecord room : roomsCheckedIn) {
-                System.out.println("Room Number: " + room.getRoomNum());
+        if (choice == 1) {
+            System.out.println("Enter Employee Id: \n");
+            Long id = scanner.nextLong();
+            try {
+                Employee e = employeeSessionBeanRemote.findEmployeeById(id);
+                for (WalkInReservation wr : e.getWalkInReservations()) {
+                    for (ReservationLineItem r : wr.getReservationLineItems()) {
+                        if (sdf.format(currentDate).equals(sdf.format(r.getCheckInDate()))) {
+                            lineItem = r;
+                        }
+                    }
+                }
+                //checkIn(r);
+
+            } catch (EmployeeNotFoundException ex) {
+                System.out.println("No such user!");
+            }
+        } else if (choice == 2) {
+            System.out.println("Enter Guest Id: \n");
+            Long id = scanner.nextLong();
+            try {
+                Guest g = guestSessionBeanRemote.findGuestById(id);
+                for (OnlineReservation or : g.getOnlineReservations()) {
+                    for (ReservationLineItem r : or.getReservationLineItems()) {
+                        if (sdf.format(currentDate).equals(sdf.format(r.getCheckInDate()))) {
+                            lineItem = r;
+                        }
+                    }
+                }
+                //checkIn(r);
+            } catch (GuestNotFoundException ex) {
+                System.out.println("No such user!");
             }
 
-            System.out.println("");
-
-        } catch (GuestNotFoundException | UnallowedCheckInException ex) {
-            System.out.println("An error has occurred while checking in guest: " + guestId.toString() + ex.getMessage() + "\n");
+        } else if (choice == 3) {
+            System.out.println("Enter Partner Id: \n");
+            Long id = scanner.nextLong();
+            try {
+                Partner p = partnerSessionBeanRemote.findPartnerById(id);
+                for (PartnerReservation pr : p.getPartnerReservations()) {
+                    for (ReservationLineItem r : pr.getReservationLineItems()) {
+                        if (sdf.format(currentDate).equals(sdf.format(r.getCheckInDate()))) {
+                            lineItem = r;
+                        }
+                    }
+                }
+                //checkIn(r);
+            } catch (PartnerNotFoundException ex) {
+                System.out.println("No such user!");
+            }
+        } else {
+            System.out.println("No such choice!");
         }
+
     }
 
     private void checkOutGuest() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** HoRS :: Hotel Management System :: Check-Out Guest ***\n");
+        System.out.println("Enter booking type : 1: Walk-in , 2: Guest,  3: Partner\n");
+        Integer choice = scanner.nextInt();
+        ReservationLineItem lineItem;
+        Date currentDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+        if (choice == 1) {
+            System.out.println("Enter Employee Id: \n");
+            Long id = scanner.nextLong();
+            try {
+                Employee e = employeeSessionBeanRemote.findEmployeeById(id);
+                for (WalkInReservation wr : e.getWalkInReservations()) {
+                    for (ReservationLineItem r : wr.getReservationLineItems()) {
+                        if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {
+                            lineItem = r;
+                        }
+                    }
+                }
+                //checkOut(r);
+
+            } catch (EmployeeNotFoundException ex) {
+                System.out.println("No such user!");
+            }
+        } else if (choice == 2) {
+            System.out.println("Enter Guest Id: \n");
+            Long id = scanner.nextLong();
+            try {
+                Guest g = guestSessionBeanRemote.findGuestById(id);
+                for (OnlineReservation or : g.getOnlineReservations()) {
+                    for (ReservationLineItem r : or.getReservationLineItems()) {
+                        if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {
+                            lineItem = r;
+                        }
+                    }
+                }
+                //checkOut(r);
+            } catch (GuestNotFoundException ex) {
+                System.out.println("No such user!");
+            }
+
+        } else if (choice == 3) {
+            System.out.println("Enter Partner Id: \n");
+            Long id = scanner.nextLong();
+            try {
+                Partner p = partnerSessionBeanRemote.findPartnerById(id);
+                for (PartnerReservation pr : p.getPartnerReservations()) {
+                    for (ReservationLineItem r : pr.getReservationLineItems()) {
+                        if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {
+                            lineItem = r;
+                        }
+                    }
+                }
+                //checkOut(r);
+            } catch (PartnerNotFoundException ex) {
+                System.out.println("No such user!");
+            }
+        } else {
+            System.out.println("No such choice!");
+        }
+
     }
 }
