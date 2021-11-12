@@ -133,7 +133,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
         {
             RoomType roomTypeToUpdate = findRoomTypeById(roomType.getRoomTypeId()); 
             
-            if (roomTypeToUpdate.getTypeName().equals(roomType.getTypeName()))
+            if (!roomTypeToUpdate.getTypeName().equals(roomType.getTypeName()))
             {
                 roomTypeToUpdate.setTypeName(roomType.getTypeName());
                 roomTypeToUpdate.setAmenities(roomType.getAmenities());

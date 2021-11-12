@@ -138,34 +138,32 @@ public class MainApp {
             System.out.println("1: Proceed ");
             System.out.println("2: Logout\n");
 
-            while (response != 1 || response != 2) {
-                System.out.print("> ");
+            System.out.print("> ");
 
-                response = scanner.nextInt();
+            response = scanner.nextInt();
 
-                if (response == 1) {
+            if (response == 1) {
 
-                    if (employee.getEnum().toString().equals("SYSTEM_ADMINISTRATOR")) {
-                        SystemAdministrationModule systemAdminModule = new SystemAdministrationModule(partnerSessionBeanRemote, employeeSessionBeanRemote, employee);
-                        systemAdminModule.menuSystemAdministration();
+                if (employee.getEnum().toString().equals("SYSTEM_ADMINISTRATOR")) {
+                    SystemAdministrationModule systemAdminModule = new SystemAdministrationModule(partnerSessionBeanRemote, employeeSessionBeanRemote, employee);
+                    systemAdminModule.menuSystemAdministration();
 
-                    } else if (employee.getEnum().toString().equals("OPERATION_MANAGER") || employee.getEnum().toString().equals("SALES_MANAGER")) {
-                        HotelOperationModule hotelOpModule = new HotelOperationModule(employeeSessionBeanRemote, partnerSessionBeanRemote, roomRecordSessionBeanRemote, roomTypeSessionBeanRemote, roomRateSessionBeanRemote, reservationSessionBeanRemote, employee);
-                        hotelOpModule.menuHotelOperation();
+                } else if (employee.getEnum().toString().equals("OPERATION_MANAGER") || employee.getEnum().toString().equals("SALES_MANAGER")) {
+                    HotelOperationModule hotelOpModule = new HotelOperationModule(employeeSessionBeanRemote, partnerSessionBeanRemote, roomRecordSessionBeanRemote, roomTypeSessionBeanRemote, roomRateSessionBeanRemote, reservationSessionBeanRemote, employee);
+                    hotelOpModule.menuHotelOperation();
 
-                    } else if (employee.getEnum().toString().equals("GUEST_RELATION_OFFICER")) {
-                        frontOfficeModule = new FrontOfficeModule(employeeSessionBeanRemote, guestSessionBeanRemote, partnerSessionBeanRemote,
-                                roomRecordSessionBeanRemote, roomTypeSessionBeanRemote,
-                                roomRateSessionBeanRemote, reservationSessionBeanRemote, walkInReservationBeanRemote, employee);
-                        frontOfficeModule.menuFrontOffice();
-                    }
-
-                } else if (response == 2) {
-                    break;
-
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
+                } else if (employee.getEnum().toString().equals("GUEST_RELATION_OFFICER")) {
+                    frontOfficeModule = new FrontOfficeModule(employeeSessionBeanRemote, guestSessionBeanRemote, partnerSessionBeanRemote,
+                            roomRecordSessionBeanRemote, roomTypeSessionBeanRemote,
+                            roomRateSessionBeanRemote, reservationSessionBeanRemote, walkInReservationBeanRemote, employee);
+                    frontOfficeModule.menuFrontOffice();
                 }
+
+            } else if (response == 2) {
+                break;
+
+            } else {
+                System.out.println("Invalid option, please try again!\n");
             }
 
             if (response == 2) {
