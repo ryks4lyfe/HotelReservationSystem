@@ -192,7 +192,7 @@ public class MainApp {
             List<RoomType> enabledRooms = new ArrayList<>();
 
             for (RoomType r : retrieveAllRoomTypes()) {
-                
+
                 //Check each room type for number of available rooms 
                 if (walkInSearchRoom(r, xgcal1, xgcal2) > 0) {
                     enabledRooms.add(r);
@@ -214,6 +214,7 @@ public class MainApp {
                     System.out.println("");
                     int i2 = i + 1;
                     System.out.println("Option " + i2);
+                    System.out.println("Rooms Left : " + numOfRooms.get(i));
                     System.out.println("Room Type: " + rt.getTypeName());
                     System.out.println("Room Size: " + rt.getSize());
                     System.out.println("Bed Number: " + rt.getBed());
@@ -274,7 +275,7 @@ public class MainApp {
                 List<RoomType> enabledRooms = new ArrayList<>();
 
                 for (RoomType r : retrieveAllRoomTypes()) {
-                    
+
                     //Check each room type for number of available rooms 
                     if (walkInSearchRoom(r, xgcal1, xgcal2) > 0) {
                         enabledRooms.add(r);
@@ -296,6 +297,7 @@ public class MainApp {
                         System.out.println("");
                         int i2 = i + 1;
                         System.out.println("Option " + i2);
+                        System.out.println("Rooms Left : " + numOfRooms.get(i));
                         System.out.println("Room Type: " + rt.getTypeName());
                         System.out.println("Room Size: " + rt.getSize());
                         System.out.println("Bed Number: " + rt.getBed());
@@ -315,15 +317,16 @@ public class MainApp {
                     if (option < 1 || option > enabledRooms.size()) {
                         System.out.println("Please input a proper option");
                     } else {
-                        
+
                         totalAmount += availableRates.get(option - 1).longValue();
                         ReservationLineItem item = createLineItem(xgcal1, xgcal2,
                                 availableRates.get(option - 1),
                                 enabledRooms.get(option - 1));
-                        
+
                         item = addItem(item, enabledRooms.get(option - 1).getRoomTypeId());
+                        //System.out.println(item.getReservationLineItemId());
                         lineItems.add(item);
-                        
+
                         System.out.println("Cart Cost: $" + totalAmount.toString());
                         totalLineItems++;
                         System.out.println("Cart Items: " + totalLineItems);
@@ -405,18 +408,16 @@ public class MainApp {
         try {
             ReservationLineItem lineItem = findReservationLineItemOfPartner(reservationId, currentPartner.getPartnerId());
             System.out.println("");
-                System.out.println("Reservation " + rId + ": ");
-                System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
-                System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
-                System.out.println("Amount: " + lineItem.getAmount().toString());
-                
-                System.out.println("--------------------------------------------");
-        } catch(ReservationLineItemNotFoundException_Exception ex) {
+            System.out.println("Reservation " + rId + ": ");
+            System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
+            System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
+            System.out.println("Amount: " + lineItem.getAmount().toString());
+
+            System.out.println("--------------------------------------------");
+        } catch (ReservationLineItemNotFoundException_Exception ex) {
             System.out.println("Partner has doesnt have the entered reservation!");
         }
 
-        
-            
     }
 
     private void viewAllMyReservations() throws PartnerNotFoundException_Exception {
@@ -424,7 +425,7 @@ public class MainApp {
         Partner p;
         int i = 1;
         List<ReservationLineItem> lineItems = retrieveAllPartnerReservations(currentPartner.getPartnerId());
-        
+
         if (!lineItems.isEmpty()) {
             for (ReservationLineItem lineItem : lineItems) {
                 System.out.println("");
@@ -432,7 +433,7 @@ public class MainApp {
                 System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
                 System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
                 System.out.println("Amount: " + lineItem.getAmount().toString());
-                
+
                 System.out.println("--------------------------------------------");
                 i++;
             }
@@ -504,13 +505,13 @@ public class MainApp {
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
         return port.retrieveAllPartnerReservations(partnerId);
     }
-    
+
     public ws.client.ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException_Exception {
         ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
         return port.findReservationLineItemById(reservationLineItemId);
     }
-    
+
     public ReservationLineItem findReservationLineItemOfPartner(Long reservationLineItemId, Long partnerId) throws ReservationLineItemNotFoundException_Exception {
         ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();

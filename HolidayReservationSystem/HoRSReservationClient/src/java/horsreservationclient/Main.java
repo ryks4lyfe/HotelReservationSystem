@@ -31,7 +31,7 @@ public class Main {
 
     @EJB
     private static PartnerSessionBeanRemote partnerSessionBean;
-    
+
     @EJB
     private static WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
 
@@ -52,18 +52,9 @@ public class Main {
 
     public static void main(String[] args) throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
 
-        try {
-            List<ReservationLineItem> r = new ArrayList<>();
-            r.add(reservationSessionBean.findReservationLineItemById(new Long(15)));
-            r.add(reservationSessionBean.findReservationLineItemById(new Long(17)));
-            partnerSessionBean.removeAllItemsFromCart(r);
-            
-            MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean,
-                    roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean, walkInReservationSessionBeanRemote);
-            mainApp.runApp();
-        } catch (ReservationLineItemNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean,
+                roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean, walkInReservationSessionBeanRemote);
+        mainApp.runApp();
 
     }
 
