@@ -54,10 +54,7 @@ public class Main {
     
    
     public static void main(String[] args)  {
-        List<RoomRecord> r =  roomRecordSessionBean.findAllAvailableRoomRecords();
-        for(RoomRecord rr : r) {
-            System.out.println(rr.getRoomRecordId());
-        }
+       
         try {
              //allocate room to guests reservations at 2am daily
             Date currentDate = new Date();
