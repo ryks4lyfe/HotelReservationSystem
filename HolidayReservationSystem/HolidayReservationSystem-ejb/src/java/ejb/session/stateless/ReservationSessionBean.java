@@ -297,6 +297,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     //@Schedule(persistent = false, hour = "2")
     public void roomAllocationsForToday() throws ReservationLineItemNotFoundException {
         Date todaysDate = new Date();
+
         List<RoomRecord> newlyReservedRoomRecords = new ArrayList<>();
 
         List<RoomRecord> roomsAvailableForToday = roomRecordSessionBeanRemote.findAllAvailableRoomRecords();
@@ -351,6 +352,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         lineItemsToRemove.add(reservationLineItemCheckIn);
 
                     } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
+                        RoomRecord r1 = em.find(RoomRecord.class, availableRoom.getRoomRecordId());
+                        r1.setRoomStatus("reserved and ready");
                         availableRoom.setRoomStatus("reserved and not ready");
 
                         reservationLineItemCheckIn.setRoom(availableRoom);
@@ -368,39 +371,54 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             //ranking the rooms remaining in terms of rank, such that as much as possible rooms higher but of the closest rank will be allocated first
             reservationLineItemsCheckInToday.sort(new RankComparator());
             roomsAvailableForToday.sort(new RankComparatorRooms());
-
+            for (RoomRecord roomTypeNum : roomsAvailableForToday) {
+                System.out.println(roomTypeNum.getRoomType());
+            }
             for (ReservationLineItem reservationLineItemCheckIn : reservationLineItemsCheckInToday) {
                 for (RoomRecord availableRoom : roomsAvailableForToday) {
-                    if (Integer.parseInt(reservationLineItemCheckIn.getRoomType().getRankRoom()) > Integer.parseInt(availableRoom.getRoomType().getRankRoom())) {
-                        if (availableRoom.getRoomStatus().equals("available")) {
-                            availableRoom.setRoomStatus("reserved and ready");
-                            reservationLineItemCheckIn.setRoom(availableRoom);
-                            reservationLineItemCheckIn.setRoomType(availableRoom.getRoomType());
-                            lineItemsToRemove.add(reservationLineItemCheckIn);
+                    if (reservationLineItemCheckIn.getRoom() == null) {
+                        if (Integer.parseInt(reservationLineItemCheckIn.getRoomType().getRankRoom()) > Integer.parseInt(availableRoom.getRoomType().getRankRoom())) {
+                            if (availableRoom.getRoomStatus().equals("available")) {
+                                RoomRecord r1 = em.find(RoomRecord.class, availableRoom.getRoomRecordId());
+                                r1.setRoomStatus("reserved and ready");
+                                availableRoom.setRoomStatus("reserved and ready");
+                                reservationLineItemCheckIn.setRoom(r1);
+                                reservationLineItemCheckIn.setRoomType(r1.getRoomType());
+                                lineItemsToRemove.add(reservationLineItemCheckIn);
 
-                        } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
-                            availableRoom.setRoomStatus("reserved and not ready");
-                            reservationLineItemCheckIn.setRoom(availableRoom);
-                            lineItemsToRemove.add(reservationLineItemCheckIn);
+                            } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
+                                RoomRecord r1 = em.find(RoomRecord.class, availableRoom.getRoomRecordId());
+                                r1.setRoomStatus("reserved and ready");
+                                availableRoom.setRoomStatus("reserved and not ready");
+                                reservationLineItemCheckIn.setRoom(availableRoom);
+                                lineItemsToRemove.add(reservationLineItemCheckIn);
 
+                            }
+
+                            String reportDescription = " Type 1: There was no available room for room type reserved for Room Reservation with Id " + reservationLineItemCheckIn.getReservationLineItemId()
+                                    + ". Hence upgraded to the next highest room type; room allocated is Room " + availableRoom.getRoomNum();
+
+                            System.out.println(reportDescription);
+
+                            em.persist(exceptionReport);
+                            em.flush();
+                            ExceptionReport exceptionReport1 = em.find(ExceptionReport.class, exceptionReport.getExceptionReportId());
+
+                            updateExceptionReport(exceptionReport1.getExceptionReportId(), reportDescription);
                         }
-
-                        String reportDescription = "There was no available room for room type reserved for Room Reservation with Id " + reservationLineItemCheckIn.getReservationLineItemId()
-                                + ". Hence upgraded to the next highest room type; room allocated is Room " + availableRoom.getRoomNum();
-
-                        em.persist(exceptionReport);
-                        updateExceptionReport(exceptionReport.getExceptionReportId(), reportDescription);
                     }
                 }
             }
         }
-        if (!reservationLineItemsCheckInToday.isEmpty()) {
-            reservationLineItemsCheckInToday.removeAll(lineItemsToRemove);
-            lineItemsToRemove.clear();
 
+        reservationLineItemsCheckInToday.removeAll(lineItemsToRemove);
+        lineItemsToRemove.clear();
+
+        if (!reservationLineItemsCheckInToday.isEmpty()) {
             for (ReservationLineItem reservationLineItemCheckIn : reservationLineItemsCheckInToday) {
-                String reportDescription = "There was no available room for room type reserved,  and no upgrade available for Room Reservation with ID " + reservationLineItemCheckIn.getReservationLineItemId() + ". No room was allocated";
+                String reportDescription = "Type 2: There was no available room for room type reserved,  and no upgrade available for Room Reservation with ID " + reservationLineItemCheckIn.getReservationLineItemId() + ". No room was allocated";
                 em.persist(exceptionReport);
+                em.flush();
                 updateExceptionReport(exceptionReport.getExceptionReportId(), reportDescription);
             }
 

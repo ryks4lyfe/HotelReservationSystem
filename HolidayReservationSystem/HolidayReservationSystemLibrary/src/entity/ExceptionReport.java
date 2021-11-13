@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,18 +24,17 @@ public class ExceptionReport implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long exceptionReportId;
-    private ExceptionReportType exceptionReportType; 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long exceptionReportId; 
+    @Column(nullable = false)
     private List<String> reports; 
 
     public ExceptionReport() {
         reports = new ArrayList<>(); 
     }
     
-    public ExceptionReport(ExceptionReportType exceptionReportType, List<String> reports) {
+    public ExceptionReport(List<String> reports) {
         this(); 
-        this.exceptionReportType = exceptionReportType;
         this.reports = reports;
     }
  
@@ -69,14 +69,6 @@ public class ExceptionReport implements Serializable {
     @Override
     public String toString() {
         return "entity.ExceptionReport[ id=" + exceptionReportId + " ]";
-    }
-
-    public ExceptionReportType getExceptionReportType() {
-        return exceptionReportType;
-    }
-
-    public void setExceptionReportType(ExceptionReportType exceptionReportType) {
-        this.exceptionReportType = exceptionReportType;
     }
 
     public List<String> getReports() {
