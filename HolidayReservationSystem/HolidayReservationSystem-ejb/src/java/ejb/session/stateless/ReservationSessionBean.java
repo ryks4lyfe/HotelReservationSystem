@@ -309,7 +309,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         reservationLineItemCheckIn.setRoom(availableRoom);
                         lineItemsToRemove.add(reservationLineItemCheckIn);
                         //notAvailAnymoreRooms.add(availableRoom);
-                        return;
+                        //return;
                         //need to give time to clean
                     } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
                         availableRoom.setRoomStatus("reserved and not ready");
@@ -317,11 +317,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         reservationLineItemCheckIn.setRoom(availableRoom);
                         lineItemsToRemove.add(reservationLineItemCheckIn);
                         //notAvailAnymoreRooms.add(availableRoom);
-                        return;
+                        //return;
                     }
                 }
             }
         }
+        System.out.println(roomId);
         System.out.println(em.find(RoomRecord.class, roomId).getRoomStatus()); 
 
         reservationLineItemsCheckInToday.removeAll(lineItemsToRemove);
@@ -333,6 +334,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         reservationLineItemsCheckInToday.sort(new RankComparator());
         roomsAvailableForToday.sort(new RankComparatorRooms());
 
+        System.out.println(roomId);
+        System.out.println(em.find(RoomRecord.class, roomId).getRoomStatus()); 
+        
         for (ReservationLineItem reservationLineItemCheckIn : reservationLineItemsCheckInToday) {
             for (RoomRecord availableRoom : roomsAvailableForToday) {
                 if (Integer.parseInt(reservationLineItemCheckIn.getRoomType().getRankRoom()) > Integer.parseInt(availableRoom.getRoomType().getRankRoom())) {
@@ -341,13 +345,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         reservationLineItemCheckIn.setRoom(availableRoom);
                         lineItemsToRemove.add(reservationLineItemCheckIn);
                         //notAvailAnymoreRooms.add(availableRoom);
-                        return;
+                        //return;
                     } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
                         availableRoom.setRoomStatus("reserved and not ready");
                         reservationLineItemCheckIn.setRoom(availableRoom);
                         lineItemsToRemove.add(reservationLineItemCheckIn);
                         //notAvailAnymoreRooms.add(availableRoom);
-                        return;
+                        //return;
                     }
 
                     String reportDescription = "There was no available room for room type reserved for Room Reservation with Id " + reservationLineItemCheckIn.getReservationLineItemId()

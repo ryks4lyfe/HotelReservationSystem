@@ -81,9 +81,10 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
          r.setReservationLineItems(lineItems);
         em.persist(r);
         Employee employee = em.find(Employee.class, e.getEmployeeId());
-        
         employee.getWalkInReservations().add(r);
         r.setEmployee(employee);
+        
+       
         em.flush();
         
         return r;
