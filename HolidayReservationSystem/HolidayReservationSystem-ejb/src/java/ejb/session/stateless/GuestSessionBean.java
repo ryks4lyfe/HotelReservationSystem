@@ -115,17 +115,18 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
 
         try {
             if (dateFormat.parse(dateFormat.format(currentDate)).after(dateFormat.parse("14:00"))) {
-                RoomRecord roomToCheckIn = r.getRoom();
-                System.out.println(roomToCheckIn.getRoomStatus());
+                RoomRecord rr = r.getRoom();
+                RoomRecord roomToCheckIn= em.find(RoomRecord.class, rr.getRoomRecordId()); 
                 roomToCheckIn.setRoomStatus("occupied");
-                //roomToCheckIn.setReservationLineItem(r);
+                roomToCheckIn.getReservationLineItem().add(r);
                 roomsCheckedIn.add(roomToCheckIn);
             } else {
                 //If before 2pm, check if reserved
-                RoomRecord roomToCheckIn = r.getRoom();
+                RoomRecord rr = r.getRoom();
+                RoomRecord roomToCheckIn= em.find(RoomRecord.class, rr.getRoomRecordId()); 
                 if (roomToCheckIn.getRoomStatus().equals("reserved and ready")) {
                     roomToCheckIn.setRoomStatus("occupied");
-                    //roomToCheckIn.setReservationLineItem(r);
+                    roomToCheckIn.getReservationLineItem().add(r);
                     roomsCheckedIn.add(roomToCheckIn);
                 } else if (roomToCheckIn.getRoomStatus().equals("reserved and not ready") || (roomToCheckIn.getRoomStatus().equals("unavailable"))) {
                     throw new UnallowedCheckInException("Guest Check in at 2pm on the day of arrival only allowed if a room is available before then.");
@@ -143,7 +144,8 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         List<RoomRecord> roomsCheckedOut = new ArrayList<>();
 
-        RoomRecord roomToCheckOut = r.getRoom();
+        RoomRecord rr = r.getRoom();
+        RoomRecord roomToCheckOut = em.find(RoomRecord.class, rr.getRoomRecordId());
         roomsCheckedOut.add(roomToCheckOut);
         if (roomToCheckOut.getRoomStatus().equals("occupied but available") || roomToCheckOut.getRoomStatus().equals("occupied")) {
             roomToCheckOut.setRoomStatus("unavailable");
