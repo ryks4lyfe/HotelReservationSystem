@@ -132,10 +132,12 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     public void removeAllItemsFromCart(List<ReservationLineItem> lineItems) {
 
         for (ReservationLineItem r : lineItems) {
-            ReservationLineItem r1
-                    = em.find(ReservationLineItem.class, r.getReservationLineItemId());
+            ReservationLineItem r1 = em.find(ReservationLineItem.class, r.getReservationLineItemId());
 
             String s = r1.getRoomType().getTypeName();
+            if(s == null) {
+                System.out.print("ERRROEROEREK");
+            }
             Long id = r1.getRoomType().getRoomTypeId();
             RoomType rt = em.find(RoomType.class, id);
             rt.getLineItems().remove(r1);

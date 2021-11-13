@@ -105,8 +105,7 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
 
     //Change to fit the client
     @Override
-    public List<RoomRecord> checkInGuest(ReservationLineItem r) throws GuestNotFoundException, UnallowedCheckInException 
-    {
+    public List<RoomRecord> checkInGuest(ReservationLineItem r) throws GuestNotFoundException, UnallowedCheckInException {
         /*try {
             Guest g = findGuestById(guestId);
             Date currentDate = new Date();
@@ -125,43 +124,40 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
                         //Check for lineItems with the same check in date as currentDate
                         if (sdf.format(currentDate).equals(sdf.format(r.getCheckInDate()))) {*/
 
-                            //Nothing to worry if after 2pm
+        //Nothing to worry if after 2pm
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         List<RoomRecord> roomsCheckedIn = new ArrayList<>();
         Date currentDate = new Date();
         //System.out.println(r.getCheckInDate().getTime());
-                            
+
         try {
             if (dateFormat.parse(dateFormat.format(currentDate)).after(dateFormat.parse("14:00"))) {
                 RoomRecord roomToCheckIn = r.getRoom();
-                System.out.println(roomToCheckIn.getRoomStatus()); 
+                System.out.println(roomToCheckIn.getRoomStatus());
                 roomToCheckIn.setRoomStatus("occupied");
                 //roomToCheckIn.setReservationLineItem(r);
                 roomsCheckedIn.add(roomToCheckIn);
-            }
-  
-            else{
+            } else {
                 //If before 2pm, check if reserved
                 RoomRecord roomToCheckIn = r.getRoom();
                 if (roomToCheckIn.getRoomStatus().equals("reserved and ready")) {
-                roomToCheckIn.setRoomStatus("occupied");
-                //roomToCheckIn.setReservationLineItem(r);
-                roomsCheckedIn.add(roomToCheckIn);
-                } else if (roomToCheckIn.getRoomStatus().equals("reserved and not ready") || (roomToCheckIn.getRoomStatus().equals("unavailable"))){
-                        throw new UnallowedCheckInException("Guest Check in at 2pm on the day of arrival only allowed if a room is available before then.");
+                    roomToCheckIn.setRoomStatus("occupied");
+                    //roomToCheckIn.setReservationLineItem(r);
+                    roomsCheckedIn.add(roomToCheckIn);
+                } else if (roomToCheckIn.getRoomStatus().equals("reserved and not ready") || (roomToCheckIn.getRoomStatus().equals("unavailable"))) {
+                    throw new UnallowedCheckInException("Guest Check in at 2pm on the day of arrival only allowed if a room is available before then.");
                 }
-                   }
-            } catch (ParseException ex) {
-                        System.out.println("Invalid Date Format entered!" + "\n");
+            }
+        } catch (ParseException ex) {
+            System.out.println("Invalid Date Format entered!" + "\n");
         }
         return roomsCheckedIn;
     }
-  
+
     //Change to fit the client
-    public List<RoomRecord> checkOutGuest(ReservationLineItem r) throws GuestNotFoundException 
-    {
-        
-           /* Guest g = findGuestById(guestId);
+    public List<RoomRecord> checkOutGuest(ReservationLineItem r) throws GuestNotFoundException {
+
+        /* Guest g = findGuestById(guestId);
             Date currentDate = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
@@ -174,22 +170,22 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
                 for (ReservationLineItem r : oR.getReservationLineItems()) {
                     //Check for lineItems with the same check in date as currentDate
                     if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {*/
-           SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-           List<RoomRecord> roomsCheckedOut = new ArrayList<>();
-           
-                        RoomRecord roomToCheckOut = r.getRoom();
-                        roomsCheckedOut.add(roomToCheckOut);
-                        if (roomToCheckOut.getRoomStatus().equals("occupied but available") || roomToCheckOut.getRoomStatus().equals("occupied")) {
-                            roomToCheckOut.setRoomStatus("unavailable");
-                            //after 1.5 hours for cleaning, make it available
-                            roomToCheckOut.setRoomStatus("available");
-                        } else if (roomToCheckOut.getRoomStatus().equals("reserved and not ready")) {
-                            roomToCheckOut.setRoomStatus("unavailable");
-                            //after 1.5hours for cleaning, make it reserved and ready;
-                            roomToCheckOut.setRoomStatus("reserved and ready");
-      
-                        }
-            return roomsCheckedOut; 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        List<RoomRecord> roomsCheckedOut = new ArrayList<>();
+
+        RoomRecord roomToCheckOut = r.getRoom();
+        roomsCheckedOut.add(roomToCheckOut);
+        if (roomToCheckOut.getRoomStatus().equals("occupied but available") || roomToCheckOut.getRoomStatus().equals("occupied")) {
+            roomToCheckOut.setRoomStatus("unavailable");
+            //after 1.5 hours for cleaning, make it available
+            roomToCheckOut.setRoomStatus("available");
+        } else if (roomToCheckOut.getRoomStatus().equals("reserved and not ready")) {
+            roomToCheckOut.setRoomStatus("unavailable");
+            //after 1.5hours for cleaning, make it reserved and ready;
+            roomToCheckOut.setRoomStatus("reserved and ready");
+
+        }
+        return roomsCheckedOut;
     }
 
 }
