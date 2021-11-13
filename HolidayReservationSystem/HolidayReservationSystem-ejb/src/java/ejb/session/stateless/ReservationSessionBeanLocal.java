@@ -40,7 +40,7 @@ public interface ReservationSessionBeanLocal {
     
     public void doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems);
 
-    
+    public Integer searchRoom(Date checkIn, Date checkOut);
 
     public boolean availableForBooking(Date startDate, Date endDate, Date checkIn, Date checkOut);
 

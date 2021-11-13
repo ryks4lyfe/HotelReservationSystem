@@ -857,7 +857,8 @@ private Employee employee;
         try {
         Date todayDate = formatter.parse(dateString);    */
         try {
-        reservationSessionBeanRemote.roomAllocationsForToday(); 
+        reservationSessionBeanRemote.roomAllocationsForToday();
+        System.out.println("Allocation of Room done, check report for any exceptions.");
        /* } catch (ParseException ex) {
             System.out.println("An error has occurred while entering date: " + ex.getMessage() + "\n"); */
         } catch(ReservationLineItemNotFoundException ex) {

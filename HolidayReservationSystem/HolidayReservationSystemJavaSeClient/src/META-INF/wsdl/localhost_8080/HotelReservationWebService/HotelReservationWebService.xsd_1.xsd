@@ -50,6 +50,10 @@
 
 <xs:element name="retrieveAllRoomTypesForWebserviceResponse" type="tns:retrieveAllRoomTypesForWebserviceResponse"/>
 
+<xs:element name="searchRoom" type="tns:searchRoom"/>
+
+<xs:element name="searchRoomResponse" type="tns:searchRoomResponse"/>
+
 <xs:element name="walkInSearchRoom" type="tns:walkInSearchRoom"/>
 
 <xs:element name="walkInSearchRoomResponse" type="tns:walkInSearchRoomResponse"/>
@@ -119,13 +123,47 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="findReservationLineItemById">
+<xs:complexType name="createLineItem">
+<xs:sequence>
+<xs:element name="arg0" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="arg1" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="arg2" type="xs:decimal" minOccurs="0"/>
+<xs:element name="arg3" type="tns:roomType" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createLineItemResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllPartnerReservations">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="findReservationLineItemByIdResponse">
+<xs:complexType name="retrieveAllPartnerReservationsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:reservationLineItem" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="PartnerNotFoundException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findReservationLineItemOfPartner">
+<xs:sequence>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
+<xs:element name="arg1" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findReservationLineItemOfPartnerResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
 </xs:sequence>
@@ -137,28 +175,13 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="reservationPrice">
+<xs:complexType name="findPartnerById">
 <xs:sequence>
-<xs:element name="arg0" type="tns:roomType" minOccurs="0"/>
-<xs:element name="arg1" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="arg2" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="reservationPriceResponse">
-<xs:sequence>
-<xs:element name="return" type="xs:decimal" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="partnerLogin">
-<xs:sequence>
-<xs:element name="arg0" type="xs:string" minOccurs="0"/>
-<xs:element name="arg1" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="partnerLoginResponse">
+<xs:complexType name="findPartnerByIdResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:partner" minOccurs="0"/>
 </xs:sequence>
@@ -194,30 +217,71 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="addItem">
+<xs:sequence>
+<xs:element name="arg0" type="tns:reservationLineItem" minOccurs="0"/>
+<xs:element name="arg1" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addItemResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="removeAllItemsFromCart">
+<xs:sequence>
+<xs:element name="arg0" type="tns:reservationLineItem" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="removeAllItemsFromCartResponse">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="findReservationLineItemById">
+<xs:sequence>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findReservationLineItemByIdResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="reservationPrice">
+<xs:sequence>
+<xs:element name="arg0" type="tns:roomType" minOccurs="0"/>
+<xs:element name="arg1" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="arg2" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="reservationPriceResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:decimal" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="partnerLogin">
+<xs:sequence>
+<xs:element name="arg0" type="xs:string" minOccurs="0"/>
+<xs:element name="arg1" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="partnerLoginResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:partner" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="FailedLoginException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="PartnerNotFoundException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="createLineItem">
-<xs:sequence>
-<xs:element name="arg0" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="arg1" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="arg2" type="xs:decimal" minOccurs="0"/>
-<xs:element name="arg3" type="tns:roomType" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="createLineItemResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -234,66 +298,6 @@
 <xs:sequence/>
 </xs:complexType>
 
-<xs:complexType name="findReservationLineItemOfPartner">
-<xs:sequence>
-<xs:element name="arg0" type="xs:long" minOccurs="0"/>
-<xs:element name="arg1" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="findReservationLineItemOfPartnerResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="retrieveAllPartnerReservations">
-<xs:sequence>
-<xs:element name="arg0" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="retrieveAllPartnerReservationsResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:reservationLineItem" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="addItem">
-<xs:sequence>
-<xs:element name="arg0" type="tns:reservationLineItem" minOccurs="0"/>
-<xs:element name="arg1" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="addItemResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="findPartnerById">
-<xs:sequence>
-<xs:element name="arg0" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="findPartnerByIdResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:partner" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="removeAllItemsFromCart">
-<xs:sequence>
-<xs:element name="arg0" type="tns:reservationLineItem" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="removeAllItemsFromCartResponse">
-<xs:sequence/>
-</xs:complexType>
-
 <xs:complexType name="retrieveAllRoomTypesForWebservice">
 <xs:sequence/>
 </xs:complexType>
@@ -301,6 +305,19 @@
 <xs:complexType name="retrieveAllRoomTypesForWebserviceResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:roomType" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchRoom">
+<xs:sequence>
+<xs:element name="arg0" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="arg1" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchRoomResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

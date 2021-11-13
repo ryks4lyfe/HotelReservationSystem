@@ -116,6 +116,11 @@ public class HotelReservationWebService {
     public Integer walkInSearchRoom(RoomType roomType, Date checkIn, Date checkOut) {
         return reservationSessionBeanLocal.walkInSearchRoom(roomType, checkIn, checkOut);
     }
+    
+    @WebMethod
+    public Integer searchRoom(Date checkIn, Date checkOut) {
+        return reservationSessionBeanLocal.searchRoom(checkIn, checkOut);
+    }
 
     @WebMethod
     public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
@@ -182,17 +187,23 @@ public class HotelReservationWebService {
             for (RoomRate rr : rt.getRoomRates()) {
                 em.detach(rr);
                 rr.setRoomType(null);
+                
             }
 
             for (RoomRecord r : rt.getRoomRecords()) {
                 em.detach(r);
                 r.setRoomType(null);
+                
             }
             
             for (ReservationLineItem item : rt.getLineItems()) {
                 em.detach(item);
                 item.setRoomType(null);
+               
             }
+            rt.getLineItems().clear();
+            rt.getRoomRates().clear();
+            rt.getRoomRecords().clear();
 
         }
         return roomTypes;

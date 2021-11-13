@@ -127,7 +127,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     }
 
     @Override
-    public Integer walkInSearchRoom(RoomType roomType, Date checkIn, Date checkOut) {
+    public Integer walkInSearchRoom(RoomType room, Date checkIn, Date checkOut) {
+        RoomType roomType = em.find(RoomType.class, room.getRoomTypeId());
         Integer numOfRooms = roomType.getRoomRecords().size();
         Date currentDate = new Date();
 
@@ -138,10 +139,38 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
 
         if (currentDate == checkIn) {
-            for (RoomRecord room : roomType.getRoomRecords()) {
+            for (RoomRecord r : roomType.getRoomRecords()) {
                 //add status
-                if (!room.getRoomStatus().equalsIgnoreCase("available")) {
+                if (!r.getRoomStatus().equalsIgnoreCase("available")) {
                     numOfRooms--;
+                }
+            }
+        }
+        return numOfRooms;
+    }
+
+    @Override
+    public Integer searchRoom(Date checkIn, Date checkOut) {
+        Integer numOfRooms = roomRecordSessionBeanRemote.findAllRoomRecords().size();
+
+        List<RoomType> roomtypes = roomTypeSessionBeanRemote.retrieveAllRoomTypes();
+
+        Date currentDate = new Date();
+
+        for (RoomType rt : roomtypes) {
+            for (ReservationLineItem lineItem : rt.getLineItems()) {
+                if (!(checkIn.after(lineItem.getCheckOutDate()) || checkOut.before(lineItem.getCheckInDate()))) {
+                    numOfRooms--;
+                }
+            }
+        }
+
+        if (currentDate == checkIn) {
+            for (RoomType rt : roomtypes) {
+                for (RoomRecord room : rt.getRoomRecords()) {
+                    if (!room.getRoomStatus().equalsIgnoreCase("available")) {
+                        numOfRooms--;
+                    }
                 }
             }
         }

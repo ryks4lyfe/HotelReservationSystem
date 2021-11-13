@@ -400,6 +400,7 @@ public class MainApp {
         }
     }
 
+
     private void viewMyReservationDetails() throws ReservationLineItemNotFoundException_Exception {
         System.out.println("\n *** Hotel Reservation System :: View My Reservation Details ***\n");
         System.out.print("Enter reservation id> ");
@@ -460,7 +461,7 @@ public class MainApp {
     private java.lang.Integer walkInSearchRoom(ws.client.RoomType roomType, javax.xml.datatype.XMLGregorianCalendar arg0, javax.xml.datatype.XMLGregorianCalendar arg1) {
         ws.client.HotelReservationWebService_Service service = new ws.client.HotelReservationWebService_Service();
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
-        return port.walkInSearchRoom(roomType, arg0, arg1);
+        return port.walkInSearchRoom(roomType, arg1, arg1);
     }
 
     private java.util.List<ws.client.RoomType> retrieveAllRoomTypes() {

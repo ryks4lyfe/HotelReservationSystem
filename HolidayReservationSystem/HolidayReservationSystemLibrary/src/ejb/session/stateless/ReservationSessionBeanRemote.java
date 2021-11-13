@@ -58,5 +58,7 @@ public interface ReservationSessionBeanRemote {
 
     public ReservationLineItem findReservationLineItemOfPartner(Long reservationLineItemId, Long partnerId) throws ReservationLineItemNotFoundException;
 
+    public Integer searchRoom(Date checkIn, Date checkOut);
+
 
 }
