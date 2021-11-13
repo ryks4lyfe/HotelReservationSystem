@@ -284,8 +284,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return query.getResultList();
     }
 
-    
-    public void roomAllocationsForToday(Date todaysdate) throws ReservationLineItemNotFoundException {
+    @Override
+    public void roomAllocationsForToday(Date todaysDate) throws ReservationLineItemNotFoundException {
 
         List<RoomRecord> newlyReservedRoomRecords = new ArrayList<>();
 
@@ -413,7 +413,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         } // return newlyReservedRoomRecords; 
     }
-    
+
     @Override
     //@Schedule(persistent = false, hour = "2")
     public void roomAllocationsForToday() throws ReservationLineItemNotFoundException {

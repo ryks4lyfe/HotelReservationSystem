@@ -61,6 +61,7 @@ public interface ReservationSessionBeanLocal {
     public void roomAllocationsForToday() throws ReservationLineItemNotFoundException;
     
     public ReservationLineItem findReservationLineItemOfPartner(Long reservationLineItemId, Long partnerId) throws ReservationLineItemNotFoundException;
+    public void roomAllocationsForToday(Date todaysDate) throws ReservationLineItemNotFoundException;
 
 
 

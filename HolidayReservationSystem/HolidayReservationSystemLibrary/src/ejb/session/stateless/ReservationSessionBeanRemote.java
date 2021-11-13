@@ -60,5 +60,7 @@ public interface ReservationSessionBeanRemote {
 
     public Integer searchRoom(Date checkIn, Date checkOut);
 
+    public void roomAllocationsForToday(Date todaysDate) throws ReservationLineItemNotFoundException;
+
 
 }
