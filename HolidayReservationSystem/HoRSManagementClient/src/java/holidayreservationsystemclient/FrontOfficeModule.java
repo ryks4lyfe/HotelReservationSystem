@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import util.exception.EmployeeNotFoundException;
 import util.exception.GuestNotFoundException;
 import util.exception.PartnerNotFoundException;
+import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 import util.exception.UnallowedCheckInException;
 
@@ -207,10 +208,24 @@ public class FrontOfficeModule {
                     } else if (response == 2) {
                         //If cart not empty, proceed to checkout and end loop
                         if (!walkInReservationBeanRemote.getLineItems().isEmpty()) {
+                            try {
+                            reservationSessionBeanRemote.roomAllocationsForToday();
+                            } catch(ReservationLineItemNotFoundException ex)
+                            {
+                                System.out.println("reservation was not found!");
+                            }
+                            /*List<ReservationLineItem> lineItems = walkInReservationBeanRemote.getLineItems(); 
+                            for (ReservationLineItem lineItem : lineItems)
+                            {
+                                if (lineItem.getCheckInDate().equals(new Date())) 
+                                {
+                                    
+                                }
+                            }*/
                             walkInReservationBeanRemote.doCheckout(employee);
                             continueReservation = false;
                             walkInReservationBeanRemote.resetCart();
-                            System.out.println("CheckOut Completed");
+                            System.out.println("Checkout Completed");
                         } else {
                             //Cart empty, continue while loop to add more items
                             System.out.println("Cart is Empty, please add items");
@@ -230,6 +245,12 @@ public class FrontOfficeModule {
 
                     if (response == 1) {
                         if (!walkInReservationBeanRemote.getLineItems().isEmpty()) {
+                            try {
+                            reservationSessionBeanRemote.roomAllocationsForToday();
+                            } catch(ReservationLineItemNotFoundException ex)
+                            {
+                                System.out.println("reservation was not found!");
+                            }
                             walkInReservationBeanRemote.doCheckout(employee);
                             continueReservation = false;
                             walkInReservationBeanRemote.resetCart();
@@ -272,6 +293,13 @@ public class FrontOfficeModule {
                     for (ReservationLineItem r : wr.getReservationLineItems()) {
                         if (sdf.format(currentDate).equals(sdf.format(r.getCheckInDate()))) {
                             lineItem = r;
+                            //System.out.println(r.getCheckInDate());
+                            try{
+                            guestSessionBeanRemote.checkInGuest(r); 
+                            } catch (GuestNotFoundException | UnallowedCheckInException ex) 
+                            {
+                                System.out.println("An error occurred " + ex.getMessage()); 
+                            }
                         }
                     }
                 }
@@ -289,6 +317,12 @@ public class FrontOfficeModule {
                     for (ReservationLineItem r : or.getReservationLineItems()) {
                         if (sdf.format(currentDate).equals(sdf.format(r.getCheckInDate()))) {
                             lineItem = r;
+                            try{
+                            guestSessionBeanRemote.checkInGuest(r); 
+                            } catch (GuestNotFoundException | UnallowedCheckInException ex) 
+                            {
+                                System.out.println("An error occurred " + ex.getMessage()); 
+                            }
                         }
                     }
                 }
@@ -306,6 +340,12 @@ public class FrontOfficeModule {
                     for (ReservationLineItem r : pr.getReservationLineItems()) {
                         if (sdf.format(currentDate).equals(sdf.format(r.getCheckInDate()))) {
                             lineItem = r;
+                            try{
+                            guestSessionBeanRemote.checkInGuest(r); 
+                            } catch (GuestNotFoundException | UnallowedCheckInException ex) 
+                            {
+                                System.out.println("An error occurred " + ex.getMessage()); 
+                            }
                         }
                     }
                 }
@@ -337,6 +377,11 @@ public class FrontOfficeModule {
                     for (ReservationLineItem r : wr.getReservationLineItems()) {
                         if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {
                             lineItem = r;
+                            try {
+                            guestSessionBeanRemote.checkOutGuest(r); 
+                            } catch(GuestNotFoundException ex ) {
+                                System.out.println("User not found!"); 
+                            }
                         }
                     }
                 }
@@ -354,6 +399,11 @@ public class FrontOfficeModule {
                     for (ReservationLineItem r : or.getReservationLineItems()) {
                         if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {
                             lineItem = r;
+                             try {
+                            guestSessionBeanRemote.checkOutGuest(r); 
+                            } catch(GuestNotFoundException ex ) {
+                                System.out.println("User not found!"); 
+                            }
                         }
                     }
                 }
@@ -371,6 +421,11 @@ public class FrontOfficeModule {
                     for (ReservationLineItem r : pr.getReservationLineItems()) {
                         if (sdf.format(currentDate).equals(sdf.format(r.getCheckOutDate()))) {
                             lineItem = r;
+                             try {
+                            guestSessionBeanRemote.checkOutGuest(r); 
+                            } catch(GuestNotFoundException ex ) {
+                                System.out.println("User not found!"); 
+                            }
                         }
                     }
                 }

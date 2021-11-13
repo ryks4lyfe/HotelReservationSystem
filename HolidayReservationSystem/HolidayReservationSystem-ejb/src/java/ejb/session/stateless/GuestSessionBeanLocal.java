@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Guest;
+import entity.ReservationLineItem;
 import entity.RoomRecord;
 import java.util.List;
 import javax.ejb.Local;
@@ -28,7 +29,9 @@ public interface GuestSessionBeanLocal {
 
     public Long createGuest(Guest g);
 
-    public List<RoomRecord> checkInGuest(Long guestId) throws GuestNotFoundException, UnallowedCheckInException;
+    public List<RoomRecord> checkInGuest(ReservationLineItem r) throws GuestNotFoundException, UnallowedCheckInException;
+
+    public List<RoomRecord> checkOutGuest(ReservationLineItem r) throws GuestNotFoundException;
 
     
 }

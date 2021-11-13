@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.DeleteRoomRecordException;
+import util.exception.NoAvailableRoomException;
 import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomNameExistsException;
 import util.exception.RoomRecordNotFoundException;
@@ -122,10 +123,17 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     }
     
     @Override
-    public List<RoomRecord> findAllAvailableRoomRecords() {
-        Query query = em.createNamedQuery("SELECT rr FROM RoomRecord rr WHERE rr.roomStatus  :inRoomStatus"); 
-        query.setParameter("inRoomStatus", "available"); 
-        return query.getResultList(); 
+    public List<RoomRecord> findAllAvailableRoomRecords() throwNoAvilableRoomException
+    {
+        String s = "available"; 
+        Query query = em.createQuery("SELECT rr FROM RoomRecord rr WHERE rr.roomStatus  :inRoomStatus"); 
+        query.setParameter("inRoomStatus", s); 
+        
+        if (query.getResultList() != null) 
+        {
+            return query.getResultList();
+        }
+        else throw new NoAvailableRoomException("There are no available rooms"); 
     }
     
     @Override
@@ -133,7 +141,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
         
         Query query = em.createQuery("SELECT r FROM RoomRecord r WHERE r.roomType = :inRoomType AND r.roomStatus = :inRoomStatus"); 
         query.setParameter("inRoomType", roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName)); 
-        query.setParameter("inRoomStatus", "available");
+        query.setParameter("inRoomRecordStatus", "available");
          
         return query.getResultList(); 
         

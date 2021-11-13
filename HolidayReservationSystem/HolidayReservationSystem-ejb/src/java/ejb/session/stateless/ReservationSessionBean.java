@@ -26,6 +26,7 @@ import static util.enumeration.RoomRateTypeEnum.NORMAL;
 import static util.enumeration.RoomRateTypeEnum.PEAK;
 import static util.enumeration.RoomRateTypeEnum.PROMOTION;
 import static util.enumeration.RoomRateTypeEnum.PUBLISHED;
+import util.exception.NoAvailableRoomException;
 import util.exception.PartnerNotFoundException;
 import util.exception.ReservationLineItemNotFoundException;
 
@@ -139,7 +140,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         if (currentDate == checkIn) {
             for (RoomRecord room : roomType.getRoomRecords()) {
-                if (!room.getRoomStatus().equalsIgnoreCase("not in use")) {
+                if (!room.getRoomStatus().equalsIgnoreCase("available")) {
                     numOfRooms--;
                 }
             }
@@ -170,7 +171,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     public BigDecimal reservationPrice(RoomType roomType, Date checkInDate, Date checkOutDate) {
         Long amount = new Long(0);
         RoomType rt = em.find(RoomType.class,
-                roomType.getRoomTypeId());
+        roomType.getRoomTypeId());
         RoomRate normalRate = new RoomRate();
         List<RoomRate> promoRates = new ArrayList<>();
         List<RoomRate> peakRates = new ArrayList<>();
@@ -266,12 +267,17 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     }*/
     
     @Override
-    //@Schedule(persistent = false, hour = "2")
+    @Schedule(persistent = false, hour = "2")
     public void roomAllocationsForToday() throws ReservationLineItemNotFoundException 
     {
        Date todaysDate = new Date(); 
        List<RoomRecord> newlyReservedRoomRecords  = new ArrayList<>(); 
-       List<RoomRecord> roomsAvailableForToday = roomRecordSessionBeanRemote.findAllAvailableRoomRecords(); 
+       try {
+       List<RoomRecord> roomsAvailableForToday = roomRecordSessionBeanRemote.findAllAvailableRoomRecords();
+       } catch (NoAvailableRoomException ex)
+       {
+           System.out.println("There were no avaialble rooms");
+       }
        ExceptionReport exceptionReport = new ExceptionReport(); 
        
        //blls
@@ -279,6 +285,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
        
        List<ReservationLineItem> reservationLineItemsCheckOutToday = findListOfReservationLineItemsByCheckOutDate(todaysDate); 
        
+       //add all the rooms that are checking out today to the available list 
        for (ReservationLineItem reservationLineItem : reservationLineItemsCheckOutToday) 
        {
            RoomRecord occupiedButAvailRoomRecord = reservationLineItem.getRoom(); 
@@ -288,14 +295,17 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
        
        //first one to match all the exact room types of available rooms to reservation line items for today check in
        //subsequently remove the available room from available list and add this room to newlyReservedRooms
+       //also remove the line item from the list
        for (ReservationLineItem reservationLineItemCheckIn : reservationLineItemsCheckInToday)
        {
            for (RoomRecord availableRoom : roomsAvailableForToday) 
            {
                if (reservationLineItemCheckIn.getRoomType().getTypeName().equals(availableRoom.getRoomType().getTypeName()))
                {
+                   //would already be available so dont need to clean, can be reserved and ready
                    if (availableRoom.getRoomStatus().equals("available")){
                    availableRoom.setRoomStatus("reserved and ready");
+                   //need to give time to clean
                    } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
                        availableRoom.setRoomStatus("reserved and not ready");
                    }
@@ -303,13 +313,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                    //dk whether set the room to the reservationLineItem
                    newlyReservedRoomRecords.add(availableRoom); 
                    
+                   //once allocated room not available anymore
                    roomsAvailableForToday.remove(availableRoom);
+                   //removing line item so that we dont come across it
                    reservationLineItemsCheckInToday.remove(reservationLineItemCheckIn); 
                   
                }
            }
        }
        
+       //ranking the rooms remaining in terms of rank, such that as much as possible rooms higher but of the closest rank will be allocated first
        reservationLineItemsCheckInToday.sort(new RankComparator()); 
        roomsAvailableForToday.sort(new RankComparatorRooms());
        

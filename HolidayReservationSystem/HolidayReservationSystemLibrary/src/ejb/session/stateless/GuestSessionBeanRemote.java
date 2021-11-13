@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Guest;
+import entity.ReservationLineItem;
 import entity.RoomRecord;
 import java.util.List;
 import javax.ejb.Remote;
@@ -27,5 +28,7 @@ public interface GuestSessionBeanRemote {
 
     public Long createGuest(Guest g);
     
-    public List<RoomRecord> checkInGuest(Long guestId) throws GuestNotFoundException, UnallowedCheckInException;
+    public List<RoomRecord> checkInGuest(ReservationLineItem r) throws GuestNotFoundException, UnallowedCheckInException;
+    
+    public List<RoomRecord> checkOutGuest(ReservationLineItem r) throws GuestNotFoundException;
 }
