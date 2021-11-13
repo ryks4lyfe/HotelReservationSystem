@@ -43,8 +43,10 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @EJB
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
 
+    @EJB
     private RoomRecordSessionBeanRemote roomRecordSessionBeanRemote;
 
+    @EJB
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
 
     public ReservationSessionBean() {
@@ -284,6 +286,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
        
        List<ReservationLineItem> reservationLineItemsCheckOutToday = findListOfReservationLineItemsByCheckOutDate(todaysDate); 
        
+       List<ReservationLineItem> lineItemsToRemove = new ArrayList<>(); 
+       
        //add all the rooms that are checking out today to the available list 
        for (ReservationLineItem reservationLineItem : reservationLineItemsCheckOutToday) 
        {
@@ -313,13 +317,19 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                    newlyReservedRoomRecords.add(availableRoom); 
                    
                    //once allocated room not available anymore
-                   roomsAvailableForToday.remove(availableRoom);
+                   //roomsAvailableForToday.remove(availableRoom);
+                   
                    //removing line item so that we dont come across it
-                   reservationLineItemsCheckInToday.remove(reservationLineItemCheckIn); 
+                   //reservationLineItemsCheckInToday.remove(reservationLineItemCheckIn); 
                   
+                   lineItemsToRemove.add(reservationLineItemCheckIn); 
                }
            }
        }
+       
+       reservationLineItemsCheckInToday.removeAll(lineItemsToRemove); 
+       lineItemsToRemove.clear();
+       
        
        //ranking the rooms remaining in terms of rank, such that as much as possible rooms higher but of the closest rank will be allocated first
        reservationLineItemsCheckInToday.sort(new RankComparator()); 
@@ -338,8 +348,11 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                    }
                    reservationLineItemCheckIn.setRoom(availableRoom);
                    newlyReservedRoomRecords.add(availableRoom); 
-                   roomsAvailableForToday.remove(availableRoom); 
+                   //roomsAvailableForToday.remove(availableRoom); 
                    
+                   lineItemsToRemove.add(reservationLineItemCheckIn);
+                 
+                  
                    String reportDescription = "There was no available room for room type reserved for Room Reservation with Id " + reservationLineItemCheckIn.getReservationLineItemId() + 
                                               ". Hence upgraded to the next highest room type; room allocated is Room " + availableRoom.getRoomNum(); 
                    
@@ -347,6 +360,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                }
            }
        }
+       
+       reservationLineItemsCheckInToday.removeAll(lineItemsToRemove); 
+       lineItemsToRemove.clear();
        
        for (ReservationLineItem reservationLineItemCheckIn : reservationLineItemsCheckInToday)
        {
