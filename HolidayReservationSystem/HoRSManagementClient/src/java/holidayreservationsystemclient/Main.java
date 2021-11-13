@@ -13,22 +13,14 @@ import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
+import entity.RoomRecord;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import javax.ejb.EJB;
-import util.exception.DeleteRoomRateException;
-import util.exception.DeleteRoomTypeException;
-import util.exception.RoomNameExistsException;
-import util.exception.RoomRateExistsException;
-import util.exception.RoomRateNotFoundException;
-import util.exception.RoomRecordNotFoundException;
-import util.exception.RoomTypeNameExistsException;
-import util.exception.RoomTypeNotFoundException;
-import util.exception.UnknownPersistenceException;
-import util.exception.UpdateRoomTypeException;
 
 /**
  *
@@ -62,6 +54,10 @@ public class Main {
     
    
     public static void main(String[] args)  {
+        List<RoomRecord> r =  roomRecordSessionBean.findAllAvailableRoomRecords();
+        for(RoomRecord rr : r) {
+            System.out.println(rr.getRoomRecordId());
+        }
         try {
              //allocate room to guests reservations at 2am daily
             Date currentDate = new Date();

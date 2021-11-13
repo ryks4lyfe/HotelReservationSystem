@@ -323,6 +323,7 @@ public class MainApp {
                         
                         item = addItem(item, enabledRooms.get(option - 1).getRoomTypeId());
                         lineItems.add(item);
+                        
                         System.out.println("Cart Cost: $" + totalAmount.toString());
                         totalLineItems++;
                         System.out.println("Cart Items: " + totalLineItems);
@@ -349,6 +350,7 @@ public class MainApp {
                         if (totalLineItems != 0) {
                             doCheckout(currentPartner, totalLineItems, BigDecimal.valueOf(totalAmount), lineItems);
                             continueReservation = false;
+                            //IF SAME DAY ALLOCATE
                             //walkInReservationSessionBeanRemote.resetCart();
                             System.out.println("CheckOut Completed");
                         } else {
@@ -372,6 +374,7 @@ public class MainApp {
                         if (totalLineItems != 0) {
                             doCheckout(currentPartner, totalLineItems, BigDecimal.valueOf(totalAmount), lineItems);
                             continueReservation = false;
+                            //IF SAME DAY ALLOCATE
                             //walkInReservationSessionBeanRemote.resetCart();
                             System.out.println("CheckOut Completed");
                         } else {
@@ -421,7 +424,7 @@ public class MainApp {
         Partner p;
         int i = 1;
         List<ReservationLineItem> lineItems = retrieveAllPartnerReservations(currentPartner.getPartnerId());
-        System.out.println(lineItems.size());
+        
         if (!lineItems.isEmpty()) {
             for (ReservationLineItem lineItem : lineItems) {
                 System.out.println("");

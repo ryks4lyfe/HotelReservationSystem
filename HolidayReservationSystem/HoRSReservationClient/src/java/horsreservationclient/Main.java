@@ -6,20 +6,21 @@
 package horsreservationclient;
 
 import ejb.session.statefull.WalkInReservationSessionBeanRemote;
-import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.GuestSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomRecordSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
-import entity.PartnerReservation;
+import entity.ReservationLineItem;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import util.exception.FailedLoginException;
 import util.exception.GuestNotFoundException;
-import util.exception.PartnerNotFoundException;
+import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 
 /**
@@ -28,6 +29,9 @@ import util.exception.RoomTypeNotFoundException;
  */
 public class Main {
 
+    @EJB
+    private static PartnerSessionBeanRemote partnerSessionBean;
+    
     @EJB
     private static WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
 
@@ -48,9 +52,18 @@ public class Main {
 
     public static void main(String[] args) throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
 
-        MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean,
-                roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean, walkInReservationSessionBeanRemote);
-        mainApp.runApp();
+        try {
+            List<ReservationLineItem> r = new ArrayList<>();
+            r.add(reservationSessionBean.findReservationLineItemById(new Long(15)));
+            r.add(reservationSessionBean.findReservationLineItemById(new Long(17)));
+            partnerSessionBean.removeAllItemsFromCart(r);
+            
+            MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean,
+                    roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean, walkInReservationSessionBeanRemote);
+            mainApp.runApp();
+        } catch (ReservationLineItemNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 

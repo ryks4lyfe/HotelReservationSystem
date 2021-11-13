@@ -273,6 +273,7 @@ public class MainApp {
                         System.out.println("Cart Cost: " + walkInReservationSessionBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate,
                                 availableRates.get(option - 1),
                                 enabledRooms.get(option - 1))));
+                        
                         System.out.println("Cart Items: " + walkInReservationSessionBeanRemote.getTotalLineItems());
                     }
 
@@ -298,6 +299,7 @@ public class MainApp {
                             walkInReservationSessionBeanRemote.doCheckout(currentGuest);
                             continueReservation = false;
                             walkInReservationSessionBeanRemote.resetCart();
+                            //IF SAME DAY ALLOCATE
                             System.out.println("CheckOut Completed");
                         } else {
                             //Cart empty, continue while loop to add more items
@@ -321,6 +323,7 @@ public class MainApp {
                             walkInReservationSessionBeanRemote.doCheckout(currentGuest);
                             continueReservation = false;
                             walkInReservationSessionBeanRemote.resetCart();
+                            //IF SAME DAY ALLOCATE
                             System.out.println("CheckOut Completed");
                         } else {
                             //Cart empty, continue while loop to add more items

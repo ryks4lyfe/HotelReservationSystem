@@ -143,10 +143,11 @@ public class HotelReservationWebService {
         em.detach(r);
         r.setRoomType(null);
         
-        /**RoomType rt = r.getRoomType();
-        em.detach(rt);
-        rt.getLineItems().remove(r);
-        **/
+        
+        //RoomType rt = r.getRoomType();
+        //em.detach(rt);
+        //rt.getLineItems().remove(r);
+        
         
         return r;
         
@@ -154,7 +155,12 @@ public class HotelReservationWebService {
 
     @WebMethod
     public void removeAllItemsFromCart(List<ReservationLineItem> lineItems) {
-        partnerSessionBeanLocal.removeAllItemsFromCart(lineItems);
+        List<ReservationLineItem> lineItems2  = new ArrayList<>();
+        for(ReservationLineItem r : lineItems) {
+            lineItems2.add(em.find(ReservationLineItem.class, r.getReservationLineItemId()));
+            
+        }
+        partnerSessionBeanLocal.removeAllItemsFromCart(lineItems2);
     }
 
     @WebMethod

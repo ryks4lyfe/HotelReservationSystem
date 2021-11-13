@@ -157,6 +157,7 @@ public class FrontOfficeModule {
                         System.out.println("");
                         int i2 = i + 1;
                         System.out.println("Option " + i2);
+                        System.out.println("Rooms Left: " + numOfRooms.get(i));
                         System.out.println("Room Type: " + rt.getTypeName());
                         System.out.println("Room Size: " + rt.getSize());
                         System.out.println("Bed Number: " + rt.getBed());

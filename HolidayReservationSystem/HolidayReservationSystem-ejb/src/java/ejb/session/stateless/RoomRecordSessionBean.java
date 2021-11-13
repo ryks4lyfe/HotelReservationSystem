@@ -123,17 +123,14 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
     }
     
     @Override
-    public List<RoomRecord> findAllAvailableRoomRecords() throwNoAvilableRoomException
+    public List<RoomRecord> findAllAvailableRoomRecords() 
     {
         String s = "available"; 
-        Query query = em.createQuery("SELECT rr FROM RoomRecord rr WHERE rr.roomStatus  :inRoomStatus"); 
+        Query query = em.createQuery("SELECT rr FROM RoomRecord rr WHERE rr.roomStatus = :inRoomStatus"); 
         query.setParameter("inRoomStatus", s); 
         
-        if (query.getResultList() != null) 
-        {
-            return query.getResultList();
-        }
-        else throw new NoAvailableRoomException("There are no available rooms"); 
+       
+       return query.getResultList();
     }
     
     @Override

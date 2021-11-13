@@ -140,6 +140,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         if (currentDate == checkIn) {
             for (RoomRecord room : roomType.getRoomRecords()) {
+                //add status
                 if (!room.getRoomStatus().equalsIgnoreCase("available")) {
                     numOfRooms--;
                 }
@@ -267,17 +268,15 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     }*/
     
     @Override
-    @Schedule(persistent = false, hour = "2")
+    //@Schedule(persistent = false, hour = "2")
     public void roomAllocationsForToday() throws ReservationLineItemNotFoundException 
     {
        Date todaysDate = new Date(); 
        List<RoomRecord> newlyReservedRoomRecords  = new ArrayList<>(); 
-       try {
+       
        List<RoomRecord> roomsAvailableForToday = roomRecordSessionBeanRemote.findAllAvailableRoomRecords();
-       } catch (NoAvailableRoomException ex)
-       {
-           System.out.println("There were no avaialble rooms");
-       }
+       
+      
        ExceptionReport exceptionReport = new ExceptionReport(); 
        
        //blls
