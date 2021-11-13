@@ -314,7 +314,7 @@ public class HotelOperationModule {
                 }
             }
         }
-        System.out.print("Enter Capacity (blank if no change)> ");
+        System.out.print("Enter Rank (blank if no change)> ");
         input = scanner.nextLine().trim();
         if (input.length() > 0) {
             while (true) {
@@ -591,7 +591,7 @@ public class HotelOperationModule {
             } catch (ParseException ex) {
             }
             System.out.println("Open room rate for room type: " + roomType.getTypeName() + "\n");
-            newRoomRate.setRoomRateStatus("enabled");
+            newRoomRate.setRoomRateStatus("available");
         } catch (RoomTypeNotFoundException ex) {
         }
         try {
@@ -752,6 +752,7 @@ public class HotelOperationModule {
         } else if (response == 2) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                scanner.nextLine();
                 System.out.println("Enter date : yyyy-MM-dd");
                 String s = scanner.nextLine();
 

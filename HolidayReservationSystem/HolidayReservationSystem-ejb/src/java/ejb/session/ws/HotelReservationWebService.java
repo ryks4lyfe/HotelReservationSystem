@@ -76,7 +76,9 @@ public class HotelReservationWebService {
         for(ReservationLineItem i : r) {
             em.detach(i);
             RoomType rt = i.getRoomType();
+            if(rt != null) {
             em.detach(rt);
+            }
             rt.getLineItems().remove(i);
             i.setRoomType(null);
         }

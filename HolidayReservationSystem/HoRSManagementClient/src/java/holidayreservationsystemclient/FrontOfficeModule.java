@@ -185,7 +185,7 @@ public class FrontOfficeModule {
                         }
 
                         System.out.println("--------------------------------------------");
-                        System.out.println(numOfRooms + " Rooms Left");
+                        System.out.println(numOfRooms - 1 + " Rooms Left");
                         System.out.println("1: Add more items");
                         System.out.println("2: Checkout");
                         System.out.println("3: Quit");

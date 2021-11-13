@@ -195,6 +195,10 @@ public class MainApp {
                 }
 
             }
+            
+            if(response == 4) {
+                break;
+            }
 
         }
     }
@@ -225,7 +229,7 @@ public class MainApp {
                     numOfRooms = reservationSessionBeanRemote.searchRoom(checkInDate, checkOutDate);
                     if (numOfRooms - 1 != 0) {
                         for (RoomType rt : roomTypeSessionBeanRemote.retrieveAllRoomTypes()) {
-                            availableRates.add(reservationSessionBeanRemote.walkInPrice(rt, checkInDate, checkOutDate));
+                            availableRates.add(reservationSessionBeanRemote.reservationPrice(rt, checkInDate, checkOutDate));
                             enabledRooms.add(rt);
                         }
 
@@ -270,7 +274,7 @@ public class MainApp {
                         }
 
                         System.out.println("--------------------------------------------");
-                        System.out.println(numOfRooms + " Rooms Left");
+                        System.out.println(numOfRooms - 1 + " Rooms Left");
                         System.out.println("1: Add more items");
                         System.out.println("2: Checkout");
                         System.out.println("3: Quit");

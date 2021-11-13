@@ -138,7 +138,7 @@ public class RoomRecordSessionBean implements RoomRecordSessionBeanLocal, RoomRe
         
         Query query = em.createQuery("SELECT r FROM RoomRecord r WHERE r.roomType = :inRoomType AND r.roomStatus = :inRoomStatus"); 
         query.setParameter("inRoomType", roomTypeSessionBeanRemote.findRoomTypeByName(roomTypeName)); 
-        query.setParameter("inRoomRecordStatus", "available");
+        query.setParameter("inRoomStatus", "available");
          
         return query.getResultList(); 
         

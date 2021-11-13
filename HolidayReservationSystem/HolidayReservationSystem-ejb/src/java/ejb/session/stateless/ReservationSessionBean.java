@@ -184,9 +184,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         Long amount = new Long(0);
         RoomType rt = em.find(RoomType.class,
                 roomType.getRoomTypeId());
-        for (RoomRate rr : rt.getRoomRates()) {
+        for (RoomRate rr1 : rt.getRoomRates()) {
+            RoomRate rr = em.find(RoomRate.class, rr1.getRoomRateId());
             if (rr.getRoomRateType().equals(PUBLISHED)) {
+                
                 BigDecimal price = rr.getRatePerNight();
+                System.out.println("PUBLISHED");
                 if (checkOutDate.getTime() != checkInDate.getTime()) {
                     Long daysBetween = (checkOutDate.getTime() - checkInDate.getTime()) / 86400000;
                     amount = price.longValue() * daysBetween;
@@ -208,12 +211,17 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         List<RoomRate> peakRates = new ArrayList<>();
 
         for (RoomRate rr : rt.getRoomRates()) {
-            if (rr.getRoomRateType().equals(NORMAL)) {
-                normalRate = rr;
-            } else if (rr.getRoomRateType().equals(PEAK)) {
-                peakRates.add(rr);
-            } else if (rr.getRoomRateType().equals(PROMOTION)) {
-                promoRates.add(rr);
+            RoomRate rr1 = em.find(RoomRate.class, rr.getRoomRateId());
+            if (rr1.getRoomRateType().equals(NORMAL)) {
+                System.out.print(rr1.getRatePerNight());
+                System.out.println("PUBLISHED");
+                normalRate = rr1;
+            } else if (rr1.getRoomRateType().equals(PEAK)) {
+                System.out.println("PUBLISHED");
+                peakRates.add(rr1);
+            } else if (rr1.getRoomRateType().equals(PROMOTION)) {
+                System.out.println("PUBLISHED");
+                promoRates.add(rr1);
             }
         }
 
