@@ -31,8 +31,7 @@ import util.exception.RoomTypeNotFoundException;
  */
 public class Main {
 
-    @EJB
-    private static PartnerSessionBeanRemote partnerSessionBean;
+    
 
     @EJB
     private static WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
@@ -53,30 +52,7 @@ public class Main {
     private static GuestSessionBeanRemote guestSessionBeanRemote;
 
     public static void main(String[] args) throws FailedLoginException, GuestNotFoundException, RoomTypeNotFoundException {
-        /**int i = 1;
-        for (RoomRate rr : roomRateSessionBean.findAllRoomRates()) {
-            System.out.println(i);
-            System.out.println(rr.getRatePerNight());
-            System.out.println(rr.getRoomRateType());
-            i++;
-        }
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("enter long");
-        Long id = scanner.nextLong();
-        if (!roomTypeSessionBean.findRoomTypeById(id).getRoomRates().isEmpty()) {
-            for (RoomRate rr : roomTypeSessionBean.findRoomTypeById(id).getRoomRates()) {
-                System.out.println(rr);
-
-            }
-        } else {
-            System.out.println("Empty");
-        }
-
-        for (ReservationLineItem item : reservationSessionBean.findAllReservationLineItems()) {
-            System.out.print(item.getRoomType());
-        }
-        **/
+        
 
         MainApp mainApp = new MainApp(guestSessionBeanRemote, reservationSessionBean,
                 roomRateSessionBean, roomRecordSessionBean, roomTypeSessionBean, walkInReservationSessionBeanRemote);

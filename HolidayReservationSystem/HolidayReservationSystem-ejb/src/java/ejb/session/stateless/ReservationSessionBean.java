@@ -216,13 +216,10 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             RoomRate rr1 = em.find(RoomRate.class, rr.getRoomRateId());
             if (rr1.getRoomRateType().equals(NORMAL)) {
                 System.out.print(rr1.getRatePerNight());
-                
                 normalRate = rr1;
             } else if (rr1.getRoomRateType().equals(PEAK)) {
-                
                 peakRates.add(rr1);
             } else if (rr1.getRoomRateType().equals(PROMOTION)) {
-                
                 promoRates.add(rr1);
             }
         }
@@ -231,25 +228,25 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         Date current = checkInDate;
 
-        while (current.before(checkOutDate)) {
-
+        while (current.before(checkOutDate) || current.equals(checkInDate)) {
+            
             for (RoomRate peak : peakRates) {
                 //
                 if (!(current.after(peak.getEndRateDate()) || current.before(peak.getStartRateDate()))) {
-                    
+
                     ratePerDay = peak.getRatePerNight().longValue();
 
                 }
             }
-
+            
             for (RoomRate promo : promoRates) {
                 if (!(current.after(promo.getEndRateDate()) || current.before(promo.getStartRateDate()))) {
-                    
+
                     ratePerDay = promo.getRatePerNight().longValue();
 
                 }
             }
-
+            
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(current);
             calendar.add(Calendar.DATE, 1);
