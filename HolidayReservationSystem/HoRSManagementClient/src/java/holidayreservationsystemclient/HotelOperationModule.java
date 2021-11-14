@@ -744,8 +744,7 @@ public class HotelOperationModule {
             try {
                 reservationSessionBeanRemote.roomAllocationsForToday();
                 System.out.println("Allocation of Room done, check report for any exceptions.");
-                /* } catch (ParseException ex) {
-            System.out.println("An error has occurred while entering date: " + ex.getMessage() + "\n"); */
+                
             } catch (ReservationLineItemNotFoundException ex) {
                 System.out.println("An error has occurred while allocting rooms: " + ex.getMessage() + "\n");
             }
@@ -759,8 +758,7 @@ public class HotelOperationModule {
                 reservationSessionBeanRemote.roomAllocationsForToday(sdf.parse(s));
 
                 System.out.println("Allocation of Room done, check report for any exceptions.");
-                /* } catch (ParseException ex) {
-            System.out.println("An error has occurred while entering date: " + ex.getMessage() + "\n"); */
+                
             } catch (ReservationLineItemNotFoundException ex) {
                 System.out.println("An error has occurred while allocting rooms: " + ex.getMessage() + "\n");
             } catch (ParseException ex) {

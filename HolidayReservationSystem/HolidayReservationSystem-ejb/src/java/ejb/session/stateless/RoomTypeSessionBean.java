@@ -41,7 +41,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
 
     @Override
     public RoomType createRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException 
-    { //em.persist(new RoomType(" "," ", " ", " ", " ", " ", " ", " " )); 
+    { 
         try{
          RoomType rt = findRoomTypeByName(newRoomType.getTypeName()); 
            

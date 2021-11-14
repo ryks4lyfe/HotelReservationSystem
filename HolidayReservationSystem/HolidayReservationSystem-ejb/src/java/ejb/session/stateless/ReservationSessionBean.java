@@ -231,7 +231,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         while (current.before(checkOutDate) || current.equals(checkInDate)) {
             
             for (RoomRate peak : peakRates) {
-                //
+                
                 if (!(current.after(peak.getEndRateDate()) || current.before(peak.getStartRateDate()))) {
 
                     ratePerDay = peak.getRatePerNight().longValue();
@@ -318,7 +318,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         for (ReservationLineItem reservationLineItem : reservationLineItemsCheckOutToday) {
             if (reservationLineItem.getRoom() != null) {
                 RoomRecord occupiedButAvailRoomRecord = reservationLineItem.getRoom();
-                occupiedButAvailRoomRecord.setRoomStatus("occupied but available");
+                
                 roomsAvailableForToday.add(occupiedButAvailRoomRecord);
             }
         }
@@ -342,20 +342,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
                     if (availableRoom.getRoomStatus().equals("available")) {
                         RoomRecord r1 = em.find(RoomRecord.class, availableRoom.getRoomRecordId());
-                        r1.setRoomStatus("reserved and ready");
-                        availableRoom.setRoomStatus("reserved and ready");
+                        
                         roomId = r1.getRoomRecordId();
 
-                        System.out.println(r1.getRoomStatus());
-                        System.out.println("balls");
 
                         reservationLineItemCheckIn.setRoom(r1);
                         lineItemsToRemove.add(reservationLineItemCheckIn);
 
                     } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
                         RoomRecord r1 = em.find(RoomRecord.class, availableRoom.getRoomRecordId());
-                        r1.setRoomStatus("reserved and ready");
-                        availableRoom.setRoomStatus("reserved and not ready");
+                        
 
                         reservationLineItemCheckIn.setRoom(availableRoom);
                         lineItemsToRemove.add(reservationLineItemCheckIn);
@@ -381,16 +377,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         if (Integer.parseInt(reservationLineItemCheckIn.getRoomType().getRankRoom()) > Integer.parseInt(availableRoom.getRoomType().getRankRoom())) {
                             if (availableRoom.getRoomStatus().equals("available")) {
                                 RoomRecord r1 = em.find(RoomRecord.class, availableRoom.getRoomRecordId());
-                                r1.setRoomStatus("reserved and ready");
-                                availableRoom.setRoomStatus("reserved and ready");
+                                
                                 reservationLineItemCheckIn.setRoom(r1);
                                 reservationLineItemCheckIn.setRoomType(r1.getRoomType());
                                 lineItemsToRemove.add(reservationLineItemCheckIn);
 
                             } else if (availableRoom.getRoomStatus().equals("occupied but available")) {
                                 RoomRecord r1 = em.find(RoomRecord.class, availableRoom.getRoomRecordId());
-                                r1.setRoomStatus("reserved and ready");
-                                availableRoom.setRoomStatus("reserved and not ready");
+                                
                                 reservationLineItemCheckIn.setRoom(availableRoom);
                                 lineItemsToRemove.add(reservationLineItemCheckIn);
 
@@ -423,11 +417,11 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 updateExceptionReport(exceptionReport.getExceptionReportId(), reportDescription);
             }
 
-        } // return newlyReservedRoomRecords; 
+        }  
     }
 
     @Override
-    //@Schedule(persistent = false, hour = "2")
+    @Schedule(hour = "2")
     public void roomAllocationsForToday() throws ReservationLineItemNotFoundException {
         Date todaysDate = new Date();
 
@@ -478,8 +472,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         availableRoom.setRoomStatus("reserved and ready");
                         roomId = r1.getRoomRecordId();
 
-                        System.out.println(r1.getRoomStatus());
-                        System.out.println("balls");
+                        ;
 
                         reservationLineItemCheckIn.setRoom(r1);
                         lineItemsToRemove.add(reservationLineItemCheckIn);
@@ -501,7 +494,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         lineItemsToRemove.clear();
 
         if (!reservationLineItemsCheckInToday.isEmpty()) {
-            //ranking the rooms remaining in terms of rank, such that as much as possible rooms higher but of the closest rank will be allocated first
+            
             reservationLineItemsCheckInToday.sort(new RankComparator());
             roomsAvailableForToday.sort(new RankComparatorRooms());
             for (RoomRecord roomTypeNum : roomsAvailableForToday) {
@@ -555,7 +548,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 updateExceptionReport(exceptionReport.getExceptionReportId(), reportDescription);
             }
 
-        } // return newlyReservedRoomRecords; 
+        }  
     }
 
 }

@@ -36,7 +36,7 @@ import ws.client.RoomType;
  */
 public class MainApp {
 
-    //Partner currentPartner;
+    
     Scanner scanner = new Scanner(System.in);
     Partner currentPartner;
 
@@ -324,7 +324,6 @@ public class MainApp {
                                 enabledRooms.get(option - 1));
 
                         item = addItem(item, enabledRooms.get(option - 1).getRoomTypeId());
-                        //System.out.println(item.getReservationLineItemId());
                         lineItems.add(item);
 
                         System.out.println("Cart Cost: $" + totalAmount.toString());
@@ -353,8 +352,8 @@ public class MainApp {
                         if (totalLineItems != 0) {
                             doCheckout(currentPartner, totalLineItems, BigDecimal.valueOf(totalAmount), lineItems);
                             continueReservation = false;
-                            //IF SAME DAY ALLOCATE
-                            //walkInReservationSessionBeanRemote.resetCart();
+                            
+                           
                             System.out.println("CheckOut Completed");
                         } else {
                             //Cart empty, continue while loop to add more items
@@ -377,8 +376,7 @@ public class MainApp {
                         if (totalLineItems != 0) {
                             doCheckout(currentPartner, totalLineItems, BigDecimal.valueOf(totalAmount), lineItems);
                             continueReservation = false;
-                            //IF SAME DAY ALLOCATE
-                            //walkInReservationSessionBeanRemote.resetCart();
+                            
                             System.out.println("CheckOut Completed");
                         } else {
                             //Cart empty, continue while loop to add more items
@@ -518,4 +516,6 @@ public class MainApp {
         ws.client.HotelReservationWebService port = service.getHotelReservationWebServicePort();
         return port.findReservationLineItemOfPartner(reservationLineItemId, partnerId);
     }
+    
+    
 }

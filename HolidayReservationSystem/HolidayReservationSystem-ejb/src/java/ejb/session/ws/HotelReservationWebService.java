@@ -148,9 +148,7 @@ public class HotelReservationWebService {
         em.detach(r);
         r.setRoomType(null);
 
-        //RoomType rt = r.getRoomType();
-        //em.detach(rt);
-        //rt.getLineItems().remove(r);  
+         
         return r;
 
     }
@@ -174,6 +172,8 @@ public class HotelReservationWebService {
     public void doCheckout(Partner partner, Integer totalLineItems, BigDecimal totalAmount, List<ReservationLineItem> lineItems) {
         reservationSessionBeanLocal.doCheckout(partner, totalLineItems, totalAmount, lineItems);
     }
+    
+    
 
     @WebMethod
     public List<RoomType> retrieveAllRoomTypesForWebservice() {

@@ -49,12 +49,7 @@ public class DataInitializationSessionBean {
         if (em.find(RoomType.class, 1l) == null && em.find(RoomRate.class, 1l) == null && em.find(RoomRecord.class, 1l) == null) {
             initializeRoomTypeRateRecord();
         }
-        /*if (em.find(RoomRate.class, 1l) == null) {
-            initializeRoomRate();
-        }
-        if (em.find(RoomRecord.class, 1l) == null) {
-            initializeRoomRecord();
-        }*/
+        
     }
 
     public void initializeEmployees() {

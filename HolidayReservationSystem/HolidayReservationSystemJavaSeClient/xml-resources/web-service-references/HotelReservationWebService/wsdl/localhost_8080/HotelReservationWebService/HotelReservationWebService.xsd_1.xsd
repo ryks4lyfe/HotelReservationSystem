@@ -138,25 +138,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="findReservationLineItemOfPartner">
-<xs:sequence>
-<xs:element name="arg0" type="xs:long" minOccurs="0"/>
-<xs:element name="arg1" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="findReservationLineItemOfPartnerResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="ReservationLineItemNotFoundException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="retrieveAllPartnerReservations">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
@@ -175,16 +156,22 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="addItem">
+<xs:complexType name="findReservationLineItemOfPartner">
 <xs:sequence>
-<xs:element name="arg0" type="tns:reservationLineItem" minOccurs="0"/>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
 <xs:element name="arg1" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="addItemResponse">
+<xs:complexType name="findReservationLineItemOfPartnerResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ReservationLineItemNotFoundException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -227,6 +214,19 @@
 <xs:element name="reservationLineItems" type="tns:reservationLineItem" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="totalAmount" type="xs:decimal" minOccurs="0"/>
 <xs:element name="totalLineItem" type="xs:int" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addItem">
+<xs:sequence>
+<xs:element name="arg0" type="tns:reservationLineItem" minOccurs="0"/>
+<xs:element name="arg1" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addItemResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

@@ -158,7 +158,11 @@ public class MainApp {
         newGuest.setPassportNum(scanner.next().trim());
 
         Long guestId = guestSessionBeanRemote.createGuest(newGuest);
-        currentGuest = newGuest;
+        try {
+            currentGuest = guestSessionBeanRemote.findGuestById(guestId);
+        } catch (GuestNotFoundException ex) {
+            System.out.println("Guest not found");
+        }
 
         System.out.println("Visitor registered as guest " + guestId + " successfully! ");
     }
@@ -195,8 +199,8 @@ public class MainApp {
                 }
 
             }
-            
-            if(response == 4) {
+
+            if (response == 4) {
                 break;
             }
 
@@ -240,7 +244,6 @@ public class MainApp {
                             System.out.println("");
                             int i2 = i + 1;
                             System.out.println("Option " + i2);
-                            //System.out.println("Rooms Left: " + numOfRooms.get(i));
                             System.out.println("Room Type: " + rt.getTypeName());
                             System.out.println("Room Size: " + rt.getSize());
                             System.out.println("Bed Number: " + rt.getBed());
@@ -261,16 +264,18 @@ public class MainApp {
                             System.out.println("Please input a proper option");
                         } else {
 
+                            System.out.println("Cart Cost: " + walkInReservationSessionBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate,
+                                    availableRates.get(option - 1),
+                                    enabledRooms.get(option - 1))));
+                            System.out.println("Cart Items: " + walkInReservationSessionBeanRemote.getTotalLineItems());
+
                             for (ReservationLineItem lineItem : walkInReservationSessionBeanRemote.getLineItems()) {
+                                System.out.println("--------------------------------------------------------------");
                                 System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
                                 System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
                                 System.out.println("Amount: " + lineItem.getAmount().toString());
                                 System.out.println("RoomType: " + lineItem.getRoomType().getTypeName());
                             }
-                            System.out.println("Cart Cost: " + walkInReservationSessionBeanRemote.addItem(new ReservationLineItem(checkInDate, checkOutDate,
-                                    availableRates.get(option - 1),
-                                    enabledRooms.get(option - 1))));
-                            System.out.println("Cart Items: " + walkInReservationSessionBeanRemote.getTotalLineItems());
                         }
 
                         System.out.println("--------------------------------------------");
@@ -291,14 +296,7 @@ public class MainApp {
                                 } catch (ReservationLineItemNotFoundException ex) {
                                     System.out.println("reservation was not found!");
                                 }
-                                /*List<ReservationLineItem> lineItems = walkInReservationBeanRemote.getLineItems(); 
-                            for (ReservationLineItem lineItem : lineItems)
-                            {
-                                if (lineItem.getCheckInDate().equals(new Date())) 
-                                {
-                                    
-                                }
-                            }*/
+
                                 walkInReservationSessionBeanRemote.doCheckout(currentGuest);
                                 continueReservation = false;
                                 walkInReservationSessionBeanRemote.resetCart();
