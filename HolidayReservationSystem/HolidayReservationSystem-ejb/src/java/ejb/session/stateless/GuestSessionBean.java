@@ -116,14 +116,14 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
         try {
             if (dateFormat.parse(dateFormat.format(currentDate)).after(dateFormat.parse("14:00"))) {
                 RoomRecord rr = r.getRoom();
-                RoomRecord roomToCheckIn= em.find(RoomRecord.class, rr.getRoomRecordId()); 
+                RoomRecord roomToCheckIn = em.find(RoomRecord.class, rr.getRoomRecordId());
                 roomToCheckIn.setRoomStatus("occupied");
                 roomToCheckIn.getReservationLineItem().add(r);
                 roomsCheckedIn.add(roomToCheckIn);
             } else {
                 //If before 2pm, check if reserved
                 RoomRecord rr = r.getRoom();
-                RoomRecord roomToCheckIn= em.find(RoomRecord.class, rr.getRoomRecordId()); 
+                RoomRecord roomToCheckIn = em.find(RoomRecord.class, rr.getRoomRecordId());
                 if (roomToCheckIn.getRoomStatus().equals("reserved and ready")) {
                     roomToCheckIn.setRoomStatus("occupied");
                     roomToCheckIn.getReservationLineItem().add(r);
@@ -151,21 +151,11 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
             roomToCheckOut.setRoomStatus("unavailable");
             //after 1.5 hours for cleaning, make it available
             roomToCheckOut.setRoomStatus("available");
-            
-            //ReservationLineItem checkOutItem = em.find(ReservationLineItem.class, r.getReservationLineItemId());
-            //checkOutItem.getRoom().getReservationLineItem().remove(checkOutItem);
-            //checkOutItem.getRoomType().getLineItems().remove(checkOutItem);
-            //em.remove(checkOutItem);
-            
+
         } else if (roomToCheckOut.getRoomStatus().equals("reserved and not ready")) {
             roomToCheckOut.setRoomStatus("unavailable");
             //after 1.5hours for cleaning, make it reserved and ready;
             roomToCheckOut.setRoomStatus("reserved and ready");
-            
-            //ReservationLineItem checkOutItem = em.find(ReservationLineItem.class, r.getReservationLineItemId());
-            //checkOutItem.getRoom().getReservationLineItem().remove(checkOutItem);
-            //checkOutItem.getRoomType().getLineItems().remove(checkOutItem);
-            //em.remove(checkOutItem);
 
         }
         //em.flush();

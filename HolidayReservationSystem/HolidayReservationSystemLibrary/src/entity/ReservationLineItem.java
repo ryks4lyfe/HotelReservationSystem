@@ -36,6 +36,7 @@ public class ReservationLineItem implements Serializable {
     private Date checkInDate;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date checkOutDate;
+    @Column(nullable = false)
     private BigDecimal amount;
 
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)

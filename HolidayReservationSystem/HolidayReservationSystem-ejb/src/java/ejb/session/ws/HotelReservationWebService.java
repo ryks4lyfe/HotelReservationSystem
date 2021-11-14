@@ -53,9 +53,8 @@ public class HotelReservationWebService {
     public Partner doLogin(String username, String password) throws FailedLoginException, PartnerNotFoundException {
         Partner p = partnerSessionBeanLocal.doLogin(username, password);
         em.detach(p);
-        
-        
-        for(PartnerReservation pr: p.getPartnerReservations()) {
+
+        for (PartnerReservation pr : p.getPartnerReservations()) {
             em.detach(pr);
             pr.setPartner(null);
         }
@@ -67,50 +66,49 @@ public class HotelReservationWebService {
     public List<ReservationLineItem> retrieveAllPartnerReservations(Long partnerId) throws PartnerNotFoundException {
         Partner p = partnerSessionBeanLocal.findPartnerById(partnerId);
         List<ReservationLineItem> r = new ArrayList<>();
-        for(PartnerReservation pr: p.getPartnerReservations()) {
-            for(ReservationLineItem item : pr.getReservationLineItems()) {
+        for (PartnerReservation pr : p.getPartnerReservations()) {
+            for (ReservationLineItem item : pr.getReservationLineItems()) {
                 r.add(item);
             }
         }
-        
-        for(ReservationLineItem i : r) {
+
+        for (ReservationLineItem i : r) {
             em.detach(i);
             RoomType rt = i.getRoomType();
-            if(rt != null) {
-            em.detach(rt);
+            if (rt != null) {
+                em.detach(rt);
+                rt.getLineItems().remove(i);
             }
-            rt.getLineItems().remove(i);
+
             i.setRoomType(null);
         }
-        
-        
-        
+
         return r;
-       
+
     }
 
     @WebMethod
     public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException {
         ReservationLineItem r = reservationSessionBeanLocal.findReservationLineItemById(reservationLineItemId);
-        
-        
+
         em.detach(r.getRoomType());
-        
+
         return r;
-        
+
     }
-    
+
     @WebMethod
     public ReservationLineItem findReservationLineItemOfPartner(Long reservationLineItemId, Long partnerId) throws ReservationLineItemNotFoundException {
         ReservationLineItem r = reservationSessionBeanLocal.findReservationLineItemOfPartner(reservationLineItemId, partnerId);
         em.detach(r);
-        
-        RoomType rt = r.getRoomType();
-        em.detach(rt);
-        
-        rt.getLineItems().remove(r);
-        r.setRoomType(null);
-        
+
+        if (r.getRoomType() != null) {
+            RoomType rt = r.getRoomType();
+            em.detach(rt);
+
+            rt.getLineItems().remove(r);
+            r.setRoomType(null);
+        }
         return r;
     }
 
@@ -118,7 +116,7 @@ public class HotelReservationWebService {
     public Integer walkInSearchRoom(RoomType roomType, Date checkIn, Date checkOut) {
         return reservationSessionBeanLocal.walkInSearchRoom(roomType, checkIn, checkOut);
     }
-    
+
     @WebMethod
     public Integer searchRoom(Date checkIn, Date checkOut) {
         return reservationSessionBeanLocal.searchRoom(checkIn, checkOut);
@@ -134,13 +132,13 @@ public class HotelReservationWebService {
         Partner p = partnerSessionBeanLocal.findPartnerById(partnerId);
         em.detach(p);
         p.setPartnerReservations(null);
-        
-        for(PartnerReservation pr: p.getPartnerReservations()) {
+
+        for (PartnerReservation pr : p.getPartnerReservations()) {
             em.detach(pr);
             pr.setPartner(null);
-            
+
         }
-        
+
         return p;
     }
 
@@ -149,23 +147,20 @@ public class HotelReservationWebService {
         ReservationLineItem r = partnerSessionBeanLocal.addItem(lineItem, rId);
         em.detach(r);
         r.setRoomType(null);
-        
-        
+
         //RoomType rt = r.getRoomType();
         //em.detach(rt);
-        //rt.getLineItems().remove(r);
-        
-        
+        //rt.getLineItems().remove(r);  
         return r;
-        
+
     }
 
     @WebMethod
     public void removeAllItemsFromCart(List<ReservationLineItem> lineItems) {
-        List<ReservationLineItem> lineItems2  = new ArrayList<>();
-        for(ReservationLineItem r : lineItems) {
+        List<ReservationLineItem> lineItems2 = new ArrayList<>();
+        for (ReservationLineItem r : lineItems) {
             lineItems2.add(em.find(ReservationLineItem.class, r.getReservationLineItemId()));
-            
+
         }
         partnerSessionBeanLocal.removeAllItemsFromCart(lineItems2);
     }
@@ -185,23 +180,23 @@ public class HotelReservationWebService {
         List<RoomType> roomTypes = roomTypeSessionBeanLocal.retrieveAllRoomTypesForWebservice();
         for (RoomType rt : roomTypes) {
             em.detach(rt);
-            
+
             for (RoomRate rr : rt.getRoomRates()) {
                 em.detach(rr);
                 rr.setRoomType(null);
-                
+
             }
 
             for (RoomRecord r : rt.getRoomRecords()) {
                 em.detach(r);
                 r.setRoomType(null);
-                
+
             }
-            
+
             for (ReservationLineItem item : rt.getLineItems()) {
                 em.detach(item);
                 item.setRoomType(null);
-               
+
             }
             rt.getLineItems().clear();
             rt.getRoomRates().clear();

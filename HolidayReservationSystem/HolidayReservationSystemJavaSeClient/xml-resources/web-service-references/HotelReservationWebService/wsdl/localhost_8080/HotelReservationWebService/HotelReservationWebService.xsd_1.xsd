@@ -175,6 +175,19 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="addItem">
+<xs:sequence>
+<xs:element name="arg0" type="tns:reservationLineItem" minOccurs="0"/>
+<xs:element name="arg1" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addItemResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="findPartnerById">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
@@ -214,19 +227,6 @@
 <xs:element name="reservationLineItems" type="tns:reservationLineItem" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="totalAmount" type="xs:decimal" minOccurs="0"/>
 <xs:element name="totalLineItem" type="xs:int" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="addItem">
-<xs:sequence>
-<xs:element name="arg0" type="tns:reservationLineItem" minOccurs="0"/>
-<xs:element name="arg1" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="addItemResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:reservationLineItem" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

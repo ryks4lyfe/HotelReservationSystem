@@ -134,13 +134,8 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         for (ReservationLineItem r : lineItems) {
             ReservationLineItem r1 = em.find(ReservationLineItem.class, r.getReservationLineItemId());
 
-            String s = r1.getRoomType().getTypeName();
-            if(s == null) {
-                System.out.print("ERRROEROEREK");
-            }
-            Long id = r1.getRoomType().getRoomTypeId();
-            RoomType rt = em.find(RoomType.class, id);
-            rt.getLineItems().remove(r1);
+            r1.setRoom(null);
+            r1.setRoomType(null);
             em.remove(r1);
         }
         em.flush();

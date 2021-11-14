@@ -29,7 +29,9 @@ public class RoomRecord implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomRecordId;
+    @Column(nullable = false, length = 4)
     private String roomNum; 
+    @Column(nullable = false)
     private String roomStatus; 
     
     

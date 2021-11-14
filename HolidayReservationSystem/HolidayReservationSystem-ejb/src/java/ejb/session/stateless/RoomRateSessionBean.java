@@ -45,7 +45,8 @@ public class RoomRateSessionBean implements RoomRateSessionBeanLocal, RoomRateSe
             if (!roomType.getTypeStatus().equals("disabled")) {
                 em.persist(newRoomRate); 
                 newRoomRate.setRoomType(roomType);
-                roomType.getRoomRates().add(newRoomRate); 
+                RoomType rt = em.find(RoomType.class, roomType.getRoomTypeId());
+                rt.getRoomRates().add(newRoomRate); 
                 
                 em.flush();
                 

@@ -430,7 +430,7 @@ public class MainApp {
         if (!lineItems.isEmpty()) {
             for (ReservationLineItem lineItem : lineItems) {
                 System.out.println("");
-                System.out.println("Reservation " + i + ": ");
+                System.out.println("Reservation " + lineItem.getReservationLineItemId() + ": ");
                 System.out.println("Check In Date: " + lineItem.getCheckInDate().toString());
                 System.out.println("Check Out Date: " + lineItem.getCheckOutDate().toString());
                 System.out.println("Amount: " + lineItem.getAmount().toString());

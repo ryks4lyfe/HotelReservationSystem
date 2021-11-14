@@ -32,7 +32,9 @@ public abstract class ReservationRecord implements Serializable {
     protected Long reservationId;
     @Column(nullable = false)
     protected Date reservationDate;
+    @Column(nullable = false)
     protected Integer totalLineItem;
+    @Column(nullable = false)
     protected BigDecimal totalAmount;
 
     @OneToMany(cascade = {}, fetch = FetchType.EAGER)

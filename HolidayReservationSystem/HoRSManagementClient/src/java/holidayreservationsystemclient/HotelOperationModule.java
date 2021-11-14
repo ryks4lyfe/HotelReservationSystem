@@ -547,16 +547,16 @@ public class HotelOperationModule {
             if (roomRateTypeInt >= 1 && roomRateTypeInt <= 4) {
                 newRoomRate = new RoomRate();
                 if (roomRateTypeInt == 1) {
-                    newRoomRate.setRoomRateType(RoomRateTypeEnum.NORMAL);
+                    newRoomRate.setRoomRateType(NORMAL);
                     break;
                 } else if (roomRateTypeInt == 2) {
-                    newRoomRate.setRoomRateType(RoomRateTypeEnum.PUBLISHED);
+                    newRoomRate.setRoomRateType(PUBLISHED);
                     break;
                 } else if (roomRateTypeInt == 3) {
-                    newRoomRate.setRoomRateType(RoomRateTypeEnum.PROMOTION);
+                    newRoomRate.setRoomRateType(PROMOTION);
                     break;
                 } else if (roomRateTypeInt == 4) {
-                    newRoomRate.setRoomRateType(RoomRateTypeEnum.PEAK);
+                    newRoomRate.setRoomRateType(PEAK);
                     break;
                 } else {
                     System.out.println("Sorry, this room rate type is currently not available. Please try again!\n");

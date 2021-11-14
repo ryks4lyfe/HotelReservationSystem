@@ -143,6 +143,8 @@ public class FrontOfficeModule {
                             availableRates.add(reservationSessionBeanRemote.walkInPrice(rt, checkInDate, checkOutDate));
                             enabledRooms.add(rt);
                         }
+                        
+                        
 
                         //For each avaialble roomType, display the room record and rate details
                         for (int i = 0; i < enabledRooms.size(); i++) {

@@ -187,16 +187,18 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         for (RoomRate rr1 : rt.getRoomRates()) {
             RoomRate rr = em.find(RoomRate.class, rr1.getRoomRateId());
             if (rr.getRoomRateType().equals(PUBLISHED)) {
-                
+
                 BigDecimal price = rr.getRatePerNight();
-                System.out.println("PUBLISHED");
+
                 if (checkOutDate.getTime() != checkInDate.getTime()) {
                     Long daysBetween = (checkOutDate.getTime() - checkInDate.getTime()) / 86400000;
                     amount = price.longValue() * daysBetween;
                 } else {
                     amount = price.longValue();
                 }
+
             }
+
         }
         return BigDecimal.valueOf(amount);
     }
@@ -214,32 +216,37 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             RoomRate rr1 = em.find(RoomRate.class, rr.getRoomRateId());
             if (rr1.getRoomRateType().equals(NORMAL)) {
                 System.out.print(rr1.getRatePerNight());
-                System.out.println("PUBLISHED");
+                
                 normalRate = rr1;
             } else if (rr1.getRoomRateType().equals(PEAK)) {
-                System.out.println("PUBLISHED");
+                
                 peakRates.add(rr1);
             } else if (rr1.getRoomRateType().equals(PROMOTION)) {
-                System.out.println("PUBLISHED");
+                
                 promoRates.add(rr1);
             }
         }
 
+        Long ratePerDay = normalRate.getRatePerNight().longValue();
+
         Date current = checkInDate;
 
         while (current.before(checkOutDate)) {
-            Long ratePerDay = normalRate.getRatePerNight().longValue();
 
             for (RoomRate peak : peakRates) {
                 //
                 if (!(current.after(peak.getEndRateDate()) || current.before(peak.getStartRateDate()))) {
+                    
                     ratePerDay = peak.getRatePerNight().longValue();
+
                 }
             }
 
             for (RoomRate promo : promoRates) {
                 if (!(current.after(promo.getEndRateDate()) || current.before(promo.getStartRateDate()))) {
+                    
                     ratePerDay = promo.getRatePerNight().longValue();
+
                 }
             }
 
