@@ -114,7 +114,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
         {
             RoomType roomTypeToUpdate = findRoomTypeById(roomType.getRoomTypeId()); 
             
-            if (!roomTypeToUpdate.getTypeName().equals(roomType.getTypeName()))
+            if (roomTypeToUpdate.getRoomTypeId().equals(roomType.getRoomTypeId()))
             {
                 roomTypeToUpdate.setTypeName(roomType.getTypeName());
                 roomTypeToUpdate.setAmenities(roomType.getAmenities());
@@ -143,12 +143,12 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
          
          String roomTypeName = roomTypeToRemove.getTypeName(); 
         
-        if(roomTypeToRemove.getTypeStatus().equals("enabled") && roomRateSessionBeanRemote.findRoomRateForRoomType(roomTypeName).isEmpty() 
+        if(roomTypeToRemove.getTypeStatus().equals("available") && roomRateSessionBeanRemote.findRoomRateForRoomType(roomTypeName).isEmpty() 
                 && roomRecordSessionBeanRemote.findAllAvailableRoomRecordsForRoomType(roomTypeName).isEmpty())        
         {
             em.remove(roomTypeToRemove); //enabled and not in use = delete
         }
-        else if(roomTypeToRemove.getTypeStatus().equals("enabled") && !roomRecordSessionBeanRemote.findAllRoomRecordsForRoomType(roomTypeName).isEmpty()
+        else if(roomTypeToRemove.getTypeStatus().equals("available") && !roomRecordSessionBeanRemote.findAllRoomRecordsForRoomType(roomTypeName).isEmpty()
                 && !roomRateSessionBeanRemote.findRoomRateForRoomType(roomTypeName).isEmpty())
                  
         {
@@ -156,7 +156,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanLocal, RoomTypeSe
         }
         else
         {
-            throw new DeleteRoomTypeException("Room Type ID " + roomTypeId + " cannot be used as it is being used!");
+            throw new DeleteRoomTypeException("Room Type ID " + roomTypeId + " cannot be deleted as it is being used!");
         }
     }
         
