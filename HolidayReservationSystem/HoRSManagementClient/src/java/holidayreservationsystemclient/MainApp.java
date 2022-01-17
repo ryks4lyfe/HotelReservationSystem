@@ -65,6 +65,7 @@ public class MainApp {
         this.walkInReservationBeanRemote = walkInReservationBeanRemote;
 
     }
+    
 
     public void runApp() {
 

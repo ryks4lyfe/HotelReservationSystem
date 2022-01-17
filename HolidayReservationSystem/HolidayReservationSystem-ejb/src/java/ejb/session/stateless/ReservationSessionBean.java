@@ -72,6 +72,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         p.setPartner(p1);
         em.flush();
     }
+    
 
     @Override
     public ReservationLineItem findReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException {

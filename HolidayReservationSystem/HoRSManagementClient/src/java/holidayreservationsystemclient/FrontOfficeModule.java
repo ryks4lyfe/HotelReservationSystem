@@ -74,6 +74,7 @@ public class FrontOfficeModule {
         this.walkInReservationBeanRemote = walkInReservationBeanRemote;
         this.employee = employee;
     }
+    
 
     public void menuFrontOffice() {
         Scanner scanner = new Scanner(System.in);

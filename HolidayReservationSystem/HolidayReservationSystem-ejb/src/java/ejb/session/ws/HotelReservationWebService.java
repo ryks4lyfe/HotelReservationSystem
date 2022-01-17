@@ -49,6 +49,7 @@ public class HotelReservationWebService {
     @PersistenceContext(unitName = "HolidayReservationSystem-ejbPU")
     private EntityManager em;
 
+    
     @WebMethod(operationName = "partnerLogin")
     public Partner doLogin(String username, String password) throws FailedLoginException, PartnerNotFoundException {
         Partner p = partnerSessionBeanLocal.doLogin(username, password);

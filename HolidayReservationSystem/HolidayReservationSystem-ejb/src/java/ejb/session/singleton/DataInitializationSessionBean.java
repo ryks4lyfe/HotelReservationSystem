@@ -60,6 +60,7 @@ public class DataInitializationSessionBean {
         em.flush();
     }
 
+    
     public void initializeRoomTypeRateRecord() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         RoomType deluxeRoom = new RoomType("Deluxe Room", "Deluxe", "5", "5", "5", "5", "available", "5");

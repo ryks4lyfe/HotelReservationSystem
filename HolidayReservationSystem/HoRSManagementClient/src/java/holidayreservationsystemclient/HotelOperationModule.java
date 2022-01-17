@@ -72,6 +72,7 @@ public class HotelOperationModule {
         this.employee = employee;
     }
 
+    
     public void menuHotelOperation() {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
